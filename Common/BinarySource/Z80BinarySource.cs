@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PixelWorld.BinarySource
 {
@@ -81,7 +82,7 @@ namespace PixelWorld.BinarySource
                 var bank = page.Value.Array;
                 var pageOffset = GetPageOffset(page.Key, shadowScreen);
                 if (pageOffset.HasValue)
-                    Array.Copy(bank, 0, ram, pageOffset.Value - 16384, bank.Length);
+                    Array.Copy(bank, 0, ram, pageOffset.Value - 16384, page.Value.Count);
             }
 
             return new ArraySegment<byte>(ram);
@@ -115,7 +116,7 @@ namespace PixelWorld.BinarySource
         {
             if (compressedLength == 0xffff) // Not compressed
             {
-                return new ArraySegment<byte>(raw.Array, startIndex, raw.Count - startIndex);
+                return new ArraySegment<byte>(raw.Array, startIndex, Math.Min(16384, raw.Count - startIndex));
             }
 
             var uncompressed = new byte[16384];

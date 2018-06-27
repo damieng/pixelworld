@@ -69,68 +69,92 @@ namespace PixelWorld.Finders
             var fontIndex = 0;
             var fonts = new List<Font>();
 
-            var i = 6912; // Don't bother checking screen
+            var i = 6911; // Don't bother checking screen
             while (i + desiredLength < buffer.LongLength)
             {
-                if (IsEmpty(buffer, i) && !IsEmpty(buffer, i + 8)) // Start with a space
-                {
-                    int spacesCount = 1;
-                    int uniqueCount = 0;
-                    int upperMissing = 0;
-                    int lowerMissing = 0;
-                    int digitsMissing = 0;
-                    int zeroCount = buffer.Take(ByteFontFormatter.glyphRange * 8).Count(b => b == 0);
+                //if (Guess(buffer, i))
+                //    fonts.Add(MakeNextFont(reader, $"{name + "-" + ++fontIndex}", i));
 
-                    for (int c = 0; c < 95; c++)
-                    {
-                        bool charIsUnique = true;
-                        for (int x = c + 1; x < ByteFontFormatter.glyphRange; x++)
-                        {
-                            if (IsSame(buffer, i + c * 8, i + x * 8))
-                                charIsUnique = false;
-                        }
-
-                        if (IsEmpty(buffer, i + c * 8))
-                        {
-                            char cg = (char)(c + 32);
-                            if (char.IsUpper(cg))
-                                upperMissing++;
-                            if (char.IsLower(cg))
-                                lowerMissing++;
-                            if (char.IsNumber(cg))
-                                digitsMissing++;
-
-                            spacesCount++;
-                        }
-
-                        if (charIsUnique)
-                            uniqueCount++;
-                    }
-
-                    var underscoreOffset = i + ('_' - 32) * 8;
-                    var hasUnderscore = IsEmpty(buffer, underscoreOffset, 6) && !IsEmpty(buffer, underscoreOffset + 6, 2);
-                    var minusOffset = i + ('-' - 32) * 8;
-                    var hasMinus = IsEmpty(buffer, minusOffset, 2) && !IsEmpty(buffer, minusOffset + 2, 4) && IsEmpty(buffer, minusOffset + 6, 2);
-
-                    var missingAlphas = upperMissing > 0 && lowerMissing > 0;
-
-                    if (uniqueCount >= 36 && spacesCount < 60 &&
-                        (hasUnderscore || hasMinus) &&
-                        !missingAlphas && digitsMissing == 0 &&
-                        zeroCount < 700 && HasLikelyDensities(buffer, i))
-                    {
-                        var font = new Font(name + "-" + ++fontIndex) { Height = 8 };
-                        reader.BaseStream.Seek(i, SeekOrigin.Begin);
-                        ByteFontFormatter.Read(font, reader);
-                        fonts.Add(font);
-                        i++;
-                    }
-                }
+                if (IsDefaultCopyright(buffer, i))
+                    fonts.Add(MakeNextFont(reader, $"{name + "-" + ++fontIndex}", i - (95 * 8)));
 
                 i++;
             }
 
             return fonts;
+        }
+
+        private static Font MakeNextFont(BinaryReader reader, string name, int offset)
+        {
+            var font = new Font(name) { Height = 8 };
+            reader.BaseStream.Seek(offset, SeekOrigin.Begin);
+            ByteFontFormatter.Read(font, reader);
+            return font;
+        }
+
+        private static bool IsDefaultCopyright(byte[] buffer, int i)
+        {
+            return buffer[i] == 60 &&
+                   buffer[i + 1] == 66 &&
+                   buffer[i + 2] == 153 &&
+                   buffer[i + 3] == 161 &&
+                   buffer[i + 4] == 161 &&
+                   buffer[i + 5] == 153 &&
+                   buffer[i + 6] == 66 &&
+                   buffer[i + 7] == 60;
+        }
+
+        private static bool Guess(byte[] buffer, int i)
+        {
+            if (IsEmpty(buffer, i) && !IsEmpty(buffer, i + 8)) // Start with a space
+            {
+                int spacesCount = 1;
+                int uniqueCount = 0;
+                int upperMissing = 0;
+                int lowerMissing = 0;
+                int digitsMissing = 0;
+                int zeroCount = buffer.Take(ByteFontFormatter.glyphRange * 8).Count(b => b == 0);
+
+                for (int c = 0; c < 95; c++)
+                {
+                    bool charIsUnique = true;
+                    for (int x = c + 1; x < ByteFontFormatter.glyphRange; x++)
+                    {
+                        if (IsSame(buffer, i + c * 8, i + x * 8))
+                            charIsUnique = false;
+                    }
+
+                    if (IsEmpty(buffer, i + c * 8))
+                    {
+                        char cg = (char)(c + 32);
+                        if (char.IsUpper(cg))
+                            upperMissing++;
+                        if (char.IsLower(cg))
+                            lowerMissing++;
+                        if (char.IsNumber(cg))
+                            digitsMissing++;
+
+                        spacesCount++;
+                    }
+
+                    if (charIsUnique)
+                        uniqueCount++;
+                }
+
+                var underscoreOffset = i + ('_' - 32) * 8;
+                var hasUnderscore = IsEmpty(buffer, underscoreOffset, 6) && !IsEmpty(buffer, underscoreOffset + 6, 2);
+                var minusOffset = i + ('-' - 32) * 8;
+                var hasMinus = IsEmpty(buffer, minusOffset, 2) && !IsEmpty(buffer, minusOffset + 2, 4) && IsEmpty(buffer, minusOffset + 6, 2);
+
+                var missingAlphas = upperMissing > 0 && lowerMissing > 0;
+
+                return uniqueCount >= 36 && spacesCount < 60
+                                      //                       && (hasUnderscore || hasMinus)
+                                      && !missingAlphas && digitsMissing == 0
+                                      && zeroCount < 700 && HasLikelyDensities(buffer, i);
+            }
+
+            return false;
         }
     }
 }
