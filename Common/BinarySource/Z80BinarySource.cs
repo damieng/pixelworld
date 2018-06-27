@@ -28,7 +28,7 @@ namespace PixelWorld.BinarySource
             var target = new byte[ram48Ksize];
             var sourceIndex = 30;
             var targetIndex = 0;
-            while (true)
+            while (sourceIndex < sourceSegment.Count)
             {
                 var current = source[sourceIndex++];
                 if (current == 0 && source[sourceIndex] == 0xED && source[sourceIndex + 1] == 0xED && source[sourceIndex + 2] == 0)
@@ -62,7 +62,8 @@ namespace PixelWorld.BinarySource
             int offset = BitConverter.ToInt16(source.Array, 30) + 32;
             while (offset < source.Count)
             {
-                int blockSize = BitConverter.ToInt16(source.Array, offset);
+                if (offset + 3 >= source.Count) break; // Corrupt/padded images
+                int blockSize = BitConverter.ToUInt16(source.Array, offset);
                 offset += 2;
                 byte page = source.Array[offset++];
                 pages[page] = GetPage(source, offset, blockSize);
@@ -112,13 +113,13 @@ namespace PixelWorld.BinarySource
         {
             if (compressedLength == 0xffff) // Not compressed
             {
-                return new ArraySegment<byte>(raw.Array, startIndex, compressedLength);
+                return raw;
             }
 
             var uncompressed = new byte[16384];
 
             int uncompressedIndex = 0;
-            while (uncompressedIndex < compressedLength)
+            while (uncompressedIndex < compressedLength && uncompressedIndex < uncompressed.Length /* Buggy images */)
             {
                 byte bite = raw.Array[startIndex++];
 
@@ -142,7 +143,7 @@ namespace PixelWorld.BinarySource
                 }
                 else
                 {
-                    uncompressed[uncompressedIndex++] = raw.Array[startIndex++];
+                    uncompressed[uncompressedIndex++] = bite;
                 }
             }
 

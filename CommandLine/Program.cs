@@ -74,9 +74,9 @@ namespace PixelWorld.CommandLine
         {
             Out.Write($"  Extracting from ${fileName}");
 
-            WriteScreenPreview(dump.Array, 0, MakeFilename(fileName, ".screen.png"));
-            if (dump.Count > 49152)
-                WriteScreenPreview(dump.Array, 0x14000 - 16384, MakeFilename(fileName, ".screen2.png"));
+            //WriteScreenPreview(dump.Array, 0, MakeFilename(fileName, ".screen.png"));
+            //if (dump.Count > 49152)
+            //    WriteScreenPreview(dump.Array, 0x14000 - 16384, MakeFilename(fileName, ".screen2.png"));
 
             using (var memory = new MemoryStream(dump.Array))
             {
@@ -109,16 +109,29 @@ namespace PixelWorld.CommandLine
 
         private static void WriteFontPreviewPng(Font font, string newFileName)
         {
-            using (var b = new Bitmap(font.Glyphs.Sum(g => g.Value.Width), font.Height))
+            const int rows = 3;
+            var fullWidth = font.Glyphs.Sum(g => g.Value.Width);
+            var previewWidth = fullWidth / rows;
+            var glphysPerRow = font.Glyphs.Count / rows;
+
+            using (var b = new Bitmap(previewWidth, font.Height * rows))
             {
-                var offset = 0;
+                var xOff = 0;
+                var yOff = 0;
+                int cIdx = 0;
                 foreach (var glyph in font.Glyphs)
                 {
                     for (var y = 0; y < font.Height; y++)
                         for (var x = 0; x < glyph.Value.Width; x++)
-                            b.SetPixel(offset + x, y, glyph.Value.Data[x, y] ? Color.Black : Color.White);
+                            b.SetPixel(xOff + x, yOff + y, glyph.Value.Data[x, y] ? Color.Black : Color.White);
 
-                    offset += glyph.Value.Width;
+                    xOff += glyph.Value.Width;
+                    cIdx++;
+                    if (cIdx % glphysPerRow == 0)
+                    {
+                        yOff += font.Height;
+                        xOff = 0;
+                    }
                 }
 
                 b.Save(MakeFilename(newFileName, ".png"), ImageFormat.Png);
