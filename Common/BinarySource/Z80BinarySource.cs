@@ -23,12 +23,12 @@ namespace PixelWorld.BinarySource
             var isCompressed = (byte12 & 0x20) != 0;
 
             if (!isCompressed)
-                return new ArraySegment<byte>(source, 30, ram48Ksize);
+                return new ArraySegment<byte>(source, 30, sourceSegment.Count - 30);
 
             var target = new byte[ram48Ksize];
             var sourceIndex = 30;
             var targetIndex = 0;
-            while (sourceIndex < sourceSegment.Count)
+            while (sourceIndex < sourceSegment.Count && targetIndex < target.Length)
             {
                 var current = source[sourceIndex++];
                 if (current == 0 && source[sourceIndex] == 0xED && source[sourceIndex + 1] == 0xED && source[sourceIndex + 2] == 0)
@@ -71,13 +71,15 @@ namespace PixelWorld.BinarySource
             }
 
             var is48K = snapshotType == 0;
+            var out7ffd = source.Array[35];
+            var shadowScreen = !is48K && (out7ffd & 8) == 8;
 
             var ram = new byte[(is48K ? 48 : 128) * 1024];
 
             foreach (var page in pages)
             {
                 var bank = page.Value.Array;
-                var pageOffset = GetPageOffset(page.Key, is48K);
+                var pageOffset = GetPageOffset(page.Key, shadowScreen);
                 if (pageOffset.HasValue)
                     Array.Copy(bank, 0, ram, pageOffset.Value - 16384, bank.Length);
             }
@@ -85,17 +87,17 @@ namespace PixelWorld.BinarySource
             return new ArraySegment<byte>(ram);
         }
 
-        private static int? GetPageOffset(int page, bool is48K)
+        private static int? GetPageOffset(int page, bool shadowScreen)
         {
             switch (page)
             {
                 // 48K pages and normal 128K mappings
-                case 8: return 0x4000; // Page 5
+                case 8: return shadowScreen ? 0x14000 : 0x4000; // Page 5
                 case 4: return 0x8000; // Page 1
                 case 5: return 0xc000; // Page 2
 
                 // 128K shadow pages - sequential just in case
-                case 10: return 0x14000; // Page 7 shadow 0x4000                                
+                case 10: return shadowScreen ? 0x4000 : 0x14000; // Page 7 shadow 0x4000                                
                 case 6:  return 0x18000; // Page 3 shadow 0x8000
                 case 7:  return 0x1c000; // Page 4 shadow 0xc000
 
@@ -113,7 +115,7 @@ namespace PixelWorld.BinarySource
         {
             if (compressedLength == 0xffff) // Not compressed
             {
-                return raw;
+                return new ArraySegment<byte>(raw.Array, startIndex, raw.Count - startIndex);
             }
 
             var uncompressed = new byte[16384];

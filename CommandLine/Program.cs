@@ -72,11 +72,7 @@ namespace PixelWorld.CommandLine
 
         private static void ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump)
         {
-            Out.Write($"  Extracting from ${fileName}");
-
-            //WriteScreenPreview(dump.Array, 0, MakeFilename(fileName, ".screen.png"));
-            //if (dump.Count > 49152)
-            //    WriteScreenPreview(dump.Array, 0x14000 - 16384, MakeFilename(fileName, ".screen2.png"));
+            WriteScreenPreview(dump.Array, 0, MakeFilename(fileName, ".screen.png"));
 
             using (var memory = new MemoryStream(dump.Array))
             {
@@ -87,7 +83,7 @@ namespace PixelWorld.CommandLine
                     foreach (var font in fonts)
                     {
                         var newFileName = MakeFilename(fileName, $".{i++}.chr");
-                        Out.Write($"    Creating byte font {newFileName}");
+                        Out.Write($"  Creating byte font {newFileName}");
                         //                        Out.Write(font.ToDebug("Testing"));
                         // ByteFontFormatter.Write(font, File.Create(newFileName));
                         WriteFontPreviewPng(font, newFileName);
@@ -149,7 +145,10 @@ namespace PixelWorld.CommandLine
                             {
                                 var extension = Path.GetExtension(entry.Name).ToLower();
                                 if (extension == ".z80")
+                                {
+                                    Out.Write($" Extracting from ${fileName}");
                                     processor(entry.Name, GetRawBinary(extension, entry.Open()));
+                                }
                             }
                         break;
                     }
@@ -163,7 +162,7 @@ namespace PixelWorld.CommandLine
 
         static void WriteDumpToDisk(string name, ArraySegment<byte> dump)
         {
-            Out.Write($"    Dumping {name}");
+            Out.Write($" Dumping {name}");
             File.WriteAllBytes(MakeFilename(name, ".dmp"), dump.Array);
         }
 

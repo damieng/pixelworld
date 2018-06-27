@@ -69,7 +69,7 @@ namespace PixelWorld.Finders
             var fontIndex = 0;
             var fonts = new List<Font>();
 
-            var i = 0;
+            var i = 6912; // Don't bother checking screen
             while (i + desiredLength < buffer.LongLength)
             {
                 if (IsEmpty(buffer, i) && !IsEmpty(buffer, i + 8)) // Start with a space
@@ -114,8 +114,8 @@ namespace PixelWorld.Finders
 
                     var missingAlphas = upperMissing > 0 && lowerMissing > 0;
 
-                    if (uniqueCount > 36 && spacesCount < 60 &&
-                        hasUnderscore && hasMinus &&
+                    if (uniqueCount >= 36 && spacesCount < 60 &&
+                        (hasUnderscore || hasMinus) &&
                         !missingAlphas && digitsMissing == 0 &&
                         zeroCount < 700 && HasLikelyDensities(buffer, i))
                     {
