@@ -15,7 +15,6 @@ namespace PixelWorld.BinarySource
 
         private static ArraySegment<byte> ReadV1(ArraySegment<byte> sourceSegment)
         {
-            Out("V1 detected");
             const int ram48Ksize = 49152;
 
             var source = sourceSegment.Array;
@@ -56,8 +55,6 @@ namespace PixelWorld.BinarySource
 
         private static ArraySegment<byte> ReadV2(ArraySegment<byte> source)
         {
-            Out("V2/3 detected");
-
             int snapshotType = GetVersion(source);
 
             var pages = new Dictionary<int, ArraySegment<byte>>();
@@ -73,22 +70,42 @@ namespace PixelWorld.BinarySource
             }
 
             var is48K = snapshotType == 0;
-            var ramSize = is48K ? 48 * 1024 : 128 * 1024;
-            var ram = new byte[ramSize];
+
+            var ram = new byte[(is48K ? 48 : 128) * 1024];
 
             foreach (var page in pages)
             {
-                switch (page.Key)
-                {
-                }
+                var bank = page.Value.Array;
+                var pageOffset = GetPageOffset(page.Key, is48K);
+                if (pageOffset.HasValue)
+                    Array.Copy(bank, 0, ram, pageOffset.Value - 16384, bank.Length);
             }
 
             return new ArraySegment<byte>(ram);
         }
 
-        private static void Out(string message)
+        private static int? GetPageOffset(int page, bool is48K)
         {
-            global::PixelWorld.Out.Write("    Z80 " + message);
+            switch (page)
+            {
+                // 48K pages and normal 128K mappings
+                case 8: return 0x4000; // Page 5
+                case 4: return 0x8000; // Page 1
+                case 5: return 0xc000; // Page 2
+
+                // 128K shadow pages - sequential just in case
+                case 10: return 0x14000; // Page 7 shadow 0x4000                                
+                case 6:  return 0x18000; // Page 3 shadow 0x8000
+                case 7:  return 0x1c000; // Page 4 shadow 0xc000
+
+                // 128K extra pages
+                case 3: return 0x10000; // Page 0
+                case 9: return 0x20000; // Page 6
+
+                // ROMs and weird stuff ignored
+                default:
+                    return null;
+            }
         }
 
         private static ArraySegment<byte> GetPage(ArraySegment<byte> raw, int startIndex, int compressedLength)
@@ -103,13 +120,25 @@ namespace PixelWorld.BinarySource
             int uncompressedIndex = 0;
             while (uncompressedIndex < compressedLength)
             {
-                if (raw.Array[startIndex] == 0xED && raw.Array[startIndex + 1] == 0xED)
+                byte bite = raw.Array[startIndex++];
+
+                if (bite == 0xED)
                 {
-                    int repeatLength = uncompressed[startIndex + 2];
-                    byte repeatByte = uncompressed[startIndex + 3];
-                    while (repeatLength-- > 0)
-                        uncompressed[uncompressedIndex++] = repeatByte;
-                    startIndex += 4;
+                    int bite2 = raw.Array[startIndex];
+                    if (bite2 == 0xED)
+                    {
+                        startIndex++;
+                        int dataSize = raw.Array[startIndex++];
+                        byte data = raw.Array[startIndex++];
+
+                        //compressed data
+                        for (int f = 0; f < dataSize; f++)
+                        {
+                            uncompressed[uncompressedIndex++] = data;
+                        }
+                        continue;
+                    }
+                    uncompressed[uncompressedIndex++] = bite;
                 }
                 else
                 {

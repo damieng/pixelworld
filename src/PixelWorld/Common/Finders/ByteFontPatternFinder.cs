@@ -28,21 +28,17 @@ namespace PixelWorld.Finders
         public static List<Font> Read(BinaryReader reader, string name)
         {
             var inputBuffer = reader.ReadBytes(1024 * 1024);
-            reader.BaseStream.Seek(0, SeekOrigin.Begin);
             const int desiredLength = ByteFontFormatter.glyphRange * (ByteFontFormatter.charWidth / 8) * ByteFontFormatter.charHeight;
 
             var fontIndex = 0;
-
             var fonts = new List<Font>();
 
             var index = 0;
-            while (index < inputBuffer.LongLength)
+            while (index + desiredLength < inputBuffer.LongLength)
             {
                 if (IsCharEmpty(inputBuffer, index) && !IsCharEmpty(inputBuffer, index + 8)) // Start with a space
                 {
-                    if (index + desiredLength > inputBuffer.LongLength)
-                        break;
-
+                    var spaces = 1;
                     int differentChars = 0;
                     for (int c = 0; c < 95; c++)
                     {
@@ -53,18 +49,20 @@ namespace PixelWorld.Finders
                                 charIsUnique = false;
                         }
 
+                        if (IsCharEmpty(inputBuffer, index + c * 8))
+                            spaces++;
+
                         if (charIsUnique)
                             differentChars++;
                     }
 
-                    if (differentChars > 90)
+                    if (differentChars > 90 && spaces < 20)
                     {
-                        Out.Write($"Believed to have {differentChars} different chars");
-                        var font = new Font(name + "-" + ++fontIndex);
+                        var font = new Font(name + "-" + ++fontIndex) {Height = 8};
                         reader.BaseStream.Seek(index, SeekOrigin.Begin);
                         ByteFontFormatter.Read(font, reader);
                         fonts.Add(font);
-                        index += desiredLength;
+                        index++;
                     }
                 }
 
