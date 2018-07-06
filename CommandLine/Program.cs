@@ -3,7 +3,9 @@ using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using PixelWorld.BinarySource;
 using PixelWorld.Display;
 using PixelWorld.Finders;
+using PixelWorld.Formatters;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -37,26 +39,30 @@ namespace PixelWorld.CommandLine
 
         static void ProcessMatches(string command, string inputMatch)
         {
-            var matcher = new Matcher(StringComparison.CurrentCultureIgnoreCase);
-            matcher.AddInclude(inputMatch);
-            var matches = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(".")));
+            var globSplitPoint = Utils.GetGlobSplitPoint(inputMatch);
+            var glob = inputMatch.Substring(globSplitPoint);
+            var directory = globSplitPoint > 0 ? inputMatch.Substring(0, globSplitPoint) : ".";
+            Out.Write($"Matching files {glob} in {directory}");
 
-            Out.Write($"Matching files {inputMatch}");
+            var matcher = new Matcher(StringComparison.CurrentCultureIgnoreCase);
+            matcher.AddInclude(glob);
+            var matches = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
 
             foreach (var match in matches.Files)
             {
                 Out.Write($"Opening file {match.Path}");
+                var fullPath = Path.Combine(directory, match.Path);
 
                 switch (command)
                 {
                     case "process":
-                        ProcessFile(match.Path, ExtractFontFromMemoryBuffer);
+                        ProcessFile(fullPath, ExtractFontFromMemoryBuffer);
                         break;
                     case "dump":
-                        ProcessFile(match.Path, WriteDumpToDisk);
+                        ProcessFile(fullPath, WriteDumpToDisk);
                         break;
                     case "hunt":
-                        ExtractFontFromDumpFile(match.Path);
+                        ExtractFontFromDumpFile(fullPath);
                         break;
                     default:
                         throw new InvalidOperationException($"Unknown command {command}");
@@ -72,22 +78,25 @@ namespace PixelWorld.CommandLine
 
         private static void ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump)
         {
-            WriteScreenPreview(dump.Array, 0, MakeFilename(fileName, ".screen.png"));
-
             using (var memory = new MemoryStream(dump.Array))
             {
                 using (var reader = new BinaryReader(memory))
                 {
-                    var fonts = ByteFontPatternFinder.Read(reader, fileName);
+                    var candidates = SpectrumDisplay.GetCandidates(dump.Array, 0);
+                    var fonts = new HashSet<Font>(ByteCandidatesWindowFinder.Read(reader, fileName, candidates));
+                    foreach (var font in ByteFontPatternFinder.Read(reader, fileName))
+                        fonts.Add(font);
                     int i = 1;
                     foreach (var font in fonts)
                     {
-                        var newFileName = MakeFilename(fileName, $".{i++}.chr");
+                        var newFileName = MakeFileName(font.Name, $".chr");
                         Out.Write($"  Creating byte font {newFileName}");
-                        //                        Out.Write(font.ToDebug("Testing"));
                         // ByteFontFormatter.Write(font, File.Create(newFileName));
                         WriteFontPreviewPng(font, newFileName);
                     }
+
+                    if (fonts.Count > 0)
+                        WriteScreenPreview(dump.Array, 0, MakeFileName(fileName, ".screen.png"));
                 }
             }
         }
@@ -98,9 +107,9 @@ namespace PixelWorld.CommandLine
                 b.Save(newFileName, ImageFormat.Png);
         }
 
-        private static string MakeFilename(string filename, string extension)
+        private static string MakeFileName(string fileName, string extension)
         {
-            return Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(filename), extension));
+            return Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(fileName), extension));
         }
 
         private static void WriteFontPreviewPng(Font font, string newFileName)
@@ -130,7 +139,7 @@ namespace PixelWorld.CommandLine
                     }
                 }
 
-                b.Save(MakeFilename(newFileName, ".png"), ImageFormat.Png);
+                b.Save(MakeFileName(newFileName, ".png"), ImageFormat.Png);
             }
         }
 
@@ -146,7 +155,7 @@ namespace PixelWorld.CommandLine
                                 var extension = Path.GetExtension(entry.Name).ToLower();
                                 if (extension == ".z80")
                                 {
-                                    Out.Write($" Extracting from ${fileName}");
+                                    Out.Write($" Extracting from {entry.Name}");
                                     processor(entry.Name, GetRawBinary(extension, entry.Open()));
                                 }
                             }
@@ -163,7 +172,7 @@ namespace PixelWorld.CommandLine
         static void WriteDumpToDisk(string name, ArraySegment<byte> dump)
         {
             Out.Write($" Dumping {name}");
-            File.WriteAllBytes(MakeFilename(name, ".dmp"), dump.Array);
+            File.WriteAllBytes(MakeFileName(name, ".dmp"), dump.Array);
         }
 
         static ArraySegment<byte> GetRawBinary(string extension, Stream source)
@@ -182,7 +191,8 @@ namespace PixelWorld.CommandLine
             Out.Write("pw.exe <command> <filename/wildcard/glob> <outputFolder>");
             Out.Write("  dump - produce memory dumps from zip/z80");
             Out.Write("  hunt - hunt dumps for possible fonts");
-            Out.Write("  process - both steps in one go");
+            Out.Write("  process - produce memory dumps and hunt");
+            Out.Write("  dedupe-title - remove duplicate fonts if title also matches");
         }
     }
 }

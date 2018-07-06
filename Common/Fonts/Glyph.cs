@@ -1,6 +1,9 @@
-﻿namespace PixelWorld.Fonts
+﻿using System;
+using System.Collections;
+
+namespace PixelWorld.Fonts
 {
-    public class Glyph
+    public class Glyph : IEquatable<Glyph>
     {
         public int Height { get; }
         public int Width { get; }
@@ -11,6 +14,30 @@
             Width = width;
             Height = height;
             Data = data;
+        }
+
+        public bool Equals(Glyph other)
+        {
+            return !ReferenceEquals(null, other)
+                && (ReferenceEquals(this, other) || Height == other.Height
+                && Width == other.Width
+                && ((IStructuralEquatable)Data).Equals(other.Data, StructuralComparisons.StructuralEqualityComparer));
+        }
+
+        public override bool Equals(object obj)
+        {
+            return !ReferenceEquals(null, obj)
+                   && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Glyph)obj));
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Height;
+                hashCode = (hashCode * 397) ^ Width;
+                return hashCode;
+            }
         }
     }
 }

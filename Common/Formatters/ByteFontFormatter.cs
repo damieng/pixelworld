@@ -12,7 +12,13 @@ namespace PixelWorld.Formatters
         public const int charWidth = 8;
         public const int charHeight = 8;
 
-        public static string[] FileExtensions = { "specchr" };
+        public static Font Create(BinaryReader reader, string name, int offset)
+        {
+            var font = new Font(name);
+            reader.BaseStream.Seek(offset, SeekOrigin.Begin);
+            Read(font, reader);
+            return font;
+        }
 
         public static void Read(Font font, BinaryReader reader)
         {
