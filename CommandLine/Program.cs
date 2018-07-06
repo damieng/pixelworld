@@ -1,19 +1,17 @@
-﻿using Microsoft.Extensions.FileSystemGlobbing;
-using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using PixelWorld.BinarySource;
-using PixelWorld.Display;
-using PixelWorld.Finders;
-using PixelWorld.Formatters;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+using PixelWorld;
+using PixelWorld.BinarySource;
+using PixelWorld.Finders;
 using Font = PixelWorld.Fonts.Font;
 
-namespace PixelWorld.CommandLine
+namespace CommandLine
 {
     class Program
     {
@@ -47,6 +45,7 @@ namespace PixelWorld.CommandLine
             var matcher = new Matcher(StringComparison.CurrentCultureIgnoreCase);
             matcher.AddInclude(glob);
             var matches = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
+            int successes = 0;
 
             foreach (var match in matches.Files)
             {
@@ -62,49 +61,53 @@ namespace PixelWorld.CommandLine
                         ProcessFile(fullPath, WriteDumpToDisk);
                         break;
                     case "hunt":
-                        ExtractFontFromDumpFile(fullPath);
+                        if (ExtractFontFromDumpFile(fullPath) > 0)
+                            successes++;
                         break;
                     default:
                         throw new InvalidOperationException($"Unknown command {command}");
                 }
             }
+
+            var fileCount = matches.Files.Count();
+            Out.Write($"{fileCount} files {command}ed yielded {successes} results {Math.Floor((double) successes / fileCount * 100)}%");
         }
 
-        static void ExtractFontFromDumpFile(string fileName)
+        static int ExtractFontFromDumpFile(string fileName)
         {
             using (var source = File.OpenRead(fileName))
-                ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()));
+                return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()));
         }
 
-        private static void ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump)
+        private static int ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump)
         {
             using (var memory = new MemoryStream(dump.Array))
             {
                 using (var reader = new BinaryReader(memory))
                 {
-                    var candidates = SpectrumDisplay.GetCandidates(dump.Array, 0);
-                    var fonts = new HashSet<Font>(ByteCandidatesWindowFinder.Read(reader, fileName, candidates));
-                    foreach (var font in ByteFontPatternFinder.Read(reader, fileName))
-                        fonts.Add(font);
-                    int i = 1;
-                    foreach (var font in fonts)
+                    var fontIndex = 0;
+                    foreach (var font in SpectrumDumpScanner.Read(reader, Utils.GetTitle(fileName)))
                     {
-                        var newFileName = MakeFileName(font.Name, $".chr");
+                        var newFileName = MakeFileName(font.Name, $".{++fontIndex}.chr");
                         Out.Write($"  Creating byte font {newFileName}");
                         // ByteFontFormatter.Write(font, File.Create(newFileName));
                         WriteFontPreviewPng(font, newFileName);
                     }
 
-                    if (fonts.Count > 0)
-                        WriteScreenPreview(dump.Array, 0, MakeFileName(fileName, ".screen.png"));
+                    if (fontIndex > 0)
+                    {
+                        var screenPreviewFileName = MakeFileName(fileName, ".screen.png");
+                        if (!File.Exists(screenPreviewFileName))
+                        {
+                            reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                            using (var bitmap = SpectrumDumpScanner.GetScreenPreview(reader))
+                                bitmap?.Save(screenPreviewFileName, ImageFormat.Png);
+                        }
+                    }
+
+                    return fontIndex;
                 }
             }
-        }
-
-        private static void WriteScreenPreview(byte[] buffer, int offset, string newFileName)
-        {
-            using (var b = SpectrumDisplay.GetBitmap(buffer, offset))
-                b.Save(newFileName, ImageFormat.Png);
         }
 
         private static string MakeFileName(string fileName, string extension)
@@ -143,7 +146,7 @@ namespace PixelWorld.CommandLine
             }
         }
 
-        static void ProcessFile(string fileName, Action<string, ArraySegment<byte>> processor)
+        static void ProcessFile(string fileName, Func<string, ArraySegment<byte>, int> processor)
         {
             switch (Path.GetExtension(fileName).ToLower())
             {
@@ -169,10 +172,11 @@ namespace PixelWorld.CommandLine
             }
         }
 
-        static void WriteDumpToDisk(string name, ArraySegment<byte> dump)
+        static int WriteDumpToDisk(string name, ArraySegment<byte> dump)
         {
             Out.Write($" Dumping {name}");
             File.WriteAllBytes(MakeFileName(name, ".dmp"), dump.Array);
+            return 1;
         }
 
         static ArraySegment<byte> GetRawBinary(string extension, Stream source)
@@ -192,7 +196,6 @@ namespace PixelWorld.CommandLine
             Out.Write("  dump - produce memory dumps from zip/z80");
             Out.Write("  hunt - hunt dumps for possible fonts");
             Out.Write("  process - produce memory dumps and hunt");
-            Out.Write("  dedupe-title - remove duplicate fonts if title also matches");
         }
     }
 }

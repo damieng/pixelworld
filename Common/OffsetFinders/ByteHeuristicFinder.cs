@@ -1,41 +1,34 @@
-﻿using PixelWorld.Fonts;
-using PixelWorld.Formatters;
+﻿using PixelWorld.Formatters;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace PixelWorld.Finders
 {
     public static class ByteHeuristicFinder
     {
-
         static bool HasLikelyDensities(byte[] buffer, int offset)
         {
             return
                 buffer.PixelCount(offset, '.') < buffer.PixelCount(offset, '=') &&
                 buffer.PixelCount(offset, ',') < buffer.PixelCount(offset, 'B') &&
-                buffer.PixelCount(offset, ',') < buffer.PixelCount(offset, 'B') &&
+                buffer.PixelCount(offset, '\'') < buffer.PixelCount(offset, '8') &&
                 buffer.PixelCount(offset, '-') < buffer.PixelCount(offset, '+');
         }
 
-        public static List<Font> Read(BinaryReader reader, string name)
+        public static List<int> FindOffsets(ArraySegment<Byte> buffer)
         {
-            var buffer = reader.ReadBytes(1024 * 1024);
-            const int desiredLength = ByteFontFormatter.glyphRange * (ByteFontFormatter.charWidth / 8) * ByteFontFormatter.charHeight;
+            var offsets = new List<int>();
 
-            var fontIndex = 0;
-            var fonts = new List<Font>();
+            var end = buffer.Count - ByteFontFormatter.DesiredLength;
 
-            var offset = 6911; // Don't bother checking screen
-            while (offset + desiredLength < buffer.LongLength)
+            for (var i = 0; i < end; i++)
             {
-                if (Deduce(buffer, offset))
-                    fonts.Add(ByteFontFormatter.Create(reader, $"{name + "-" + ++fontIndex}", offset));
-
-                offset++;
+                if (Deduce(buffer.Array, i))
+                    offsets.Add(i);
             }
 
-            return fonts;
+            return offsets;
         }
 
         private static bool IsUnderscore(byte[] buffer, int i)

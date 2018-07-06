@@ -12,6 +12,8 @@ namespace PixelWorld.Formatters
         public const int charWidth = 8;
         public const int charHeight = 8;
 
+        public static int DesiredLength = glyphRange * (charWidth / 8) * charHeight;
+
         public static Font Create(BinaryReader reader, string name, int offset)
         {
             var font = new Font(name);

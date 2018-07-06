@@ -18,7 +18,7 @@ namespace PixelWorld.Fonts
 
         public bool Equals(Glyph other)
         {
-            return !ReferenceEquals(null, other)
+            return !(other is null)
                 && (ReferenceEquals(this, other) || Height == other.Height
                 && Width == other.Width
                 && ((IStructuralEquatable)Data).Equals(other.Data, StructuralComparisons.StructuralEqualityComparer));
@@ -26,7 +26,7 @@ namespace PixelWorld.Fonts
 
         public override bool Equals(object obj)
         {
-            return !ReferenceEquals(null, obj)
+            return !(obj is null)
                    && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Glyph)obj));
         }
 
