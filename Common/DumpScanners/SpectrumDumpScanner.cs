@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using Font = PixelWorld.Fonts.Font;
 
 namespace PixelWorld.Finders
@@ -23,9 +24,21 @@ namespace PixelWorld.Finders
 
             var fonts = new List<Font>();
             foreach (var offset in offsets.Distinct())
-                fonts.Add(ByteFontFormatter.Create(reader, $"{name}-{offset}-", offset));
+                if (!IsRomFont(scanBuffer, offset) && rawBuffer.IsEmpty(offset) && !IsMissingTooManyGlyphs(rawBuffer, offset))
+                    fonts.Add(ByteFontFormatter.Create(reader, $"{name}-{offset}-", offset));
 
             return fonts;
+        }
+
+        public static bool IsMissingTooManyGlyphs(byte[] buffer, int offset)
+        {
+            return buffer.CountBlankGlyphs(offset, ByteFontFormatter.ExpectedLength, 8) > 36;
+        }
+
+        public static bool IsRomFont(ArraySegment<Byte> buffer, int offset)
+        {
+            var sha1 = SHA384.Create().ComputeHash(buffer.Array, offset, ByteFontFormatter.ExpectedLength);
+            return sha1.ToHex() == "7fa0e307a6e78cf198c3a480a18437dcbecae485c22634cea69cdea3240e7079fe6bedc3c35a76047fb244b4fa15aa35";
         }
 
         public static Bitmap GetScreenPreview(BinaryReader reader)

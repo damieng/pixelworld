@@ -33,7 +33,7 @@ namespace PixelWorld.Finders
 
             var window = new Queue<CandidateLocation>();
 
-            var end = buffer.Count - ByteFontFormatter.DesiredLength;
+            var end = buffer.Count - ByteFontFormatter.ExpectedLength;
 
             for (var i = 0; i < end; i++)
             {
@@ -71,7 +71,7 @@ namespace PixelWorld.Finders
                     }
                 }
 
-                while (window.Count > 0 && window.Peek().Offset < i - ByteFontFormatter.DesiredLength)
+                while (window.Count > 0 && window.Peek().Offset < i - ByteFontFormatter.ExpectedLength)
                     window.Dequeue();
             }
 

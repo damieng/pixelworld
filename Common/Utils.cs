@@ -48,8 +48,21 @@ namespace PixelWorld
                 {
                     Console.WriteLine(
                         Convert.ToString(row, 2).PadLeft(8, '0').Replace('0', ' ').Replace('1', '#'));
-                }                
+                }
             }
+        }
+
+        public static string ToHex(this byte[] input)
+        {
+            var output = new char[input.Length * 2];
+            for (int i = 0; i < input.Length; i++)
+            {
+                var r = i * 2;
+                var h = input[i].ToString("x2");
+                output[r] = h[0];
+                output[r + 1] = h[1];
+            }
+            return new String(output);
         }
     }
 }

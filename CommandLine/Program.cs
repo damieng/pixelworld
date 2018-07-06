@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using PixelWorld;
@@ -19,7 +20,9 @@ namespace CommandLine
 
         static void Main(string[] args)
         {
+            var log = new StringBuilder();
             Out.Attach(Console.WriteLine);
+            Out.Attach((s) => log.AppendLine(s));
             Out.Write("PixelWorld font ripper");
 
             if (args.Length < 3)
@@ -33,6 +36,8 @@ namespace CommandLine
             outputFolder = args[2];
 
             ProcessMatches(command, inputs);
+
+            File.WriteAllText(Path.Combine(outputFolder, command + ".log"), log.ToString());
         }
 
         static void ProcessMatches(string command, string inputMatch)

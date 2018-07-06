@@ -20,7 +20,7 @@ namespace PixelWorld.Finders
         {
             var offsets = new List<int>();
 
-            var end = buffer.Count - ByteFontFormatter.DesiredLength;
+            var end = buffer.Count - ByteFontFormatter.ExpectedLength;
 
             for (var i = 0; i < end; i++)
             {

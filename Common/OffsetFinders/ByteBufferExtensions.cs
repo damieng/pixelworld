@@ -15,6 +15,17 @@ namespace PixelWorld.Finders
             return true;
         }
 
+        public static int CountBlankGlyphs(this byte[] buffer, int index, int length, int height)
+        {
+            int count = 0;
+            for (int i = index; i < length; i += height)
+            {
+                if (IsEmpty(buffer, i, height))
+                    count++;
+            }
+            return count;
+        }
+
         public static int CountBlankLines(this byte[] buffer, int index)
         {
             int blankLines = 0;
