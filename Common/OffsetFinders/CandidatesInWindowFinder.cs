@@ -1,10 +1,9 @@
 ﻿using PixelWorld.Formatters;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
-namespace PixelWorld.Finders
+namespace PixelWorld.OffsetFinders
 {
     /// <summary>
     /// Find offsets that contain a minimum number of candidates within a sliding window of the buffer.

@@ -1,9 +1,9 @@
-﻿using PixelWorld.Formatters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PixelWorld.Formatters;
 
-namespace PixelWorld.Finders
+namespace PixelWorld.OffsetFinders
 {
     public static class GeneralHeuristicFinder
     {
@@ -113,10 +113,21 @@ namespace PixelWorld.Finders
                     && IsMinus(buffer, i + 13 * 8)
                     && IsUnderscore(buffer, i + 63 * 8)
                     && (missingUppercase == 0 || missingLowercase == 0)
+                    && SkewChecks(buffer, i) >= 2
                     && likelyDensityCount > 1;
             }
 
             return false;
+        }
+
+        private static int SkewChecks(byte[] buffer, int offset)
+        {
+            int looksUnskewed = 0;
+            if (buffer[offset + (94 * 8) + 7] == 0)
+                looksUnskewed++;
+            if (buffer[offset + (95 * 8) + 7] != 0)
+                looksUnskewed++;
+            return looksUnskewed;
         }
     }
 }

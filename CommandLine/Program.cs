@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+using PixelWorld;
+using PixelWorld.BinarySource;
+using PixelWorld.DumpScanners;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.FileSystemGlobbing;
-using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using PixelWorld;
-using PixelWorld.BinarySource;
-using PixelWorld.Display;
-using PixelWorld.Finders;
 using Font = PixelWorld.Fonts.Font;
 
 namespace CommandLine
@@ -98,9 +97,10 @@ namespace CommandLine
                 using (var reader = new BinaryReader(memory))
                 {
                     var fontIndex = 0;
-                    foreach (var font in SpectrumDumpScanner.Read(reader, Utils.GetTitle(fileName)))
+                    foreach (var font in SpectrumDumpScanner.Read(reader, Path.GetFileNameWithoutExtension(fileName)))
                     {
-                        var newFileName = MakeFileName(font.Name, $".{++fontIndex}.chr");
+                        var newFileName = MakeFileName(font.Name, $"chr");
+                        fontIndex++;
                         Out.Write($"  Creating byte font {newFileName}");
                         // ByteFontFormatter.Write(font, File.Create(newFileName));
                         WriteFontPreviewPng(font, newFileName);
@@ -133,6 +133,10 @@ namespace CommandLine
             var fullWidth = font.Glyphs.Sum(g => g.Value.Width);
             var previewWidth = fullWidth / rows;
             var glphysPerRow = font.Glyphs.Count / rows;
+
+            // HACK: Allow subsetted fonts
+            previewWidth = 256;
+            glphysPerRow = 32;
 
             using (var b = new Bitmap(previewWidth, font.Height * rows))
             {

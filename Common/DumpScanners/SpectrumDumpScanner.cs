@@ -1,5 +1,6 @@
 ﻿using PixelWorld.Display;
 using PixelWorld.Formatters;
+using PixelWorld.OffsetFinders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,33 +9,64 @@ using System.Linq;
 using System.Security.Cryptography;
 using Font = PixelWorld.Fonts.Font;
 
-namespace PixelWorld.Finders
+namespace PixelWorld.DumpScanners
 {
     public class SpectrumDumpScanner
     {
         public static List<Font> Read(BinaryReader reader, string name)
         {
-            var buffer = reader.ReadBytes(1024 * 1024);
-            var candidates = SpectrumDisplay.GetCandidates(buffer, 0);
+            var buffer = reader.ReadBytes(1024 * 1024); // 1MB is enough for any Speccy
 
-            var start = screenLength;
-
-            var offsets = new List<int>();
-            offsets.AddRange(KnownGlyphFinder.FindOffsets(buffer, start, RarelyChangedRomChars));
-            offsets.AddRange(CandidatesInWindowFinder.FindOffsets(buffer, start, candidates));
-            offsets.AddRange(GeneralHeuristicFinder.FindOffsets(buffer, start));
+            var offsets = GetOffsets(buffer);
 
             var fonts = new List<Font>();
-            foreach (var offset in offsets.Distinct())
+            foreach (var offset in offsets)
                 if (!IsRomFont(buffer, offset) && buffer.IsEmpty(offset) && !IsMissingTooManyGlyphs(buffer, offset))
-                    fonts.Add(ByteFontFormatter.Create(reader, name, offset));
+                    fonts.Add(ByteFontFormatter.Create(reader, $"{name}#{offset}", offset));
 
             return fonts;
         }
 
+        private static IEnumerable<int> GetOffsets(byte[] buffer)
+        {
+            var candidates = SpectrumDisplay.GetCandidates(buffer, 0);
+
+            var rst = EnviromentGuidedFinder.FindOffsets(buffer);
+            var rom = KnownGlyphFinder.FindOffsets(buffer, screenLength, RarelyChangedRomChars);
+            var scr = CandidatesInWindowFinder.FindOffsets(buffer, screenLength, candidates);
+            var heu = GeneralHeuristicFinder.FindOffsets(buffer, screenLength);
+
+            var offsets = new List<int>();
+            offsets.AddRange(rst);
+            offsets.AddRange(rom);
+            offsets.AddRange(scr);
+            offsets.AddRange(heu);
+
+            var dupes = new HashSet<int>(offsets
+                .GroupBy(o => o)
+                .Where(o => o.Count() > 1)
+                .Select(g => g.Key));
+
+            OutFinderDetail(rst, "RST 16/CHARS", dupes);
+            OutFinderDetail(rom, "ROM Glyphs", dupes);
+            OutFinderDetail(scr, "SCREEN$ Tiles", dupes);
+            OutFinderDetail(heu, "Heuristics", dupes);
+
+            return new HashSet<int>(offsets);
+        }
+
+        public static void OutFinderDetail(List<int> offsets, string method, HashSet<int> dupes)
+        {
+            if (offsets.Count > 0)
+            {
+                var uniques = offsets.Count(o => !dupes.Contains(o));
+                Out.Write($"  {method} found offsets ({uniques} uniques) {String.Join(", ", offsets)}");
+            }
+        }
+
         public static bool IsMissingTooManyGlyphs(byte[] buffer, int offset)
         {
-            return buffer.CountBlankGlyphs(offset, ByteFontFormatter.ExpectedLength, 8) > 36;
+            return buffer.CountBlankGlyphs(offset, ByteFontFormatter.ExpectedLength, 8) > 26;
         }
 
         public static bool IsRomFont(byte[] buffer, int offset)

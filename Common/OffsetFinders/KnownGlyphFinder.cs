@@ -1,8 +1,9 @@
 ﻿using PixelWorld.Formatters;
 using System;
 using System.Collections.Generic;
+using PixelWorld.OffsetFinders;
 
-namespace PixelWorld.Finders
+namespace PixelWorld.OffsetFinders
 {
     public class KnownCharPattern
     {

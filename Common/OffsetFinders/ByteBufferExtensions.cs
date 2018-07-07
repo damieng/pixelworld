@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelWorld.Finders
+﻿namespace PixelWorld.OffsetFinders
 {
     public static class ByteBufferExtensions
     {
@@ -27,7 +23,7 @@ namespace PixelWorld.Finders
         public static int CountBlankGlyphs(this byte[] buffer, int index, int length, int height)
         {
             int count = 0;
-            for (int i = index; i < length; i += height)
+            for (int i = index; i < index + length; i += height)
             {
                 if (IsEmpty(buffer, i, height))
                     count++;

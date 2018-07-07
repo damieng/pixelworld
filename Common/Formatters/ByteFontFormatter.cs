@@ -8,7 +8,7 @@ namespace PixelWorld.Formatters
     {
         public const int startChar = 32;
         public const int endChar = 127;
-        public const int glyphRange = endChar - startChar;
+        public const int glyphRange = endChar - startChar + 1;
         public const int charWidth = 8;
         public const int charHeight = 8;
 
