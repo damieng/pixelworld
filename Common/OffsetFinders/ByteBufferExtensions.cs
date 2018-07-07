@@ -15,6 +15,15 @@ namespace PixelWorld.Finders
             return true;
         }
 
+        public static bool IsFull(this byte[] buffer, int index, int rows = 8)
+        {
+            for (int e = 0; e < rows; e++)
+                if (buffer[index + e] != 255)
+                    return false;
+
+            return true;
+        }
+
         public static int CountBlankGlyphs(this byte[] buffer, int index, int length, int height)
         {
             int count = 0;

@@ -9,6 +9,7 @@ using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using PixelWorld;
 using PixelWorld.BinarySource;
+using PixelWorld.Display;
 using PixelWorld.Finders;
 using Font = PixelWorld.Fonts.Font;
 
@@ -51,6 +52,7 @@ namespace CommandLine
             matcher.AddInclude(glob);
             var matches = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
             int successes = 0;
+            int rips = 0;
 
             foreach (var match in matches.Files)
             {
@@ -66,8 +68,13 @@ namespace CommandLine
                         ProcessFile(fullPath, WriteDumpToDisk);
                         break;
                     case "hunt":
-                        if (ExtractFontFromDumpFile(fullPath) > 0)
+                        var ripped = ExtractFontFromDumpFile(fullPath);
+                        if (ripped > 0)
+                        {
                             successes++;
+                            rips += ripped;
+                        }
+
                         break;
                     default:
                         throw new InvalidOperationException($"Unknown command {command}");
@@ -75,7 +82,7 @@ namespace CommandLine
             }
 
             var fileCount = matches.Files.Count();
-            Out.Write($"{fileCount} files {command}ed yielded {successes} results {Math.Floor((double) successes / fileCount * 100)}%");
+            Out.Write($"\n{command}ing {fileCount} files\n{successes} files yielded {fileCount} results\n{Math.Floor((double)successes / fileCount * 100)}% success rate");
         }
 
         static int ExtractFontFromDumpFile(string fileName)

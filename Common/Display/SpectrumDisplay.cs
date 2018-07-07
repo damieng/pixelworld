@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using PixelWorld.Formatters;
 
 namespace PixelWorld.Display
 {
@@ -31,6 +32,11 @@ namespace PixelWorld.Display
                         LookupY[y + line + (third * 64)] = pos;
                         pos += 32;
                     }
+        }
+
+        public static bool IsBlank(byte[] buffer, int offset)
+        {
+            return buffer.Skip(offset).Take(ByteFontFormatter.ExpectedLength).All(b => b == 0);
         }
 
         public static Bitmap GetBitmap(byte[] buffer, int offset)
@@ -99,11 +105,14 @@ namespace PixelWorld.Display
                     uniques.Add(block);
                 }
 
-            uniques.Remove(EmptyChar);
+            // Empty and full blocks match too many things and slow things down
+            uniques.Remove(EmptyChar); 
+            uniques.Remove(FullChar);
 
             return uniques.ToArray();
         }
 
         private static readonly byte[] EmptyChar = { 0, 0, 0, 0, 0, 0, 0, 0 };
+        private static readonly byte[] FullChar = { 255, 255, 255, 255, 255, 255, 255, 255 };
     }
 }

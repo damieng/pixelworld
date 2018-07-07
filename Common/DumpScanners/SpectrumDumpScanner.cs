@@ -14,18 +14,20 @@ namespace PixelWorld.Finders
     {
         public static List<Font> Read(BinaryReader reader, string name)
         {
-            var rawBuffer = reader.ReadBytes(1024 * 1024);
-            var candidates = SpectrumDisplay.GetCandidates(rawBuffer, 0);
+            var buffer = reader.ReadBytes(1024 * 1024);
+            var candidates = SpectrumDisplay.GetCandidates(buffer, 0);
 
-            var scanBuffer = new ArraySegment<byte>(rawBuffer, screenLength, rawBuffer.Length - screenLength);
-            var offsets = ByteKnownCharacterFinder.FindOffsets(scanBuffer, Spectrum);
-            //offsets.AddRange(ByteCandidatesWindowFinder.FindOffsets(scanBuffer, candidates));
-            //            offsets.AddRange(ByteHeuristicFinder.FindOffsets(scanBuffer));
+            var start = screenLength;
+
+            var offsets = new List<int>();
+            offsets.AddRange(KnownGlyphFinder.FindOffsets(buffer, start, RarelyChangedRomChars));
+            offsets.AddRange(CandidatesInWindowFinder.FindOffsets(buffer, start, candidates));
+            offsets.AddRange(GeneralHeuristicFinder.FindOffsets(buffer, start));
 
             var fonts = new List<Font>();
             foreach (var offset in offsets.Distinct())
-                if (!IsRomFont(scanBuffer, offset) && rawBuffer.IsEmpty(offset) && !IsMissingTooManyGlyphs(rawBuffer, offset))
-                    fonts.Add(ByteFontFormatter.Create(reader, $"{name}-{offset}-", offset));
+                if (!IsRomFont(buffer, offset) && buffer.IsEmpty(offset) && !IsMissingTooManyGlyphs(buffer, offset))
+                    fonts.Add(ByteFontFormatter.Create(reader, name, offset));
 
             return fonts;
         }
@@ -35,19 +37,19 @@ namespace PixelWorld.Finders
             return buffer.CountBlankGlyphs(offset, ByteFontFormatter.ExpectedLength, 8) > 36;
         }
 
-        public static bool IsRomFont(ArraySegment<Byte> buffer, int offset)
+        public static bool IsRomFont(byte[] buffer, int offset)
         {
-            var sha1 = SHA384.Create().ComputeHash(buffer.Array, offset, ByteFontFormatter.ExpectedLength);
+            var sha1 = SHA384.Create().ComputeHash(buffer, offset, ByteFontFormatter.ExpectedLength);
             return sha1.ToHex() == "7fa0e307a6e78cf198c3a480a18437dcbecae485c22634cea69cdea3240e7079fe6bedc3c35a76047fb244b4fa15aa35";
         }
 
         public static Bitmap GetScreenPreview(BinaryReader reader)
         {
             var buffer = reader.ReadBytes(screenLength);
-            return SpectrumDisplay.GetBitmap(buffer, 0);
+            return buffer.IsEmpty(0, buffer.Length) ? null : SpectrumDisplay.GetBitmap(buffer, 0);
         }
 
-        private static readonly KnownCharPattern[] Spectrum = {
+        private static readonly KnownCharPattern[] RarelyChangedRomChars = {
             new KnownCharPattern(3, new byte[] // #
             {
                 0b00000000,

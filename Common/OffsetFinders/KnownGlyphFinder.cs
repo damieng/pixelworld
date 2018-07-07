@@ -16,20 +16,20 @@ namespace PixelWorld.Finders
         }
     }
 
-    public static class ByteKnownCharacterFinder
+    public static class KnownGlyphFinder
     {
-        public static List<int> FindOffsets(ArraySegment<Byte> buffer, KnownCharPattern[] knownFont)
+        public static List<int> FindOffsets(byte[] buffer, int offset, KnownCharPattern[] knownFont)
         {
             var offsets = new List<int>();
 
-            var end = buffer.Count - ByteFontFormatter.ExpectedLength;
+            var end = buffer.Length - ByteFontFormatter.ExpectedLength;
 
-            for (var i = 0; i < end; i++)
+            for (var i = offset; i < end; i++)
             {
                 for (var c = 0; c < knownFont.Length; c++)
                 {
                     var known = knownFont[c];
-                    if (buffer.Array.IsSame(i, known.Pattern))
+                    if (buffer.IsSame(i, known.Pattern))
                     {
                         offsets.Add(i - known.CharCode * 8);
                         break;
