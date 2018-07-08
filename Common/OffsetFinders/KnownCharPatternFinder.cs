@@ -1,7 +1,5 @@
 ﻿using PixelWorld.Formatters;
-using System;
 using System.Collections.Generic;
-using PixelWorld.OffsetFinders;
 
 namespace PixelWorld.OffsetFinders
 {
@@ -17,15 +15,15 @@ namespace PixelWorld.OffsetFinders
         }
     }
 
-    public static class KnownGlyphFinder
+    public static class KnownCharPatternFinder
     {
-        public static List<int> FindOffsets(byte[] buffer, int offset, KnownCharPattern[] knownFont)
+        public static List<int> FindOffsets(byte[] buffer, KnownCharPattern[] knownFont)
         {
             var offsets = new List<int>();
 
             var end = buffer.Length - ByteFontFormatter.ExpectedLength;
 
-            for (var i = offset; i < end; i++)
+            for (var i = 0; i < end; i++)
             {
                 for (var c = 0; c < knownFont.Length; c++)
                 {

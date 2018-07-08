@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>PixelWorld</AssemblyName>
     <RootNamespace>PixelWorld</RootNamespace>
+    <Configurations>Debug;Release;Debug Dump</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

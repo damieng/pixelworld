@@ -29,12 +29,12 @@ namespace PixelWorld.DumpScanners
 
         private static IEnumerable<int> GetOffsets(byte[] buffer)
         {
-            var candidates = SpectrumDisplay.GetCandidates(buffer, 0);
+            var candidates = SpectrumDisplay.GetCandidates(buffer, 16384);
 
             var rst = EnviromentGuidedFinder.FindOffsets(buffer);
-            var rom = KnownGlyphFinder.FindOffsets(buffer, screenLength, RarelyChangedRomChars);
-            var scr = CandidatesInWindowFinder.FindOffsets(buffer, screenLength, candidates);
-            var heu = GeneralHeuristicFinder.FindOffsets(buffer, screenLength);
+            var rom = KnownCharPatternFinder.FindOffsets(buffer, RarelyChangedRomChars);
+            var scr = CandidatesInWindowFinder.FindOffsets(buffer, candidates);
+            var heu = GeneralHeuristicFinder.FindOffsets(buffer);
 
             var offsets = new List<int>();
             offsets.AddRange(rst);
@@ -77,6 +77,7 @@ namespace PixelWorld.DumpScanners
 
         public static Bitmap GetScreenPreview(BinaryReader reader)
         {
+            reader.BaseStream.Seek(16384, SeekOrigin.Begin);
             var buffer = reader.ReadBytes(screenLength);
             return buffer.IsEmpty(0, buffer.Length) ? null : SpectrumDisplay.GetBitmap(buffer, 0);
         }

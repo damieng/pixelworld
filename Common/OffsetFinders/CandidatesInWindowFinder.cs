@@ -25,7 +25,7 @@ namespace PixelWorld.OffsetFinders
             }
         }
 
-        public static List<int> FindOffsets(byte[] buffer, int offset, byte[][] candidates)
+        public static List<int> FindOffsets(byte[] buffer, byte[][] candidates)
         {
             // We don't have enough candidates to even look
             if (candidates.Length < minUniqueInWindow) return new List<int>();
@@ -38,7 +38,7 @@ namespace PixelWorld.OffsetFinders
             // only valid on the 8 byte boundry
             var windows = Enumerable.Range(0, 8).Select(e => new Queue<CandidateLocation>()).ToArray();
 
-            for (var i = offset; i < end; i++)
+            for (var i = 0; i < end; i++)
             {
                 var window = windows[i % 8]; // Decide which window to use based on skewing
 
@@ -69,7 +69,7 @@ namespace PixelWorld.OffsetFinders
                         // Look back to the previous space
                         var backOffset = window.Peek().Offset;
                         var foundSpace = false;
-                        for (var b = backOffset; b > backOffset - ByteFontFormatter.ExpectedLength && b > offset; b -= 8)
+                        for (var b = backOffset; b > backOffset - ByteFontFormatter.ExpectedLength && b > 0; b -= 8)
                         {
                             if (buffer.IsEmpty(b))
                             {

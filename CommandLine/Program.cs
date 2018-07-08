@@ -60,9 +60,6 @@ namespace CommandLine
 
                 switch (command)
                 {
-                    case "process":
-                        ProcessFile(fullPath, ExtractFontFromMemoryBuffer);
-                        break;
                     case "dump":
                         ProcessFile(fullPath, WriteDumpToDisk);
                         break;
@@ -80,8 +77,11 @@ namespace CommandLine
                 }
             }
 
-            var fileCount = matches.Files.Count();
-            Out.Write($"\n{command}ing {fileCount} files\n{successes} files yielded {fileCount} results\n{Math.Floor((double)successes / fileCount * 100)}% success rate");
+            if (command == "hunt")
+            {
+                var fileCount = matches.Files.Count();
+                Out.Write($"\n{command}ing {fileCount} files\n{successes} files yielded {fileCount} results\n{Math.Floor((double)successes / fileCount * 100)}% success rate");
+            }
         }
 
         static int ExtractFontFromDumpFile(string fileName)
@@ -211,7 +211,6 @@ namespace CommandLine
             Out.Write("pw.exe <command> <filename/wildcard/glob> <outputFolder>");
             Out.Write("  dump - produce memory dumps from zip/z80");
             Out.Write("  hunt - hunt dumps for possible fonts");
-            Out.Write("  process - produce memory dumps and hunt");
         }
     }
 }

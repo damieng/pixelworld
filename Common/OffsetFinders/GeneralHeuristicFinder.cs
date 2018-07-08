@@ -37,7 +37,7 @@ namespace PixelWorld.OffsetFinders
                 buffer.PixelCount(offset, '3') < buffer.PixelCount(offset, '8');
         }
 
-        public static List<int> FindOffsets(byte[] buffer, int offset)
+        public static List<int> FindOffsets(byte[] buffer)
         {
             var offsets = new List<int>();
 
