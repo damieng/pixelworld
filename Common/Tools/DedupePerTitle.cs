@@ -22,11 +22,10 @@ namespace PixelWorld.Tools
                 var fontsForTitle = title.Value.GroupBy(k => k.Item2, v => v.Item1).First().Select(v => v).ToArray();
                 if (fontsForTitle.Length > 1) {
                     var dupes = fontsForTitle.Skip(1).ToArray();
-                    Out.Write($"Removing duplicate fonts for ${title.Key} ${String.Join(", ", dupes)}");
+                    Out.Write($"Removing duplicate fonts for {title.Key}\n\t{String.Join("\n\t", dupes).Trim()}");
 
                     foreach (var dupe in fontsForTitle)
-                    {
-                    }
+                        File.Delete(dupe);
                 }
             }
         }
