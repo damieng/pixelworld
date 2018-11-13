@@ -91,5 +91,12 @@ namespace PixelWorld
         {
             list.AddRange(source.Select(s => Tuple.Create(s, label)));
         }
+
+        public static string AddSubdirectory(string fullPath, string subdirectory)
+        {
+            var directory = Path.GetDirectoryName(fullPath);
+            var fileName = Path.GetFileName(fullPath);
+            return Path.Combine(directory, subdirectory, fileName);
+        }
     }
 }

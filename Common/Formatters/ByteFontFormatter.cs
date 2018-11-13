@@ -54,7 +54,7 @@ namespace PixelWorld.Formatters
                         for (int x = 0; x < charWidth; x++)
                         {
                             if (glyph.Value.Data[x, y])
-                                b |= (byte)(1 << charWidth - x);
+                                b |= (byte)(1 << charWidth -1 - x);
                         }
                         writer.Write(b);
                     }

@@ -44,7 +44,7 @@ namespace PixelWorld.BinarySource.Decoders
                 {
                     byte bite = buffer[counter++];
 
-                    if (bite == 0xED)
+                    if (bite == 0xED && counter - dataBlockOffset < dataLength)
                     {
                         int bite2 = buffer[counter];
                         if (bite2 == 0xED)
@@ -186,11 +186,12 @@ namespace PixelWorld.BinarySource.Decoders
                     byte[] _bank = new byte[16384];
 
                     //Load rest of the data
-                    while (counter < buffer.Length)
+                    while (counter < buffer.Length - 1)
                     {
                         //Get length of data block
                         int dataLength = buffer[counter] | (buffer[counter + 1] << 8);
                         counter += 2;
+                        if (counter >= buffer.Length) break; // Some 128K .z80 files have a trailing zero or two
                         int page = buffer[counter++];
 
                         //copies page data to temporary RAM array
@@ -289,6 +290,7 @@ namespace PixelWorld.BinarySource.Decoders
                         while (true)
                         {
                             byte bite = buffer[byteCounter++];
+                            if (memCounter >= RAM_48K.Length) break;
                             if (bite == 0)
                             {
                                 //check if this is the end marker

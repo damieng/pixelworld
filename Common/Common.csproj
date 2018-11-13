@@ -4,11 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>PixelWorld</AssemblyName>
     <RootNamespace>PixelWorld</RootNamespace>
-    <Configurations>Debug;Release;Debug Dump</Configurations>
+    <Configurations>Debug;Release;Debug Dump;Debug Dedupe</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="2.1.1" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
   </ItemGroup>
 

@@ -67,7 +67,6 @@ namespace PixelWorld.OffsetFinders
             if (buffer.IsEmpty(i)) // Start with a space
             {
                 int spacesCount = 1;
-                int uniqueCount = 0;
                 int longestNoEmptyRun = 0;
                 int currentNoEmptyRun = 0;
                 int totalNotEmpty = 0;

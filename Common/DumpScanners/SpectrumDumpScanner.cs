@@ -32,15 +32,15 @@ namespace PixelWorld.DumpScanners
             var candidates = SpectrumDisplay.GetCandidates(buffer, 16384);
 
             var rst = EnviromentGuidedFinder.FindOffsets(buffer);
-            var rom = KnownCharPatternFinder.FindOffsets(buffer, RarelyChangedRomChars);
-            var scr = CandidatesInWindowFinder.FindOffsets(buffer, candidates);
-            var heu = GeneralHeuristicFinder.FindOffsets(buffer);
+            //var rom = KnownCharPatternFinder.FindOffsets(buffer, RarelyChangedRomChars);
+            //var scr = CandidatesInWindowFinder.FindOffsets(buffer, candidates);
+            //var heu = GeneralHeuristicFinder.FindOffsets(buffer);
 
             var offsets = new List<int>();
             offsets.AddRange(rst);
-            offsets.AddRange(rom);
-            offsets.AddRange(scr);
-            offsets.AddRange(heu);
+            //offsets.AddRange(rom);
+            //offsets.AddRange(scr);
+            //offsets.AddRange(heu);
 
             var dupes = new HashSet<int>(offsets
                 .GroupBy(o => o)
@@ -48,9 +48,9 @@ namespace PixelWorld.DumpScanners
                 .Select(g => g.Key));
 
             OutFinderDetail(rst, "RST 16/CHARS", dupes);
-            OutFinderDetail(rom, "ROM Glyphs", dupes);
-            OutFinderDetail(scr, "SCREEN$ Tiles", dupes);
-            OutFinderDetail(heu, "Heuristics", dupes);
+            //OutFinderDetail(rom, "ROM Glyphs", dupes);
+            //OutFinderDetail(scr, "SCREEN$ Tiles", dupes);
+            //OutFinderDetail(heu, "Heuristics", dupes);
 
             return new HashSet<int>(offsets);
         }

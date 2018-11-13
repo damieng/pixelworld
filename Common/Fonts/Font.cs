@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace PixelWorld.Fonts
@@ -64,6 +65,40 @@ namespace PixelWorld.Fonts
                 hashCode = (hashCode * 397) ^ (Glyphs != null ? Glyphs.GetHashCode() : 0);
                 return hashCode;
             }
+        }
+
+        public Bitmap CreateBitmap()
+        {
+            const int rows = 3;
+            var fullWidth = Glyphs.Sum(g => g.Value.Width);
+            var previewWidth = fullWidth / rows;
+            var glphysPerRow = Glyphs.Count / rows;
+
+            // HACK: Allow subsetted fonts
+            previewWidth = 256;
+            glphysPerRow = 32;
+
+            var bitmap = new Bitmap(previewWidth, Height * rows);
+            var xOff = 0;
+            var yOff = 0;
+            int cIdx = 0;
+
+            foreach (var glyph in Glyphs)
+            {
+                for (var y = 0; y < Height; y++)
+                for (var x = 0; x < glyph.Value.Width; x++)
+                    bitmap.SetPixel(xOff + x, yOff + y, glyph.Value.Data[x, y] ? Color.Black : Color.White);
+
+                xOff += glyph.Value.Width;
+                cIdx++;
+                if (cIdx % glphysPerRow == 0)
+                {
+                    yOff += Height;
+                    xOff = 0;
+                }
+            }
+
+            return bitmap;
         }
     }
 }
