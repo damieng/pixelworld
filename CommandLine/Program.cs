@@ -6,6 +6,7 @@ using PixelWorld.DumpScanners;
 using PixelWorld.Formatters;
 using PixelWorld.Tools;
 using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
@@ -35,12 +36,12 @@ namespace CommandLine
             string inputs = args[1];
             outputFolder = args[2];
 
-            ProcessMatches(command, inputs);
+            ProcessCommand(command, inputs);
 
             File.WriteAllText(Path.Combine(outputFolder, command + ".log"), log.ToString());
         }
 
-        static void ProcessMatches(string command, string inputMatch)
+        static int ProcessCommand(string command, string inputMatch)
         {
             var globSplitPoint = Utils.GetGlobSplitPoint(inputMatch);
             var glob = inputMatch.Substring(globSplitPoint);
@@ -49,54 +50,68 @@ namespace CommandLine
 
             var matcher = new Matcher(StringComparison.CurrentCultureIgnoreCase);
             matcher.AddInclude(glob);
-            var matches = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
+            var matchResults = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
+            var fileNames = matchResults.Files.Select(f => Path.Combine(directory, f.Path)).ToList();
 
+            switch (command)
+            {
+                case "dedupe-title":
+                    return DedupePerTitle.Process(fileNames);
+                case "org-title":
+                    return OrganizeByTitle.Process(fileNames);
+                case "dump":
+                    return Dump(fileNames);
+                case "hunt":
+                    return Hunt(fileNames);
+                default:
+                    throw new InvalidOperationException($"Unknown command {command}");
+            }
+        }
+
+        static int Hunt(IEnumerable<string> fileNames)
+        {
             int inputsWithOutputsCount = 0;
             int outputCount = 0;
 
-            var inputCount = matches.Files.Count();
-            Out.Write($"\n{command}ing {inputCount} files");
+            var inputCount = fileNames.Count();
+            Out.Write($"\nHunting {inputCount} files");
 
-            if (command == "dedupe-title")
+            foreach (var fileName in fileNames)
             {
-                DedupePerTitle.Process(directory, matches.Files);
-                return;
-            }
-
-            foreach (var match in matches.Files)
-            {
-                Out.Write($"Opening file {match.Path}");
-                var fullPath = Path.Combine(directory, match.Path);
-
-                switch (command)
+                Out.Write($"Opening file {fileName}");
+                var matchOutputs = ExtractFontFromDumpFile(fileName);
+                if (matchOutputs > 0)
                 {
-                    case "dump":
-                        ProcessFile(fullPath, WriteDumpToDisk);
-                        break;
-                    case "hunt":
-                        var matchOutputs = ExtractFontFromDumpFile(fullPath, false);
-                        if (matchOutputs > 0)
-                        {
-                            inputsWithOutputsCount++;
-                            outputCount += matchOutputs;
-                        }
-                        Out.Write($"{inputsWithOutputsCount} files yielded {outputCount} results");
-                        Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
-
-                        break;
-                    default:
-                        throw new InvalidOperationException($"Unknown command {command}");
+                    inputsWithOutputsCount++;
+                    outputCount += matchOutputs;
                 }
+                Out.Write($"{inputsWithOutputsCount} files yielded {outputCount} results");
+                Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
             }
+
+            return 0;
         }
 
-        static int ExtractFontFromDumpFile(string fileName, bool createScreen)
+        static int Dump(IEnumerable<string> fileNames)
+        {
+            Out.Write($"\nDumping {fileNames.Count()} files");
+
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Opening file {fileName}");
+                ProcessFile(fileName, WriteDumpToDisk);
+            }
+
+            return 0;
+        }
+
+        static int ExtractFontFromDumpFile(string fileName)
         {
             using (var source = File.OpenRead(fileName))
-                return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()), createScreen);
+                return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()));
         }
 
-        private static int ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump, bool createScreen)
+        private static int ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump)
         {
             using (var memory = new MemoryStream(dump.Array))
             using (var reader = new BinaryReader(memory))
@@ -109,12 +124,7 @@ namespace CommandLine
                     Out.Write($"  Creating byte font {newFileName}");
 
                     ByteFontFormatter.Write(font, File.Create(newFileName));
-                    //using (var bitmap = font.CreateBitmap())
-                    //    bitmap.Save(MakeFileName(newFileName, ".png"), ImageFormat.Png);
                 }
-
-                if (createScreen)
-                    CreateScreen(fileName, reader);
 
                 return fontIndex;
             }
@@ -187,6 +197,7 @@ namespace CommandLine
             Out.Write("  dump - produce memory dumps from zip/z80");
             Out.Write("  hunt - hunt dumps for possible fonts");
             Out.Write("  dedupe-title - purge duplicate fonts in the same title");
+            Out.Write("  org-title - move fonts from the same title into a subfolder");
         }
     }
 }

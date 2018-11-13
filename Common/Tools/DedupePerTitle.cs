@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.FileSystemGlobbing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,10 +8,9 @@ namespace PixelWorld.Tools
 {
     public static class DedupePerTitle
     {
-        public static void Process(string directory, IEnumerable<FilePatternMatch> files)
+        public static int Process(IEnumerable<string> fileNames)
         {
-            var titles = files
-                .Select(f => Path.Combine(directory, f.Path))
+            var titles = fileNames
                 .GroupBy(f => MakeSimplifiedName(f))
                 .Where(v => v.Count() > 1)
                 .ToDictionary(k => k.Key, v => v.Select(f => Tuple.Create(f, CreateHash(MD5.Create(), f))).ToArray());
@@ -28,16 +26,18 @@ namespace PixelWorld.Tools
                         File.Delete(dupe);
                 }
             }
+
+            return 0;
         }
 
-        public static string CreateHash(HashAlgorithm algorithm, string fileName)
+        static string CreateHash(HashAlgorithm algorithm, string fileName)
         {
             return algorithm.ComputeHash(File.ReadAllBytes(fileName)).ToHex();
         }
 
-        public static string MakeSimplifiedName(string fileName)
+        static string MakeSimplifiedName(string fileName)
         {
-            return String.Join(")", Path.GetFileNameWithoutExtension(fileName).Split(')').Take(3)) + ")";
+            return String.Join(")", Path.GetFileNameWithoutExtension(fileName).Split(')').Take(2)) + ")";
         }
     }
 }
