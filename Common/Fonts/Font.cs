@@ -12,6 +12,14 @@ namespace PixelWorld.Fonts
         public readonly int Height;
         public Dictionary<char, Glyph> Glyphs { get; } = new Dictionary<char, Glyph>();
 
+        public Font Copy()
+        {
+            var copied = new Font(Name, Height);
+            foreach (var glyph in Glyphs)
+                copied.Glyphs.Add(glyph.Key, glyph.Value);
+            return copied;
+        }
+
         public Font(string name, int height = 8)
         {
             Name = name;

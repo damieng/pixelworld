@@ -36,7 +36,7 @@ namespace PixelWorld.Display
 
         public static bool IsBlank(byte[] buffer, int offset)
         {
-            return buffer.Skip(offset).Take(ByteFontFormatter.ExpectedLength).All(b => b == 0);
+            return buffer.Skip(offset).Take(768).All(b => b == 0);
         }
 
         public static Bitmap GetBitmap(byte[] buffer, int offset)

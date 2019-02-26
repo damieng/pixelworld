@@ -1,4 +1,5 @@
 ﻿using PixelWorld.Formatters;
+using PixelWorld.Machines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace PixelWorld.OffsetFinders
             // We don't have enough candidates to even look
             if (candidates.Length < minUniqueInWindow) return new List<int>();
 
-            var end = buffer.Length - ByteFontFormatter.ExpectedLength;
+            var end = buffer.Length - Spectrum.FontSize;
 
             var ranges = new Dictionary<int, int>();
 
@@ -69,7 +70,7 @@ namespace PixelWorld.OffsetFinders
                         // Look back to the previous space
                         var backOffset = window.Peek().Offset;
                         var foundSpace = false;
-                        for (var b = backOffset; b > backOffset - ByteFontFormatter.ExpectedLength && b > 0; b -= 8)
+                        for (var b = backOffset; b > backOffset - Spectrum.FontSize && b > 0; b -= 8)
                         {
                             if (buffer.IsEmpty(b))
                             {
@@ -87,7 +88,7 @@ namespace PixelWorld.OffsetFinders
                     }
                 }
 
-                while (window.Count > 0 && window.Peek().Offset < i - ByteFontFormatter.ExpectedLength)
+                while (window.Count > 0 && window.Peek().Offset < i - Spectrum.FontSize)
                     window.Dequeue();
             }
 

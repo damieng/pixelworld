@@ -27,7 +27,7 @@ namespace PixelWorld.Tools
 
         static string MakeSimplifiedName(string fileName)
         {
-            return String.Join(")", Path.GetFileNameWithoutExtension(fileName).Split(')').Take(2)) + ")";
+            return String.Join(")", fileName.Split(')').Take(2)) + ")";
         }
     }
 }

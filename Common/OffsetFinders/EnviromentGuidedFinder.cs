@@ -1,4 +1,4 @@
-﻿using PixelWorld.Formatters;
+﻿using PixelWorld.Machines;
 using System.Collections.Generic;
 
 namespace PixelWorld.OffsetFinders
@@ -13,7 +13,7 @@ namespace PixelWorld.OffsetFinders
 
             var results = new List<int>();
             if (charPointerOnSpeccy > 0) // Was not pointing to the ROM 
-                if (charPointerOnSpeccy + ByteFontFormatter.ExpectedLength < buffer.Length && buffer.IsEmpty(charPointerOnSpeccy))
+                if (charPointerOnSpeccy + Spectrum.FontSize < buffer.Length && buffer.IsEmpty(charPointerOnSpeccy))
                     results.Add(charPointerOnSpeccy);
             return results;
         }

@@ -4,6 +4,7 @@ using PixelWorld;
 using PixelWorld.BinarySource;
 using PixelWorld.DumpScanners;
 using PixelWorld.Formatters;
+using PixelWorld.Machines;
 using PixelWorld.Tools;
 using System;
 using System.Collections.Generic;
@@ -63,9 +64,50 @@ namespace CommandLine
                     return Dump(fileNames);
                 case "hunt":
                     return Hunt(fileNames);
+                case "preview":
+                    return Preview(fileNames);
+                case "zxtocbm":
+                    return Convert(fileNames, Spectrum.UK, Commodore64.UK);
                 default:
                     throw new InvalidOperationException($"Unknown command {command}");
             }
+        }
+
+        private static int Preview(List<string> fileNames)
+        {
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Generating preview file for {fileName}");
+                using (var source = File.OpenRead(fileName))
+                using (var reader = new BinaryReader(source))
+                {
+                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                    var bitmap = sourceFont.CreateBitmap();
+                    bitmap.Save(Path.ChangeExtension(fileName, "png"));
+                }
+            }
+
+            return fileNames.Count;
+        }
+
+        private static int Convert(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, IReadOnlyDictionary<int, char> targetCharset)
+        {
+            int outputCount = 0;
+
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Converting file {fileName}");
+                using (var source = File.OpenRead(fileName))
+                using (var reader = new BinaryReader(source))
+                {
+                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                    var newFilename = Path.ChangeExtension(fileName, "64c");
+                    using (var target = File.Create(newFilename))
+                        ByteFontFormatter.Write(sourceFont, target, Commodore64.UK);
+                }
+            }
+
+            return outputCount;
         }
 
         static int Hunt(IEnumerable<string> fileNames)
@@ -85,9 +127,10 @@ namespace CommandLine
                     inputsWithOutputsCount++;
                     outputCount += matchOutputs;
                 }
-                Out.Write($"{inputsWithOutputsCount} files yielded {outputCount} results");
-                Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
             }
+
+            Out.Write($"{inputsWithOutputsCount} files yielded {outputCount} results");
+            Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
 
             return 0;
         }
@@ -123,7 +166,7 @@ namespace CommandLine
                     fontIndex++;
                     Out.Write($"  Creating byte font {newFileName}");
 
-                    ByteFontFormatter.Write(font, File.Create(newFileName));
+                    ByteFontFormatter.Write(font, File.Create(newFileName), Spectrum.UK);
                 }
 
                 return fontIndex;
@@ -193,11 +236,13 @@ namespace CommandLine
 
         static void ShowUsage()
         {
-            Out.Write("pw.exe <command> <filename/wildcard/glob> <outputFolder>");
+            Out.Write("pw.exe <command> <filename/wildcard/glob> <outputFolder> [options]");
             Out.Write("  dump - produce memory dumps from zip/z80");
             Out.Write("  hunt - hunt dumps for possible fonts");
+            Out.Write("  preview - generate a PNG preview for each font");
             Out.Write("  dedupe-title - purge duplicate fonts in the same title");
             Out.Write("  org-title - move fonts from the same title into a subfolder");
+            Out.Write("  zxtocbm - convert Spectrum RAW to Commodore RAW");
         }
     }
 }

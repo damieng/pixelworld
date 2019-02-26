@@ -1,5 +1,6 @@
 ﻿using PixelWorld.Display;
 using PixelWorld.Formatters;
+using PixelWorld.Machines;
 using PixelWorld.OffsetFinders;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace PixelWorld.DumpScanners
             var fonts = new List<Font>();
             foreach (var offset in offsets)
                 if (!IsRomFont(buffer, offset) && buffer.IsEmpty(offset) && !IsMissingTooManyGlyphs(buffer, offset))
-                    fonts.Add(ByteFontFormatter.Create(reader, $"{name}#{offset}", offset));
+                    fonts.Add(ByteFontFormatter.Create(reader, $"{name}#{offset}", offset, Spectrum.UK));
 
             return fonts;
         }
@@ -66,12 +67,12 @@ namespace PixelWorld.DumpScanners
 
         public static bool IsMissingTooManyGlyphs(byte[] buffer, int offset)
         {
-            return buffer.CountBlankGlyphs(offset, ByteFontFormatter.ExpectedLength, 8) > 26;
+            return buffer.CountBlankGlyphs(offset, Spectrum.FontSize, 8) > 26;
         }
 
         public static bool IsRomFont(byte[] buffer, int offset)
         {
-            var sha1 = SHA384.Create().ComputeHash(buffer, offset, ByteFontFormatter.ExpectedLength);
+            var sha1 = SHA384.Create().ComputeHash(buffer, offset, Spectrum.FontSize);
             return sha1.ToHex() == "7fa0e307a6e78cf198c3a480a18437dcbecae485c22634cea69cdea3240e7079fe6bedc3c35a76047fb244b4fa15aa35";
         }
 

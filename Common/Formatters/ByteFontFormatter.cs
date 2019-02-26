@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using PixelWorld.Fonts;
 
@@ -6,25 +7,21 @@ namespace PixelWorld.Formatters
 {
     public static class ByteFontFormatter
     {
-        public const int startChar = 32;
-        public const int endChar = 127;
-        public const int glyphRange = endChar - startChar + 1;
         public const int charWidth = 8;
         public const int charHeight = 8;
 
-        public static int ExpectedLength = glyphRange * (charWidth / 8) * charHeight;
-
-        public static Font Create(BinaryReader reader, string name, int offset)
+        public static Font Create(BinaryReader reader, string name, int offset, IReadOnlyDictionary<int, char> charset)
         {
             var font = new Font(name);
             reader.BaseStream.Seek(offset, SeekOrigin.Begin);
-            Read(font, reader);
+            Read(font, reader, charset);
             return font;
         }
 
-        public static void Read(Font font, BinaryReader reader)
+        public static void Read(Font font, BinaryReader reader, IReadOnlyDictionary<int, char> charset)
         {
-            for (int c = startChar; c <= endChar; c++)
+            int c = 0;
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var data = new bool[charWidth, charHeight];
                 for (int y = 0; y < charHeight; y++)
@@ -38,11 +35,12 @@ namespace PixelWorld.Formatters
                     }
                 }
                 var glyph = new Glyph(charWidth, charHeight, data);
-                font.Glyphs.Add((Char)c, glyph);
+                if (charset.TryGetValue(c++, out char mappedChar))
+                    font.Glyphs.Add(mappedChar, glyph);
             }
         }
 
-        public static void Write(Font font, Stream output)
+        public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset)
         {
             using (var writer = new BinaryWriter(output))
             {

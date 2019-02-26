@@ -98,5 +98,10 @@ namespace PixelWorld
             var fileName = Path.GetFileName(fullPath);
             return Path.Combine(directory, subdirectory, fileName);
         }
+
+        public static Dictionary<int, char> ToIndexedDictionary (this string sequence)
+        {
+            return sequence.Select((c, i) => Tuple.Create(c, i)).ToDictionary(k => k.Item2, v => v.Item1);
+        }
     }
 }

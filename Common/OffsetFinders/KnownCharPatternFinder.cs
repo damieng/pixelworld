@@ -1,4 +1,4 @@
-﻿using PixelWorld.Formatters;
+﻿using PixelWorld.Machines;
 using System.Collections.Generic;
 
 namespace PixelWorld.OffsetFinders
@@ -21,7 +21,7 @@ namespace PixelWorld.OffsetFinders
         {
             var offsets = new List<int>();
 
-            var end = buffer.Length - ByteFontFormatter.ExpectedLength;
+            var end = buffer.Length - Spectrum.FontSize;
 
             for (var i = 0; i < end; i++)
             {
