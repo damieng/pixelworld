@@ -8,5 +8,7 @@ namespace PixelWorld.Machines
             "@abcdefghijklmnopqrstuvwxyz[£]^  !\"#$%&'()*+,-./0123456789:;<=>? ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             .ToIndexedDictionary();
         // TODO: Flesh out with box-drawing characters?
+
+        public static int Length = 2048;
     }
 }

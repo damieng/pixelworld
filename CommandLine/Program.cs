@@ -39,7 +39,7 @@ namespace CommandLine
 
             ProcessCommand(command, inputs);
 
-            File.WriteAllText(Path.Combine(outputFolder, command + ".log"), log.ToString());
+//                File.WriteAllText(Path.Combine(outputFolder, command + ".log"), log.ToString());
         }
 
         static int ProcessCommand(string command, string inputMatch)
@@ -54,23 +54,125 @@ namespace CommandLine
             var matchResults = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
             var fileNames = matchResults.Files.Select(f => Path.Combine(directory, f.Path)).ToList();
 
-            switch (command)
+            return command switch
             {
-                case "dedupe-title":
-                    return DedupePerTitle.Process(fileNames);
-                case "org-title":
-                    return OrganizeByTitle.Process(fileNames);
-                case "dump":
-                    return Dump(fileNames);
-                case "hunt":
-                    return Hunt(fileNames);
-                case "preview":
-                    return Preview(fileNames);
-                case "zxtocbm":
-                    return Convert(fileNames, Spectrum.UK, Commodore64.UK);
-                default:
-                    throw new InvalidOperationException($"Unknown command {command}");
+                "dedupe-title" => DedupePerTitle.Process(fileNames),
+                "org-title" => OrganizeByTitle.Process(fileNames),
+                "dump" => Dump(fileNames),
+                "hunt" => Hunt(fileNames),
+                "preview" => Preview(fileNames),
+                "z80asmhex" => GenZ80AsmHex(fileNames),
+                "6502asmhex" => Gen6502AsmHex(fileNames),
+                "z80asmbinary" => GenZ80AsmBinary(fileNames),
+                "zxtocbm" => Convert(fileNames, Spectrum.UK, Commodore64.UK),
+                "zxtoa8" => Convert(fileNames, Spectrum.UK, Atari8.US),
+                _ => throw new InvalidOperationException($"Unknown command {command}"),
+            };
+        }
+
+        private static int Gen6502AsmHex(List<string> fileNames)
+        {
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Generating 6502 assembly file for {fileName}");
+                using var source = File.OpenRead(fileName);
+                using var reader = new BinaryReader(source);
+                var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                var output = new StringBuilder();
+                output.AppendFormat("\t; {0} font\n", Path.GetFileNameWithoutExtension(fileName));
+                foreach (var glyph in font.Glyphs)
+                {
+                    output.Append("\t.byte ");
+                    for (int y = 0; y < font.Height; y++)
+                    {
+                        var b = new Byte();
+                        var charWidth = glyph.Value.Width;
+                        for (int x = 0; x < charWidth; x++)
+                        {
+                            if (glyph.Value.Data[x, y])
+                                b |= (byte)(1 << charWidth - 1 - x);
+                        }
+                        if (y > 0)
+                            output.Append(", ");
+                        output.AppendFormat("${0:x2}", b);
+                    }
+                    output.AppendFormat(" ; {0}\n", glyph.Key);
+                }
+
+                File.WriteAllText(Path.ChangeExtension(fileName, "6502.asm"), output.ToString());
             }
+
+            return fileNames.Count;
+        }
+
+
+        private static int GenZ80AsmHex(List<string> fileNames)
+        {
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Generating Z80 assembly file for {fileName}");
+                using var source = File.OpenRead(fileName);
+                using var reader = new BinaryReader(source);
+                var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                var output = new StringBuilder();
+                output.AppendFormat("\t; {0} font\n", Path.GetFileNameWithoutExtension(fileName));
+                foreach (var glyph in font.Glyphs)
+                {
+                    output.Append("\tdefb ");
+                    for (int y = 0; y < font.Height; y++)
+                    {
+                        var b = new Byte();
+                        var charWidth = glyph.Value.Width;
+                        for (int x = 0; x < charWidth; x++)
+                        {
+                            if (glyph.Value.Data[x, y])
+                                b |= (byte)(1 << charWidth - 1 - x);
+                        }
+                        if (y > 0)
+                            output.Append(", ");
+                        output.AppendFormat("0x{0:x2}", b);
+                    }
+                    output.AppendFormat(" ; {0}\n", glyph.Key);
+                }
+
+                File.WriteAllText(Path.ChangeExtension(fileName, "z80.asm"), output.ToString());
+            }
+
+            return fileNames.Count;
+        }
+
+        private static int GenZ80AsmBinary(List<string> fileNames)
+        {
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Generating Z80 assembly file for {fileName}");
+                using var source = File.OpenRead(fileName);
+                using var reader = new BinaryReader(source);
+                var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                var output = new StringBuilder();
+                output.AppendFormat("\t; {0} font\n", Path.GetFileNameWithoutExtension(fileName));
+                foreach (var glyph in font.Glyphs)
+                {
+                    output.AppendFormat("\t; {0}\n", glyph.Key);
+
+                    for (int y = 0; y < font.Height; y++)
+                    {
+                        var b = new Byte();
+                        var charWidth = glyph.Value.Width;
+                        for (int x = 0; x < charWidth; x++)
+                        {
+                            if (glyph.Value.Data[x, y])
+                                b |= (byte)(1 << charWidth - 1 - x);
+                        }
+                        string binary = "00000000" + System.Convert.ToString(b, 2);
+                        output.AppendFormat("\tdefb %{0}\n", binary.Substring(binary.Length - 8, 8));
+                    }
+                }
+
+                File.WriteAllText(Path.ChangeExtension(fileName, "z80.asm"), output.ToString());
+            }
+
+            return fileNames.Count;
         }
 
         private static int Preview(List<string> fileNames)
@@ -78,13 +180,11 @@ namespace CommandLine
             foreach (var fileName in fileNames)
             {
                 Out.Write($"Generating preview file for {fileName}");
-                using (var source = File.OpenRead(fileName))
-                using (var reader = new BinaryReader(source))
-                {
-                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
-                    var bitmap = sourceFont.CreateBitmap();
-                    bitmap.Save(Path.ChangeExtension(fileName, "png"));
-                }
+                using var source = File.OpenRead(fileName);
+                using var reader = new BinaryReader(source);
+                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                var bitmap = sourceFont.CreateBitmap();
+                bitmap.Save(Path.ChangeExtension(fileName, "png"));
             }
 
             return fileNames.Count;
@@ -100,17 +200,29 @@ namespace CommandLine
                 using (var source = File.OpenRead(fileName))
                 using (var reader = new BinaryReader(source))
                 {
-                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);                   
                     var newFilename = Path.ChangeExtension(fileName, "64c");
                     using (var target = File.Create(newFilename))
-                        ByteFontFormatter.Write(sourceFont, target, Commodore64.UK);
+                        ByteFontFormatter.Write(sourceFont, target, targetCharset);
+                    if (targetCharset == Commodore64.UK)
+                        AppendInvertedCopy(newFilename);
                 }
+                outputCount++;
             }
 
             return outputCount;
         }
 
-        static int Hunt(IEnumerable<string> fileNames)
+        private static void AppendInvertedCopy(string fileName)
+        {
+            using var file = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite);
+            var data = file.ReadAllBytes();
+            for (var i = 0; i < data.Length; i++)
+                data[i] = (byte)~data[i];
+            file.Write(data, data.Length, data.Length);
+        }
+
+        private static int Hunt(IEnumerable<string> fileNames)
         {
             int inputsWithOutputsCount = 0;
             int outputCount = 0;
@@ -150,27 +262,25 @@ namespace CommandLine
 
         static int ExtractFontFromDumpFile(string fileName)
         {
-            using (var source = File.OpenRead(fileName))
-                return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()));
+            using var source = File.OpenRead(fileName);
+            return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()));
         }
 
         private static int ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump)
         {
-            using (var memory = new MemoryStream(dump.Array))
-            using (var reader = new BinaryReader(memory))
+            using var memory = new MemoryStream(dump.Array);
+            using var reader = new BinaryReader(memory);
+            var fontIndex = 0;
+            foreach (var font in SpectrumDumpScanner.Read(reader, Path.GetFileNameWithoutExtension(fileName)))
             {
-                var fontIndex = 0;
-                foreach (var font in SpectrumDumpScanner.Read(reader, Path.GetFileNameWithoutExtension(fileName)))
-                {
-                    var newFileName = MakeFileName(font.Name, $"ch8");
-                    fontIndex++;
-                    Out.Write($"  Creating byte font {newFileName}");
+                var newFileName = MakeFileName(font.Name, $"ch8");
+                fontIndex++;
+                Out.Write($"  Creating byte font {newFileName}");
 
-                    ByteFontFormatter.Write(font, File.Create(newFileName), Spectrum.UK);
-                }
-
-                return fontIndex;
+                ByteFontFormatter.Write(font, File.Create(newFileName), Spectrum.UK);
             }
+
+            return fontIndex;
         }
 
         private static void CreateScreen(string fileName, BinaryReader reader)
@@ -179,8 +289,8 @@ namespace CommandLine
             if (!File.Exists(screenPreviewFileName))
             {
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                using (var bitmap = SpectrumDumpScanner.GetScreenPreview(reader))
-                    bitmap?.Save(screenPreviewFileName, ImageFormat.Png);
+                using var bitmap = SpectrumDumpScanner.GetScreenPreview(reader);
+                bitmap?.Save(screenPreviewFileName, ImageFormat.Png);
             }
         }
 
@@ -232,7 +342,6 @@ namespace CommandLine
         }
 
         static readonly Z80BinarySource z80Binary = new Z80BinarySource();
-        static readonly RawBinarySource rawBinary = new RawBinarySource();
 
         static void ShowUsage()
         {
@@ -240,6 +349,9 @@ namespace CommandLine
             Out.Write("  dump - produce memory dumps from zip/z80");
             Out.Write("  hunt - hunt dumps for possible fonts");
             Out.Write("  preview - generate a PNG preview for each font");
+            Out.Write("  6502asmhex - generate a 6502 assembly def file for each font");
+            Out.Write("  z80asmhex - generate a Z80 assembly def file for each font");
+            Out.Write("  z80asmbinary - generate a Z80 assembly def file for each font");
             Out.Write("  dedupe-title - purge duplicate fonts in the same title");
             Out.Write("  org-title - move fonts from the same title into a subfolder");
             Out.Write("  zxtocbm - convert Spectrum RAW to Commodore RAW");

@@ -95,7 +95,7 @@ namespace PixelWorld.Fonts
             {
                 for (var y = 0; y < Height; y++)
                 for (var x = 0; x < glyph.Value.Width; x++)
-                    bitmap.SetPixel(xOff + x, yOff + y, glyph.Value.Data[x, y] ? Color.Black : Color.White);
+                    bitmap.SetPixel(xOff + x, yOff + y, glyph.Value.Data[x, y] ? Color.Black : Color.Transparent);
 
                 xOff += glyph.Value.Width;
                 cIdx++;
