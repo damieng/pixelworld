@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
+using System.Text;
 
 namespace PixelWorld.Fonts
 {
+    [DebuggerDisplay("{Print(),nq}")]
     public class Glyph : IEquatable<Glyph>
     {
         public int Height { get; }
@@ -38,6 +41,35 @@ namespace PixelWorld.Fonts
                 hashCode = (hashCode * 397) ^ Width;
                 return hashCode;
             }
+        }
+
+        public string Print()
+        {
+            var sb = new StringBuilder();
+            for (var y = 0; y < Height; y++)
+            {
+                for (var x = 0; x < Width; x++)
+                    sb.Append(Data[x, y] ? "*" : ".");
+                sb.Append(" \n");
+            }
+
+            return sb.ToString();
+        }
+
+        public bool IsRowBlank(int row)
+        {
+            for (var x = 0; x < Width; x++)
+                if (Data[x, row] == true)
+                    return false;
+            return true;
+        }
+
+        public bool IsColumnBlank(int column)
+        {
+            for (var y = 0; y < Height; y++)
+                if (Data[column, y] == true)
+                    return false;
+            return true;
         }
     }
 }

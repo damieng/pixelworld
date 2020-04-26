@@ -39,7 +39,7 @@ namespace CommandLine
 
             ProcessCommand(command, inputs);
 
-//                File.WriteAllText(Path.Combine(outputFolder, command + ".log"), log.ToString());
+            //                File.WriteAllText(Path.Combine(outputFolder, command + ".log"), log.ToString());
         }
 
         static int ProcessCommand(string command, string inputMatch)
@@ -64,10 +64,28 @@ namespace CommandLine
                 "z80asmhex" => GenZ80AsmHex(fileNames),
                 "6502asmhex" => Gen6502AsmHex(fileNames),
                 "z80asmbinary" => GenZ80AsmBinary(fileNames),
+                "zxtofzx" => GenFZX(fileNames, Spectrum.UK, false),
+                "zxtofzxp" => GenFZX(fileNames, Spectrum.UK, true),
                 "zxtocbm" => Convert(fileNames, Spectrum.UK, Commodore64.UK),
                 "zxtoa8" => Convert(fileNames, Spectrum.UK, Atari8.US),
                 _ => throw new InvalidOperationException($"Unknown command {command}"),
             };
+        }
+
+        private static int GenFZX(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional)
+        {
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Generating FZX file for {fileName}");
+                using var source = File.OpenRead(fileName);
+                using var reader = new BinaryReader(source);
+                var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                var newFilename = Path.ChangeExtension(fileName, "fzx");
+                using (var target = File.Create(newFilename))
+                    FZXFontFormatter.Write(font, target, Spectrum.UK, makeProportional);
+            }
+
+            return fileNames.Count;
         }
 
         private static int Gen6502AsmHex(List<string> fileNames)
@@ -200,7 +218,7 @@ namespace CommandLine
                 using (var source = File.OpenRead(fileName))
                 using (var reader = new BinaryReader(source))
                 {
-                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);                   
+                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
                     var newFilename = Path.ChangeExtension(fileName, "64c");
                     using (var target = File.Create(newFilename))
                         ByteFontFormatter.Write(sourceFont, target, targetCharset);
@@ -352,6 +370,8 @@ namespace CommandLine
             Out.Write("  6502asmhex - generate a 6502 assembly def file for each font");
             Out.Write("  z80asmhex - generate a Z80 assembly def file for each font");
             Out.Write("  z80asmbinary - generate a Z80 assembly def file for each font");
+            Out.Write("  zxtofzx - generate a FZX file from a ZX file");
+            Out.Write("  zxtofzxp - generate a FZX proportional file from a ZX file");
             Out.Write("  dedupe-title - purge duplicate fonts in the same title");
             Out.Write("  org-title - move fonts from the same title into a subfolder");
             Out.Write("  zxtocbm - convert Spectrum RAW to Commodore RAW");

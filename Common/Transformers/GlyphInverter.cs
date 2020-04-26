@@ -2,19 +2,14 @@
 
 namespace PixelWorld.Transformers
 {
-    public class InvertFont
+    public static class GlyphInverter
     {
-        public Font Invert(Font source)
+        public static Glyph Invert(Glyph source)
         {
-            var target = new Font(source.Name, source.Height);
-
-            foreach (var glyph in source.Glyphs)
-                target.Glyphs.Add(glyph.Key, new Glyph(glyph.Value.Width, glyph.Value.Height, Invert(glyph.Value.Data)));
-
-            return target;
+            return new Glyph(source.Width, source.Height, Invert(source.Data));
         }
 
-        public bool[,] Invert(bool[,] source)
+        public static bool[,] Invert(bool[,] source)
         {
             var target = new bool[source.Length, source.GetUpperBound(1)];
 

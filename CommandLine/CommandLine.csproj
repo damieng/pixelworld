@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>pw</AssemblyName>
+    <Configurations>Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
