@@ -2,7 +2,7 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "zxtofzxp Clipper.ch8 . ",
+      "commandLineArgs": "zxtofzxp Caberet.ch8 . ",
       "workingDirectory": "d:\\zxo\\_incomplete"
     }
   }

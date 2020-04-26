@@ -9,9 +9,14 @@ namespace PixelWorld.Transformers
         {
             var target = source.Copy();
             var allKeys = target.Glyphs.Keys.ToList();
+
             foreach (var key in allKeys)
-                if (key != 32)
+                if (key != ' ')
                     target.Glyphs[key] = GlyphSpacer.Proportional(target.Glyphs[key], leftPad, rightPad);
+
+            var spaceWidth = target.Glyphs['{'].Width;
+            target.Glyphs[' '] = new Glyph(spaceWidth, source.Height, new bool[spaceWidth, source.Height]);
+
             return target;
         }
     }
