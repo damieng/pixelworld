@@ -4,11 +4,14 @@ namespace PixelWorld.Machines
 {
     public class Commodore64
     {
-        public static IReadOnlyDictionary<int, char> UK =
-            "@abcdefghijklmnopqrstuvwxyz[£]^  !\"#$%&'()*+,-./0123456789:;<=>? ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        public static IReadOnlyDictionary<int, char> bothUK =
+            "@abcdefghijklmnopqrstuvwxyz[£]\0\0 !\"#$%&'()*+,-./0123456789:;<=>?\0ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             .ToIndexedDictionary();
-        // TODO: Flesh out with box-drawing characters?
 
-        public static int Length = 2048;
+        public static IReadOnlyDictionary<int, char> upperUK =
+            "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[£]\0\0 !\"#$%&'()*+,-./0123456789:;<=>?"
+            .ToIndexedDictionary();
+
+        public static int Length = 1024;
     }
 }

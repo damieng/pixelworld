@@ -2,7 +2,7 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "zxtofzxp Caberet.ch8 . ",
+      "commandLineArgs": "zxtocbm d:\\zxo\\_incomplete\\Topica.ch8 . ",
       "workingDirectory": "d:\\zxo\\_incomplete"
     }
   }

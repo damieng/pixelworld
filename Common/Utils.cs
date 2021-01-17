@@ -101,7 +101,7 @@ namespace PixelWorld
 
         public static Dictionary<int, char> ToIndexedDictionary (this string sequence)
         {
-            return sequence.Select((c, i) => Tuple.Create(c, i)).ToDictionary(k => k.Item2, v => v.Item1);
+            return sequence.Select((c, i) => Tuple.Create(c, i)).Where((c, i) => c.Item1 != '\0').ToDictionary(k => k.Item2, v => v.Item1);
         }
     }
 }

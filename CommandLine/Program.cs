@@ -25,7 +25,7 @@ namespace CommandLine
             var log = new StringBuilder();
             Out.Attach(Console.WriteLine);
             Out.Attach(s => log.AppendLine(s));
-            Out.Write("PixelWorld command line tool");
+            Out.Write("PixelWorld command line tool v0.5");
 
             if (args.Length < 3)
             {
@@ -61,13 +61,15 @@ namespace CommandLine
                 "dump" => Dump(fileNames),
                 "hunt" => Hunt(fileNames),
                 "preview" => Preview(fileNames),
-                "z80asmhex" => GenZ80AsmHex(fileNames),
-                "6502asmhex" => Gen6502AsmHex(fileNames),
+                "z80asmhex" => GenAsmHex("z80", "defb ", "&{0:x2}", fileNames),
+                "x86asmhex" => GenAsmHex("x86", "db\t", "0x{0:x2}", fileNames),
+                "6502asmhex" => GenAsmHex("6502", ".byte ", "${0:x2}", fileNames),
+                "68000asmhex" => GenAsmHex("68000", "DC.B ", "${0:x2}", fileNames),
                 "z80asmbinary" => GenZ80AsmBinary(fileNames),
                 "zxtofzx" => GenFZX(fileNames, Spectrum.UK, false),
                 "zxtofzxp" => GenFZX(fileNames, Spectrum.UK, true),
-                "zxtocbm" => Convert(fileNames, Spectrum.UK, Commodore64.UK),
-                "zxtoa8" => Convert(fileNames, Spectrum.UK, Atari8.US),
+                "zxtocbm" => ConvertToC64(fileNames, Spectrum.UK),
+                "zxtoa8" => ConvertToAtari8(fileNames, Spectrum.UK),
                 _ => throw new InvalidOperationException($"Unknown command {command}"),
             };
         }
@@ -79,7 +81,7 @@ namespace CommandLine
                 Out.Write($"Generating FZX file for {fileName}");
                 using var source = File.OpenRead(fileName);
                 using var reader = new BinaryReader(source);
-                var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
+                var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, charset);
                 var newFilename = Path.ChangeExtension(fileName, "fzx");
                 using (var target = File.Create(newFilename))
                     FZXFontFormatter.Write(font, target, Spectrum.UK, makeProportional);
@@ -88,19 +90,19 @@ namespace CommandLine
             return fileNames.Count;
         }
 
-        private static int Gen6502AsmHex(List<string> fileNames)
+        private static int GenAsmHex(string language, string defineByteInstruction, string format, List<string> fileNames)
         {
             foreach (var fileName in fileNames)
             {
-                Out.Write($"Generating 6502 assembly file for {fileName}");
+                Out.Write($"Generating {language} assembly file for {fileName}");
                 using var source = File.OpenRead(fileName);
                 using var reader = new BinaryReader(source);
                 var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
                 var output = new StringBuilder();
-                output.AppendFormat("\t; {0} font\n", Path.GetFileNameWithoutExtension(fileName));
+                output.AppendFormat("\t; {0} font by DamienG https://damieng.com\n", Path.GetFileNameWithoutExtension(fileName));
                 foreach (var glyph in font.Glyphs)
                 {
-                    output.Append("\t.byte ");
+                    output.Append("\t" + defineByteInstruction);
                     for (int y = 0; y < font.Height; y++)
                     {
                         var b = new Byte();
@@ -111,49 +113,13 @@ namespace CommandLine
                                 b |= (byte)(1 << charWidth - 1 - x);
                         }
                         if (y > 0)
-                            output.Append(", ");
-                        output.AppendFormat("${0:x2}", b);
+                            output.Append(",");
+                        output.AppendFormat(format, b);
                     }
                     output.AppendFormat(" ; {0}\n", glyph.Key);
                 }
 
-                File.WriteAllText(Path.ChangeExtension(fileName, "6502.asm"), output.ToString());
-            }
-
-            return fileNames.Count;
-        }
-
-
-        private static int GenZ80AsmHex(List<string> fileNames)
-        {
-            foreach (var fileName in fileNames)
-            {
-                Out.Write($"Generating Z80 assembly file for {fileName}");
-                using var source = File.OpenRead(fileName);
-                using var reader = new BinaryReader(source);
-                var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
-                var output = new StringBuilder();
-                output.AppendFormat("\t; {0} font\n", Path.GetFileNameWithoutExtension(fileName));
-                foreach (var glyph in font.Glyphs)
-                {
-                    output.Append("\tdefb ");
-                    for (int y = 0; y < font.Height; y++)
-                    {
-                        var b = new Byte();
-                        var charWidth = glyph.Value.Width;
-                        for (int x = 0; x < charWidth; x++)
-                        {
-                            if (glyph.Value.Data[x, y])
-                                b |= (byte)(1 << charWidth - 1 - x);
-                        }
-                        if (y > 0)
-                            output.Append(", ");
-                        output.AppendFormat("0x{0:x2}", b);
-                    }
-                    output.AppendFormat(" ; {0}\n", glyph.Key);
-                }
-
-                File.WriteAllText(Path.ChangeExtension(fileName, "z80.asm"), output.ToString());
+                File.WriteAllText(Path.ChangeExtension(fileName, language + ".asm"), output.ToString());
             }
 
             return fileNames.Count;
@@ -208,9 +174,70 @@ namespace CommandLine
             return fileNames.Count;
         }
 
-        private static int Convert(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, IReadOnlyDictionary<int, char> targetCharset)
+        private static int ConvertToC64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset)
         {
             int outputCount = 0;
+            var cases = new[] { (
+                 template: File.ReadAllBytes(@"d:\zxo\_templates\commodore64\both.ch8"),
+                 charset: Commodore64.bothUK,
+                 suffix: "both"
+                ),
+                (
+                 template: File.ReadAllBytes(@"d:\zxo\_templates\commodore64\upper.ch8"),
+                 charset: Commodore64.upperUK,
+                 suffix: "upper"
+                )
+            };
+
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Converting file {fileName}");
+
+                using (var source = File.OpenRead(fileName))
+                using (var reader = new BinaryReader(source))
+                {
+                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
+                    var characterRom = File.Create(Path.ChangeExtension(fileName, ".bin"));
+
+                    foreach (var version in cases)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            ByteFontFormatter.Write(sourceFont, memoryStream, version.charset, 128, i => new ArraySegment<byte>(version.template, i, 8));
+
+                            var target64C = File.Create(Path.ChangeExtension(fileName, version.suffix + ".64c"));
+                            target64C.Write(new byte[] { 0x00, 0x38 }); // 64C header
+                            memoryStream.WriteTo(target64C);
+
+                            memoryStream.WriteTo(characterRom);
+
+                            InvertBuffer(memoryStream.GetBuffer());
+                            memoryStream.WriteTo(target64C);
+                            memoryStream.WriteTo(characterRom);
+
+                            target64C.Close();
+                        }
+                    }
+
+                    characterRom.Close();
+                }
+
+                outputCount++;
+            }
+
+            return outputCount;
+        }
+
+        private static void InvertBuffer(byte[] buffer)
+        {
+            for (var i = 0; i < buffer.Length; i++)
+                buffer[i] = (byte)~buffer[i];
+        }
+
+        private static int ConvertToAtari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset)
+        {
+            int outputCount = 0;
+            var template = File.ReadAllBytes(@"d:\zxo\_templates\atari8\default.fnt");
 
             foreach (var fileName in fileNames)
             {
@@ -218,26 +245,15 @@ namespace CommandLine
                 using (var source = File.OpenRead(fileName))
                 using (var reader = new BinaryReader(source))
                 {
-                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
-                    var newFilename = Path.ChangeExtension(fileName, "64c");
+                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
+                    var newFilename = Path.ChangeExtension(fileName, "fnt");
                     using (var target = File.Create(newFilename))
-                        ByteFontFormatter.Write(sourceFont, target, targetCharset);
-                    if (targetCharset == Commodore64.UK)
-                        AppendInvertedCopy(newFilename);
+                        ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
                 }
                 outputCount++;
             }
 
             return outputCount;
-        }
-
-        private static void AppendInvertedCopy(string fileName)
-        {
-            using var file = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite);
-            var data = file.ReadAllBytes();
-            for (var i = 0; i < data.Length; i++)
-                data[i] = (byte)~data[i];
-            file.Write(data, data.Length, data.Length);
         }
 
         private static int Hunt(IEnumerable<string> fileNames)
@@ -294,8 +310,7 @@ namespace CommandLine
                 var newFileName = MakeFileName(font.Name, $"ch8");
                 fontIndex++;
                 Out.Write($"  Creating byte font {newFileName}");
-
-                ByteFontFormatter.Write(font, File.Create(newFileName), Spectrum.UK);
+                ByteFontFormatter.Write(font, File.Create(newFileName), Spectrum.UK, 96);
             }
 
             return fontIndex;
@@ -368,13 +383,16 @@ namespace CommandLine
             Out.Write("  hunt - hunt dumps for possible fonts");
             Out.Write("  preview - generate a PNG preview for each font");
             Out.Write("  6502asmhex - generate a 6502 assembly def file for each font");
+            Out.Write("  68000asmhex - generate a 68000 assembly def file for each font");
             Out.Write("  z80asmhex - generate a Z80 assembly def file for each font");
+            Out.Write("  x86asmhex - generate an x86 assembly def file for each font");
             Out.Write("  z80asmbinary - generate a Z80 assembly def file for each font");
             Out.Write("  zxtofzx - generate a FZX file from a ZX file");
             Out.Write("  zxtofzxp - generate a FZX proportional file from a ZX file");
             Out.Write("  dedupe-title - purge duplicate fonts in the same title");
             Out.Write("  org-title - move fonts from the same title into a subfolder");
             Out.Write("  zxtocbm - convert Spectrum RAW to Commodore RAW");
+            Out.Write("  zxtoa8 - convert Spectrum RAW to Atari 8-bit");
         }
     }
 }

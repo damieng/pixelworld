@@ -7,7 +7,8 @@ namespace PixelWorld.Machines
         public static IReadOnlyDictionary<int, char> US = (
             " !\"#$%&'()*+,-./0123456789:;<=>?" +
             "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_" +
-            "abcdefghijklmnopqrstuvwxyz{|}~©"
+            "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" +
+            "\0abcdefghijklmnopqrstuvwxyz"
         ).ToIndexedDictionary();
 
         public static int FontSize = 1024;

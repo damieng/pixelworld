@@ -9,6 +9,8 @@ namespace PixelWorld.Formatters
     {
         public const int charWidth = 8;
         public const int charHeight = 8;
+        private static ArraySegment<byte> blankChar = new ArraySegment<byte>(new byte[8], 0, 8);
+        private static Func<int, ArraySegment<byte>> blankWriter = (i) => blankChar;
 
         public static Font Create(BinaryReader reader, string name, int offset, IReadOnlyDictionary<int, char> charset)
         {
@@ -40,22 +42,28 @@ namespace PixelWorld.Formatters
             }
         }
 
-        public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset)
+        public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset, int length, Func<int, ArraySegment<byte>> fallback = null)
         {
-            using (var writer = new BinaryWriter(output))
+            fallback = fallback ?? blankWriter;
+
+           var writer = new BinaryWriter(output);
+            for (var i = 0; i < length; i++)
             {
-                foreach (var glyph in font.Glyphs)
-                {
+                if (charset.TryGetValue(i, out var charToWrite) && font.Glyphs.TryGetValue(charToWrite, out var glyph)) {
                     for (int y = 0; y < charHeight; y++)
                     {
                         var b = new Byte();
                         for (int x = 0; x < charWidth; x++)
                         {
-                            if (glyph.Value.Data[x, y])
-                                b |= (byte)(1 << charWidth -1 - x);
+                            if (glyph.Data[x, y])
+                                b |= (byte)(1 << charWidth - 1 - x);
                         }
                         writer.Write(b);
                     }
+                } else
+                {
+                    var buffer = fallback((int)writer.BaseStream.Position);
+                    writer.Write(buffer.Array, buffer.Offset, buffer.Count);
                 }
             }
         }
