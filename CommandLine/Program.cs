@@ -82,8 +82,7 @@ namespace CommandLine
                 using var source = File.OpenRead(fileName);
                 using var reader = new BinaryReader(source);
                 var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, charset);
-                var newFilename = Path.ChangeExtension(fileName, "fzx");
-                using (var target = File.Create(newFilename))
+                using (var target = File.Create(MakeFileName(fileName, "fzx")))
                     FZXFontFormatter.Write(font, target, Spectrum.UK, makeProportional);
             }
 
@@ -119,7 +118,7 @@ namespace CommandLine
                     output.AppendFormat(" ; {0}\n", glyph.Key);
                 }
 
-                File.WriteAllText(Path.ChangeExtension(fileName, language + ".asm"), output.ToString());
+                File.WriteAllText(MakeFileName(fileName, language + ".asm"), output.ToString());
             }
 
             return fileNames.Count;
@@ -153,7 +152,7 @@ namespace CommandLine
                     }
                 }
 
-                File.WriteAllText(Path.ChangeExtension(fileName, "z80.asm"), output.ToString());
+                File.WriteAllText(MakeFileName(fileName, "z80.asm"), output.ToString());
             }
 
             return fileNames.Count;
@@ -168,7 +167,7 @@ namespace CommandLine
                 using var reader = new BinaryReader(source);
                 var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
                 var bitmap = sourceFont.CreateBitmap();
-                bitmap.Save(Path.ChangeExtension(fileName, "png"));
+                bitmap.Save(MakeFileName(fileName, "png"));
             }
 
             return fileNames.Count;
@@ -197,7 +196,7 @@ namespace CommandLine
                 using (var reader = new BinaryReader(source))
                 {
                     var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
-                    var characterRom = File.Create(Path.ChangeExtension(fileName, ".bin"));
+                    var characterRom = File.Create(MakeFileName(fileName, "bin"));
 
                     foreach (var version in cases)
                     {
@@ -205,7 +204,7 @@ namespace CommandLine
                         {
                             ByteFontFormatter.Write(sourceFont, memoryStream, version.charset, 128, i => new ArraySegment<byte>(version.template, i, 8));
 
-                            var target64C = File.Create(Path.ChangeExtension(fileName, version.suffix + ".64c"));
+                            var target64C = File.Create(MakeFileName(fileName, version.suffix + ".64c"));
                             target64C.Write(new byte[] { 0x00, 0x38 }); // 64C header
                             memoryStream.WriteTo(target64C);
 
@@ -246,7 +245,7 @@ namespace CommandLine
                 using (var reader = new BinaryReader(source))
                 {
                     var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
-                    var newFilename = Path.ChangeExtension(fileName, "fnt");
+                    var newFilename = MakeFileName(fileName, "fnt");
                     using (var target = File.Create(newFilename))
                         ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
                 }
@@ -307,7 +306,7 @@ namespace CommandLine
             var fontIndex = 0;
             foreach (var font in SpectrumDumpScanner.Read(reader, Path.GetFileNameWithoutExtension(fileName)))
             {
-                var newFileName = MakeFileName(font.Name, $"ch8");
+                var newFileName = MakeFileName(font.Name, "ch8");
                 fontIndex++;
                 Out.Write($"  Creating byte font {newFileName}");
                 ByteFontFormatter.Write(font, File.Create(newFileName), Spectrum.UK, 96);
