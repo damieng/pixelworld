@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>PixelWorld</AssemblyName>
     <RootNamespace>PixelWorld</RootNamespace>
     <Configurations>Debug;Release;Debug Dump;Debug Dedupe;Organize;ConvertZXtoC64;Preview;ZXToFZX</Configurations>
