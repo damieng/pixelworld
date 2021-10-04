@@ -45,7 +45,7 @@ namespace CommandLine
         static int ProcessCommand(string command, string inputMatch)
         {
             var globSplitPoint = Utils.GetGlobSplitPoint(inputMatch);
-            var glob = inputMatch.Substring(globSplitPoint);
+            var glob = inputMatch[globSplitPoint..];
             var directory = globSplitPoint > 0 ? inputMatch.Substring(0, globSplitPoint) : ".";
             Out.Write($"Matching files {glob} in {directory}");
 
@@ -82,8 +82,8 @@ namespace CommandLine
                 using var source = File.OpenRead(fileName);
                 using var reader = new BinaryReader(source);
                 var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, charset);
-                using (var target = File.Create(MakeFileName(fileName, "fzx")))
-                    FZXFontFormatter.Write(font, target, Spectrum.UK, makeProportional);
+                using var target = File.Create(MakeFileName(fileName, "fzx"));
+                FZXFontFormatter.Write(font, target, Spectrum.UK, makeProportional);
             }
 
             return fileNames.Count;
@@ -112,7 +112,7 @@ namespace CommandLine
                                 b |= (byte)(1 << charWidth - 1 - x);
                         }
                         if (y > 0)
-                            output.Append(",");
+                            output.Append(',');
                         output.AppendFormat(format, b);
                     }
                     output.AppendFormat(" ; {0}\n", glyph.Key);
@@ -198,24 +198,22 @@ namespace CommandLine
                     var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
                     var characterRom = File.Create(MakeFileName(fileName, "bin"));
 
-                    foreach (var version in cases)
+                    foreach (var (template, charset, suffix) in cases)
                     {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            ByteFontFormatter.Write(sourceFont, memoryStream, version.charset, 128, i => new ArraySegment<byte>(version.template, i, 8));
+                        using var memoryStream = new MemoryStream();
+                        ByteFontFormatter.Write(sourceFont, memoryStream, charset, 128, i => new ArraySegment<byte>(template, i, 8));
 
-                            var target64C = File.Create(MakeFileName(fileName, version.suffix + ".64c"));
-                            target64C.Write(new byte[] { 0x00, 0x38 }); // 64C header
-                            memoryStream.WriteTo(target64C);
+                        var target64C = File.Create(MakeFileName(fileName, suffix + ".64c"));
+                        target64C.Write(new byte[] { 0x00, 0x38 }); // 64C header
+                        memoryStream.WriteTo(target64C);
 
-                            memoryStream.WriteTo(characterRom);
+                        memoryStream.WriteTo(characterRom);
 
-                            InvertBuffer(memoryStream.GetBuffer());
-                            memoryStream.WriteTo(target64C);
-                            memoryStream.WriteTo(characterRom);
+                        InvertBuffer(memoryStream.GetBuffer());
+                        memoryStream.WriteTo(target64C);
+                        memoryStream.WriteTo(characterRom);
 
-                            target64C.Close();
-                        }
+                        target64C.Close();
                     }
 
                     characterRom.Close();
@@ -246,8 +244,8 @@ namespace CommandLine
                 {
                     var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
                     var newFilename = MakeFileName(fileName, "fnt");
-                    using (var target = File.Create(newFilename))
-                        ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
+                    using var target = File.Create(newFilename);
+                    ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
                 }
                 outputCount++;
             }
@@ -373,7 +371,7 @@ namespace CommandLine
             return 1;
         }
 
-        static readonly Z80BinarySource z80Binary = new Z80BinarySource();
+        static readonly Z80BinarySource z80Binary = new();
 
         static void ShowUsage()
         {
