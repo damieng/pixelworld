@@ -2,7 +2,7 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "zxtocbm d:\\zxo\\_incomplete\\Topica.ch8 . ",
+      "commandLineArgs": "zxtocpc d:\\zxo\\Emmaline\\Emmaline.ch8 .",
       "workingDirectory": "d:\\zxo\\_incomplete"
     }
   }

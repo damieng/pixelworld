@@ -3,6 +3,7 @@ using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using PixelWorld;
 using PixelWorld.BinarySource;
 using PixelWorld.DumpScanners;
+using PixelWorld.Fonts;
 using PixelWorld.Formatters;
 using PixelWorld.Machines;
 using PixelWorld.Tools;
@@ -38,8 +39,6 @@ namespace CommandLine
             outputFolder = args[2];
 
             ProcessCommand(command, inputs);
-
-            //                File.WriteAllText(Path.Combine(outputFolder, command + ".log"), log.ToString());
         }
 
         static int ProcessCommand(string command, string inputMatch)
@@ -70,6 +69,7 @@ namespace CommandLine
                 "zxtofzxp" => GenFZX(fileNames, Spectrum.UK, true),
                 "zxtocbm" => ConvertToC64(fileNames, Spectrum.UK),
                 "zxtoa8" => ConvertToAtari8(fileNames, Spectrum.UK),
+                "zxtocpc" => ConvertToAmstradCPC(fileNames, Spectrum.UK),
                 _ => throw new InvalidOperationException($"Unknown command {command}"),
             };
         }
@@ -178,12 +178,12 @@ namespace CommandLine
             int outputCount = 0;
             var cases = new[] { (
                  template: File.ReadAllBytes(@"d:\zxo\_templates\commodore64\both.ch8"),
-                 charset: Commodore64.bothUK,
+                 charset: Commodore64.BothUK,
                  suffix: "both"
                 ),
                 (
                  template: File.ReadAllBytes(@"d:\zxo\_templates\commodore64\upper.ch8"),
-                 charset: Commodore64.upperUK,
+                 charset: Commodore64.UpperUK,
                  suffix: "upper"
                 )
             };
@@ -248,6 +248,72 @@ namespace CommandLine
                     ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
                 }
                 outputCount++;
+            }
+
+            return outputCount;
+        }
+
+        private static int ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset)
+        {
+            int outputCount = 0;
+            var line = 9000;
+
+            foreach (var fileName in fileNames)
+            {
+                line = 9000;
+
+                Out.Write($"Converting file {fileName}");
+                using (var source = File.OpenRead(fileName))
+                using (var reader = new BinaryReader(source))
+                {
+                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
+                    var newFilename = MakeFileName(fileName, "bas");
+
+                    var output = new StringBuilder();
+
+                    output.AppendFormat("{0} REM {1} font\r\n", line, Path.GetFileNameWithoutExtension(fileName));
+                    output.AppendFormat("{0} REM by DamienG https://damieng.com\r\n", line += 10);
+
+                    var spaceIsBlank = sourceFont.Glyphs[' '].IsBlank();
+                    output.AppendFormat("{0} SYMBOL AFTER {1}\r\n", line += 10, spaceIsBlank ? 33 : 32);
+
+                    foreach (var g in sourceFont.Glyphs.Where(g => !g.Value.IsBlank()).OrderBy(g => g.Key))
+                    {
+                        switch (g.Key)
+                        {
+                            case '©':
+                                WriteSymbolLine(output, 164, g.Value);
+                                break;
+                            default:
+                                WriteSymbolLine(output, g.Key, g.Value);
+                                break;
+                        }
+                    }
+
+                    File.WriteAllText(newFilename, output.ToString());
+                }
+                outputCount++;
+            }
+
+            void WriteSymbolLine(StringBuilder output, int charIdx, Glyph glyph)
+            {
+                output.AppendFormat("{0} SYMBOL {1},{2}\r\n", line += 10, charIdx, String.Join(',', MakeList(glyph.Data)));
+            }
+
+            int[] MakeList(bool[,] data)
+            {
+                var results = new int[8];
+                for (int y = 0; y < 8; y++)
+                {
+                    var b = new Byte();
+                    for (int x = 0; x < 8; x++)
+                    {
+                        if (data[x, y])
+                            b |= (byte)(1 << 8 - 1 - x);
+                    }
+                    results[y] = b;
+                }
+                return results;
             }
 
             return outputCount;
@@ -390,6 +456,7 @@ namespace CommandLine
             Out.Write("  org-title - move fonts from the same title into a subfolder");
             Out.Write("  zxtocbm - convert Spectrum RAW to Commodore RAW");
             Out.Write("  zxtoa8 - convert Spectrum RAW to Atari 8-bit");
+            Out.Write("  zxtocpc - convert Spectrum RAW to Amstrad CPC Basic SYMBOL");
         }
     }
 }
