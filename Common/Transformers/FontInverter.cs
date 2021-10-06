@@ -5,7 +5,7 @@ namespace PixelWorld.Transformers
 {
     public class FontInverter
     {
-        public Font Invert(Font source)
+        public static Font Invert(Font source)
         {
             var target = source.Copy();
             var allKeys = target.Glyphs.Keys.ToList();

@@ -66,13 +66,7 @@ namespace PixelWorld.Fonts
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = (Name != null ? Name.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ Height;
-                hashCode = (hashCode * 397) ^ (Glyphs != null ? Glyphs.GetHashCode() : 0);
-                return hashCode;
-            }
+            return HashCode.Combine(Name, Height, Glyphs);
         }
 
         public Bitmap CreateBitmap()

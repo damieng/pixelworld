@@ -9,8 +9,8 @@ namespace PixelWorld.Formatters
     {
         public const int charWidth = 8;
         public const int charHeight = 8;
-        private static ArraySegment<byte> blankChar = new ArraySegment<byte>(new byte[8], 0, 8);
-        private static Func<int, ArraySegment<byte>> blankWriter = (i) => blankChar;
+        private static readonly ArraySegment<byte> blankChar = new(new byte[8], 0, 8);
+        private static readonly Func<int, ArraySegment<byte>> blankWriter = (i) => blankChar;
 
         public static Font Create(BinaryReader reader, string name, int offset, IReadOnlyDictionary<int, char> charset)
         {
@@ -44,7 +44,7 @@ namespace PixelWorld.Formatters
 
         public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset, int length, Func<int, ArraySegment<byte>> fallback = null)
         {
-            fallback = fallback ?? blankWriter;
+            fallback ??= blankWriter;
 
            var writer = new BinaryWriter(output);
             for (var i = 0; i < length; i++)
