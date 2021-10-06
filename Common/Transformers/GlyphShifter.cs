@@ -13,13 +13,13 @@ namespace PixelWorld.Transformers
                 var ty = y + vertical;
                 if (wrap || (ty >= 0 && ty < source.Height))
                 {
-                    ty = ty % source.Height;
+                    ty %= source.Height;
                     for (var x = 0; x < source.Width; x++)
                     {
                         var tx = x + horizontal;
                         if (wrap || (tx < source.Width && tx >= 0))
                         {
-                            tx = tx % source.Width;
+                            tx %= source.Width;
                             data[tx, ty] = source.Data[x, y]; ;
                         }
                     }

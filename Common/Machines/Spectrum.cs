@@ -4,10 +4,10 @@ namespace PixelWorld.Machines
 {
     public class Spectrum
     {
-        public static IReadOnlyDictionary<int, char> UK = 
+        public static IReadOnlyDictionary<int, char> UK { get; } =
             " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_£abcdefghijklmnopqrstuvwxyz{|}~©"
             .ToIndexedDictionary();
 
-        public static int FontSize = 768;
+        public static int FontSize { get; } = 768;
     }
 }

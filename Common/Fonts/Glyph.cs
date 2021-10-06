@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Text;
@@ -35,12 +35,7 @@ namespace PixelWorld.Fonts
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = Height;
-                hashCode = (hashCode * 397) ^ Width;
-                return hashCode;
-            }
+            return HashCode.Combine(Height, Width);
         }
 
         public string Print()

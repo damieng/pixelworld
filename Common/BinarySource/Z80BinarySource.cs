@@ -21,19 +21,13 @@ namespace PixelWorld.BinarySource
                 var z80Snapshot = Z80File.LoadZ80(source);
                 var memoryModel = GetMemoryModel(z80Snapshot);
 
-                switch (memoryModel)
+                return memoryModel switch
                 {
-                    case MemoryModel.ZX48:
-                        return Setup48KMemory(z80Snapshot);
-
-                    case MemoryModel.ZX128:
-                        return Setup128KMemory(z80Snapshot);
-
-                    case MemoryModel.ZXPlus3:
-                        return SetupPlus3Memory(z80Snapshot);
-                }
-
-                throw new NotSupportedException($"Unknown MemoryModel {memoryModel}");
+                    MemoryModel.ZX48 => Setup48KMemory(z80Snapshot),
+                    MemoryModel.ZX128 => Setup128KMemory(z80Snapshot),
+                    MemoryModel.ZXPlus3 => SetupPlus3Memory(z80Snapshot),
+                    _ => throw new NotSupportedException($"Unknown MemoryModel {memoryModel}"),
+                };
             }
             catch (Exception e)
             {
@@ -42,7 +36,7 @@ namespace PixelWorld.BinarySource
             }
         }
 
-        private ArraySegment<byte> SetupPlus3Memory(Z80_SNAPSHOT z80Snapshot)
+        private static ArraySegment<byte> SetupPlus3Memory(Z80_SNAPSHOT z80Snapshot)
         {
             if ((z80Snapshot.PORT_1FFD & 1) == 0)
                 return Setup128KMemory(z80Snapshot);
@@ -101,26 +95,14 @@ namespace PixelWorld.BinarySource
         {
             if (z80Snapshot.FileVersion == 1) return MemoryModel.ZX48;
 
-            switch (z80Snapshot.Byte34)
+            return z80Snapshot.Byte34 switch
             {
-                case 0:
-                case 1:
-                case 2: // treat SAMRAM as 48k, ignore shadow pages
-                    return MemoryModel.ZX48;
-                case 3:
-                    return z80Snapshot.FileVersion == 3 ? MemoryModel.ZX48 : MemoryModel.ZX128;
-                case 4:
-                case 5:
-                case 6:
-                case 11:
-                    return MemoryModel.ZX128;
-                case 7:
-                case 8:
-                case 13:
-                    return MemoryModel.ZXPlus3;
-            }
-
-            throw new NotSupportedException($"Unknown memory model for v{z80Snapshot.FileVersion} indicator {z80Snapshot.Byte34}");
+                0 or 1 or 2 => MemoryModel.ZX48,
+                3 => z80Snapshot.FileVersion == 3 ? MemoryModel.ZX48 : MemoryModel.ZX128,
+                4 or 5 or 6 or 11 => MemoryModel.ZX128,
+                7 or 8 or 13 => MemoryModel.ZXPlus3,
+                _ => throw new NotSupportedException($"Unknown memory model for v{z80Snapshot.FileVersion} indicator {z80Snapshot.Byte34}"),
+            };
         }
 
         private static void CopyBank(Z80_SNAPSHOT z80Snapshot, int bank, byte[] ram, int address)
