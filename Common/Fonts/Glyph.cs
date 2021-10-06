@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Text;
@@ -49,6 +49,15 @@ namespace PixelWorld.Fonts
             }
 
             return sb.ToString();
+        }
+
+        public bool IsBlank()
+        {
+            for (var y = 0; y < Height; y++)
+                for (var x = 0; x < Width; x++)
+                    if (Data[y,x] == true)
+                        return false;
+            return true;
         }
 
         public bool IsRowBlank(int row)
