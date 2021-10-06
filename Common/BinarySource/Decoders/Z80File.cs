@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) 2009-2015 Arjun Nair. See the LICENSE file for license rights and limitations (MIT).
+// Original source: https://github.com/ArjunNair/Zero-Emulator/blob/master/Ziggy/Peripherals/Z80File.cs
+
+using System;
 using System.IO;
 
 namespace PixelWorld.BinarySource.Decoders
