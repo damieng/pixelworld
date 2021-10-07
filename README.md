@@ -24,14 +24,16 @@ The code is in need of clean-up in various places, please bear with me.
 
 - `preview` to create a .png file
 
-- `z80asmbinary` to create Zilog Z80 assembler source with `defb` binary
-- `z80asmhex` to create Zilog Z80 assembler source with `defb` hex
-- `x86asmhex` to create Intel 8086 assembler source with `db` hex
-- `6502asmhex` to create MOS 6502 assembler source with `.byte` hex
-- `68000asmhex` to create Motorola 68000 assembler source with `DB.B` hex
+Any of the following assembly generating commands can use the `--base hex|decimal` flags. The z80 one can also use `--base binary`.
 
-- `zxtofzx` to create a non-proportional `.fzx`
-- `zxtofzxp` to create a proportional `.fzx` by auto left aligning and measuring widths
+- `z80asm` to create Zilog Z80 assembler source with `defb` hex
+- `x86asm` to create Intel 8086 assembler source with `db` hex
+- `6502asm` to create MOS 6502 assembler source with `.byte` hex
+- `68000asm` to create Motorola 68000 assembler source with `DB.B` hex
+
+- `zxtofzx` to create a fixed-width `.fzx` 
+- `zxtofzx --proportional` to create a proportional `.fzx` by auto left aligning and measuring widths
+
 - `zxtocbm` to create `.c64` and `.bin` binary ROM versions for the Commodore 64
 - `zxtoa8` to create a `.fnt` binary version for the Atari 8-bit series
 - `zxtocpc` to create a `.bas` BASIC file for use with the Amstrad CPC range
