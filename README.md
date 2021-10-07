@@ -1,6 +1,6 @@
 # PixelWorld
 
-Bitmap font conversion and manipulation tools
+ZX Spectrum font conversion, ripping and manipulation tools.
 
 This is a tool I have been using for a number of years to convert my own fonts as well as look into bulk-ripping pixel fonts from old video games.
 
