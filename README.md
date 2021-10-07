@@ -67,3 +67,7 @@ Some additional files are necessary for the conversions and should be placed in 
 - atari8.fnt - A dump of the Atari system font that includes all the symbols characters etc.
 - c64-both.c64 - A dump of the Commodore 64 upper+lower case
 - c64-upper.c64 - A dump of the Commodore 64 upper case + symbols
+
+## Example usage
+
+Various different usages of this command can be fount in my [ZX Origins font-publishing script](https://gist.github.com/damieng/d2519cda1c674b4ede74f154f05f2431) - every reference there to `pw.exe` is this.
