@@ -74,8 +74,8 @@ namespace PixelWorld.BinarySource.Decoders
 
         public static Z80_SNAPSHOT LoadZ80(Stream fs)
         {
-            Z80_SNAPSHOT snapshot = new Z80_SNAPSHOT();
-            using (MemoryStream ms = new MemoryStream())
+            Z80_SNAPSHOT snapshot = new();
+            using (MemoryStream ms = new())
             {
                 fs.CopyTo(ms);
                 byte[] buffer = ms.GetBuffer();
@@ -351,10 +351,8 @@ namespace PixelWorld.BinarySource.Decoders
 
         public static Z80_SNAPSHOT LoadZ80(string filename)
         {
-            using (FileStream fs = new FileStream(filename, FileMode.Open))
-            {
-                return LoadZ80(fs);
-            }
+            using FileStream fs = new(filename, FileMode.Open);
+            return LoadZ80(fs);
         }
     }
 }

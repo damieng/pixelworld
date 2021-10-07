@@ -5,7 +5,7 @@ namespace PixelWorld
 {
     public static class Out
     {
-        private static readonly List<Action<string>> logTargets = new List<Action<string>>();
+        private static readonly List<Action<string>> logTargets = new();
 
         public static void Write(string output) {
             foreach (var logTarget in logTargets)

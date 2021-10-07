@@ -15,7 +15,7 @@ namespace PixelWorld
             return memory.GetBuffer();
         }
 
-        private static readonly Regex titleFromPath = new Regex(@"^.*[\/\\]([^.\(\[]+).*");
+        private static readonly Regex titleFromPath = new(@"^.*[\/\\]([^.\(\[]+).*");
 
         public static bool TitlesMatch(params string[] fileNames)
         {

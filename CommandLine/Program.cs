@@ -177,12 +177,12 @@ namespace CommandLine
         {
             int outputCount = 0;
             var cases = new[] { (
-                 template: File.ReadAllBytes(@"d:\zxo\_templates\commodore64\both.ch8"),
+                 template: File.ReadAllBytes(@"templates\c64-both.ch8"),
                  charset: Commodore64.BothUK,
                  suffix: "both"
                 ),
                 (
-                 template: File.ReadAllBytes(@"d:\zxo\_templates\commodore64\upper.ch8"),
+                 template: File.ReadAllBytes(@"templates\c64-upper.ch8"),
                  charset: Commodore64.UpperUK,
                  suffix: "upper"
                 )
@@ -234,7 +234,7 @@ namespace CommandLine
         private static int ConvertToAtari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset)
         {
             int outputCount = 0;
-            var template = File.ReadAllBytes(@"d:\zxo\_templates\atari8\default.fnt");
+            var template = File.ReadAllBytes(@"templates\atari8.fnt");
 
             foreach (var fileName in fileNames)
             {
