@@ -15,6 +15,11 @@ namespace PixelWorld
             return memory.GetBuffer();
         }
 
+        public static string MakeFileName(string fileName, string extension, string outputFolder)
+        {
+            return Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(fileName), extension));
+        }
+
         private static readonly Regex titleFromPath = new(@"^.*[\/\\]([^.\(\[]+).*");
 
         public static bool TitlesMatch(params string[] fileNames)

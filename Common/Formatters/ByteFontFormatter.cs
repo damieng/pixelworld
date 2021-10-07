@@ -1,7 +1,7 @@
-﻿using System;
+﻿using PixelWorld.Fonts;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using PixelWorld.Fonts;
 
 namespace PixelWorld.Formatters
 {

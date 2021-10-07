@@ -10,7 +10,7 @@ namespace PixelWorld.Fonts
     {
         public readonly string Name;
         public readonly int Height;
-        public Dictionary<char, Glyph> Glyphs { get; } = new Dictionary<char, Glyph>();
+        public Dictionary<char, Glyph> Glyphs { get; } = new();
 
         public Font Copy()
         {
@@ -51,7 +51,7 @@ namespace PixelWorld.Fonts
 
         public bool Equals(Font other)
         {
-            return !(other is null) 
+            return other is not null 
                 && (ReferenceEquals(this, other) || string.Equals(Name, other.Name)
                 && Height == other.Height
                 && Glyphs.Count == other.Glyphs.Count
@@ -60,7 +60,7 @@ namespace PixelWorld.Fonts
 
         public override bool Equals(object obj)
         {
-            return !(obj is null)
+            return obj is not null
                    && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Font) obj));
         }
 
