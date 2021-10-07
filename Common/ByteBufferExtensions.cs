@@ -1,7 +1,13 @@
-﻿namespace PixelWorld.OffsetFinders
+﻿namespace PixelWorld
 {
     public static class ByteBufferExtensions
     {
+        public static void InvertBuffer(this byte[] buffer)
+        {
+            for (var i = 0; i < buffer.Length; i++)
+                buffer[i] = (byte)~buffer[i];
+        }
+
         public static bool IsEmpty(this byte[] buffer, int index, int rows = 8)
         {
             for (int e = 0; e < rows; e++)

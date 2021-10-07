@@ -35,12 +35,9 @@ namespace PixelWorld.Formatters
             foreach (var glyph in font.Glyphs)
             {
                 var relativeOffset = dataOffset - writer.BaseStream.Position;
-                //                    Console.WriteLine($"{glyph.Key} ({(int)glyph.Key}) will start at abs 0x{dataOffset:x} rel 0x{relativeOffset:x}");
-                // TODO: Add proportional support
 
                 var blanks = blankRows[glyph.Key];
-                var shift = blanks.Item1 == 8 ? 0 : blanks.Item1; // Spaces are stupidly treated
-                                                                  //Console.WriteLine($"char {(int)glyph.Key} {glyph.Key} has shift = {shift}, height = {glyph.Value.Height-blanks.Item1-blanks.Item2}, image starts at ${writer.BaseStream.Position:x4}+${relativeOffset:x4}=${dataOffset:x4}");
+                var shift = blanks.Item1 == 8 ? 0 : blanks.Item1; // Spaces are treate weird
 
                 writer.Write((UInt16)(kern | relativeOffset));
 
@@ -56,7 +53,6 @@ namespace PixelWorld.Formatters
             {
                 var blanks = blankRows[glyph.Key];
                 var bottom = font.Height - blanks.Item2;
-                //                    Console.WriteLine($"Starting {glyph.Key} at 0x{writer.BaseStream.Position:x}");
                 for (int y = blanks.Item1; y < bottom; y++)
                 {
                     var b = new Byte();
