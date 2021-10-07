@@ -10,11 +10,6 @@ The code is in need of clean-up in various places, please bear with me.
 
 ## Commands
 
-### File management
-
-- `dedupe-title` to remove all duplicate files within a folder
-- `org-title` to organize files into folders based on hunt output
-
 ### Ripping
 
 - `dump` to RAM-dump the contents of files (currently supports `.z80` snapshots and recurses through `.zip` archives)
