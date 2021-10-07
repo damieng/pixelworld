@@ -1,10 +1,12 @@
 # PixelWorld
 
-ZX Spectrum font conversion, ripping and manipulation tools.
+Internal ZX Spectrum font conversion, ripping and manipulation tool made public!
 
-This is a tool I have been using for a number of years to convert my own fonts as well as look into bulk-ripping pixel fonts from old video games.
+This is a tool I have been using for a number of years to convert my own fonts into a variety of formats available from https://damieng.com/fonts/zx-origins/ 
 
-The code isn't great, it's pretty crufty in a lot of places but it's about time I opened up the repo in case anyone else finds it useful.
+It also contains bulk-ripping "dump" and "hunt" for bitmap fonts that currently supports a variety of strategies.
+
+The code is in need of clean-up in various places, please bear with me.
 
 ## Commands
 
