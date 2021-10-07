@@ -10,7 +10,7 @@ namespace PixelWorld.Formatters
 {
     public class AssemblyFontFormatter
     {
-        public static int GenAsmHex(string language, string defineByteInstruction, string format, List<string> fileNames, string outputFolder)
+        public static int CreateAssemblyDefines(string language, string defineByteInstruction, string format, List<string> fileNames, string outputFolder, string credit)
         {
             foreach (var fileName in fileNames)
             {
@@ -19,7 +19,7 @@ namespace PixelWorld.Formatters
                 using var reader = new BinaryReader(source);
                 var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
                 var output = new StringBuilder();
-                output.AppendFormat("\t; {0} font by DamienG https://damieng.com\n", Path.GetFileNameWithoutExtension(fileName));
+                output.AppendFormat("\t; {0} font {1}\n", Path.GetFileNameWithoutExtension(fileName), credit);
                 foreach (var glyph in font.Glyphs)
                 {
                     output.Append("\t" + defineByteInstruction);
@@ -45,7 +45,7 @@ namespace PixelWorld.Formatters
             return fileNames.Count;
         }
 
-        public static int GenZ80AsmBinary(List<string> fileNames, string outputFolder)
+        public static int GenZ80AsmBinary(List<string> fileNames, string outputFolder, string credit)
         {
             foreach (var fileName in fileNames)
             {
@@ -54,7 +54,7 @@ namespace PixelWorld.Formatters
                 using var reader = new BinaryReader(source);
                 var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
                 var output = new StringBuilder();
-                output.AppendFormat("\t; {0} font\n", Path.GetFileNameWithoutExtension(fileName));
+                output.AppendFormat("\t; {0} font {1}\n", Path.GetFileNameWithoutExtension(fileName), credit);
                 foreach (var glyph in font.Glyphs)
                 {
                     output.AppendFormat("\t; {0}\n", glyph.Key);

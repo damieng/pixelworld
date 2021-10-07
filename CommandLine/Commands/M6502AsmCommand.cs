@@ -15,10 +15,10 @@ namespace CommandLine.Commands
             switch (settings.Base)
             {
                 case NumberBase.Decimal:
-                    AssemblyFontFormatter.GenAsmHex("6502", ".byte ", "${0:x2}", files, settings.OutputFolder);
+                    AssemblyFontFormatter.CreateAssemblyDefines("6502", ".byte ", "${0:x2}", files, settings.OutputFolder, settings.Credit);
                     break;
                 default:
-                    AssemblyFontFormatter.GenAsmHex("6502", ".byte ", "{0}", files, settings.OutputFolder);
+                    AssemblyFontFormatter.CreateAssemblyDefines("6502", ".byte ", "{0}", files, settings.OutputFolder, settings.Credit);
                     break;
             }
             return 0;

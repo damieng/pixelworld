@@ -13,7 +13,7 @@ namespace CommandLine.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] BasicSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            Converter.ConvertToAmstradCPC(files, Spectrum.UK, settings.OutputFolder);
+            Converter.ConvertToAmstradCPC(files, Spectrum.UK, settings.OutputFolder, settings.Credit);
             return 0;
         }
     }

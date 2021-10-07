@@ -15,10 +15,10 @@ namespace CommandLine.Commands
             switch (settings.Base)
             {
                 case NumberBase.Decimal:
-                    AssemblyFontFormatter.GenAsmHex("x86", "db\t", "0x{0:x2}", files, settings.OutputFolder);
+                    AssemblyFontFormatter.CreateAssemblyDefines("x86", "db\t", "0x{0:x2}", files, settings.OutputFolder, settings.Credit);
                     break;
                 default:
-                    AssemblyFontFormatter.GenAsmHex("x86", "db\t", "{0}", files, settings.OutputFolder);
+                    AssemblyFontFormatter.CreateAssemblyDefines("x86", "db\t", "{0}", files, settings.OutputFolder, settings.Credit);
                     break;
             }
             return 0;

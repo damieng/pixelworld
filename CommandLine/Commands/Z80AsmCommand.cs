@@ -15,13 +15,13 @@ namespace CommandLine.Commands
             switch (settings.Base)
             {
                 case NumberBase.Binary:
-                    AssemblyFontFormatter.GenZ80AsmBinary(files, settings.OutputFolder);
+                    AssemblyFontFormatter.GenZ80AsmBinary(files, settings.OutputFolder, settings.Credit);
                     break;
                 case NumberBase.Decimal:
-                    AssemblyFontFormatter.GenAsmHex("z80", "defb ", "{0}", files, settings.OutputFolder);
+                    AssemblyFontFormatter.CreateAssemblyDefines("z80", "defb ", "{0}", files, settings.OutputFolder, settings.Credit);
                     break;
                 default:
-                    AssemblyFontFormatter.GenAsmHex("z80", "defb ", "&{0:x2}", files, settings.OutputFolder);
+                    AssemblyFontFormatter.CreateAssemblyDefines("z80", "defb ", "&{0:x2}", files, settings.OutputFolder, settings.Credit);
                     break;
             }
             return 0;

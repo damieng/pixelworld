@@ -10,7 +10,7 @@ namespace CommandLine
             var app = new CommandApp();
             app.Configure(config =>
             {
-                config.SetApplicationName("PixelWorld");
+                config.SetApplicationName("pw.exe");
                 config.SetApplicationVersion("0.7");
 
                 config.AddCommand<DumpCommand>("dump");

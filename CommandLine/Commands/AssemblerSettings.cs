@@ -9,6 +9,6 @@ namespace CommandLine.Commands
         [Description("What base to use for font glyph data.")]
         [TypeConverter(typeof(NumberBaseConverter))]
         [DefaultValue("hex")]
-        public NumberBase Base {  get; set; }
+        public NumberBase Base { get; set; }
     }
 }

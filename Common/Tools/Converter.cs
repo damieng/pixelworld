@@ -48,7 +48,7 @@ namespace PixelWorld.Tools
             return fileNames.Count;
         }
 
-        public static int ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder)
+        public static int ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit)
         {
             int outputCount = 0;
             var line = 9000;
@@ -67,7 +67,10 @@ namespace PixelWorld.Tools
                     var output = new StringBuilder();
 
                     output.AppendFormat("{0} REM {1} font\r\n", line, Path.GetFileNameWithoutExtension(fileName));
-                    output.AppendFormat("{0} REM by DamienG https://damieng.com\r\n", line += 10);
+                    if (!String.IsNullOrEmpty(credit))
+                    {
+                        output.AppendFormat("{0} REM {1}\r\n", line += 10, credit);
+                    }
 
                     var spaceIsBlank = sourceFont.Glyphs[' '].IsBlank();
                     output.AppendFormat("{0} SYMBOL AFTER {1}\r\n", line += 10, spaceIsBlank ? 33 : 32);
@@ -147,10 +150,10 @@ namespace PixelWorld.Tools
                         var target64C = File.Create(Utils.MakeFileName(fileName, suffix + ".64c", outputFolder));
                         target64C.Write(new byte[] { 0x00, 0x38 }); // 64C header
                         memoryStream.WriteTo(target64C);
-
                         memoryStream.WriteTo(characterRom);
 
                         memoryStream.GetBuffer().InvertBuffer();
+
                         memoryStream.WriteTo(target64C);
                         memoryStream.WriteTo(characterRom);
 

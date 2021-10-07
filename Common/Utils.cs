@@ -4,21 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace PixelWorld
 {
     public static class Utils
     {
-        public static List<string> MatchGlobWithFiles(string inputMatch)
+        public static List<string> MatchGlobWithFiles(string inputPattern)
         {
-            var globSplitPoint = GetGlobSplitPoint(inputMatch);
-            var glob = inputMatch[globSplitPoint..];
-            var directory = globSplitPoint > 0 ? inputMatch.Substring(0, globSplitPoint) : ".";
-            Out.Write($"Matching files {glob} in {directory}");
+            var splitPoint = GetGlobSplitPoint(inputPattern);
+            var pattern = inputPattern[splitPoint..];
+            var directory = splitPoint > 0 ? inputPattern.Substring(0, splitPoint) : ".";
+            Out.Write($"Matching files {pattern} in {directory}");
 
             var matcher = new Matcher(StringComparison.CurrentCultureIgnoreCase);
-            matcher.AddInclude(glob);
+            matcher.AddInclude(pattern);
+
             var matchResults = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
             return matchResults.Files.Select(f => Path.Combine(directory, f.Path)).ToList();
         }
@@ -35,81 +35,10 @@ namespace PixelWorld
             return Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(fileName), extension));
         }
 
-        private static readonly Regex titleFromPath = new(@"^.*[\/\\]([^.\(\[]+).*");
-
-        public static bool TitlesMatch(params string[] fileNames)
-        {
-            return fileNames
-                .Select(f => GetTitle(f).ToLowerInvariant())
-                .Distinct()
-                .Count() == 1;
-        }
-
-        public static string GetTitle(string fileName)
-        {
-            return titleFromPath.Match(fileName).Groups[1].Value.Trim();
-        }
-
-        public static bool IsAbsolutePath(string path)
-        {
-            return path.StartsWith("/") || path.StartsWith("\\") || path.Contains(":\\");
-        }
-
         public static int GetGlobSplitPoint(string pathGlob)
         {
             var doubleStar = pathGlob.IndexOf("**", StringComparison.Ordinal);
             return doubleStar > -1 ? doubleStar : pathGlob.LastIndexOf('\\') + 1;
-        }
-
-        public static void DumpCandidates(byte[][] candidates)
-        {
-            foreach (var candidate in candidates)
-            {
-                foreach (var row in candidate)
-                {
-                    Console.WriteLine(
-                        Convert.ToString(row, 2).PadLeft(8, '0').Replace('0', ' ').Replace('1', '#'));
-                }
-            }
-        }
-
-        public static string ToHex(this byte[] input)
-        {
-            var output = new char[input.Length * 2];
-            for (int i = 0; i < input.Length; i++)
-            {
-                var r = i * 2;
-                var h = input[i].ToString("x2");
-                output[r] = h[0];
-                output[r + 1] = h[1];
-            }
-            return new String(output);
-        }
-
-        public static string PascalCaseToTitle(string input)
-        {
-            if (String.IsNullOrEmpty(input)) return input;
-
-            int spacesToAdd = 0;
-            for (int i = 1; i < input.Length; i++)
-                if (Char.IsUpper(input[i]))
-                    spacesToAdd++;
-            var output = new char[input.Length + spacesToAdd];
-            output[0] = input[0];
-            int o = 1;
-            for (int i = 1; i < input.Length; i++)
-            {
-                if (Char.IsUpper(input[i]))
-                    output[o++] = ' ';
-                output[o] = input[i];
-            }
-
-            return new String(output);
-        }
-
-        public static void AddRange<T>(this List<Tuple<int, T>> list, IEnumerable<int> source, T label)
-        {
-            list.AddRange(source.Select(s => Tuple.Create(s, label)));
         }
 
         public static string AddSubdirectory(string fullPath, string subdirectory)
