@@ -31,9 +31,10 @@ Any of the following assembly generating commands can use the `--base hex|decima
 - `6502asm` to create MOS 6502 assembler source with `.byte` hex
 - `68000asm` to create Motorola 68000 assembler source with `DB.B` hex
 
+You can also generate directly-usable files (all binary except the CPC)
+
 - `zxtofzx` to create a fixed-width `.fzx` 
 - `zxtofzx --proportional` to create a proportional `.fzx` by auto left aligning and measuring widths
-
 - `zxtocbm` to create `.c64` and `.bin` binary ROM versions for the Commodore 64
 - `zxtoa8` to create a `.fnt` binary version for the Atari 8-bit series
 - `zxtocpc` to create a `.bas` BASIC file for use with the Amstrad CPC range
