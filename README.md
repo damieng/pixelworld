@@ -12,7 +12,7 @@ The code is in need of clean-up in various places, please bear with me.
 
 ### Ripping
 
-- `dump` to RAM-dump the contents of files (currently supports `.z80` snapshots and recurses through `.zip` archives)
+- `dump` to RAM-dump snapshot files (currently supports `.z80` and recurses through `.zip` archives)
 - `hunt` to look through RAM dumps for possible bitmap fonts (currently supports only ZX Spectrum fonts)
 
 ### Conversions
