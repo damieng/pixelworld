@@ -55,3 +55,13 @@ This works in conjunction with `SpectrumDisplay.GetCandidates` to basically divi
 ### GeneralHeuristicFinder
 
 This finder looks for fonts by expecting certain pixel densities in relative to each other. For example ! should have less pixels than m. c should have less pixels than o etc.
+
+## Setup
+
+The project should compile with VS 2019 or later.
+
+Some additional files are necessary for the conversions and should be placed in a `templates` folder.
+
+- atari8.fnt - A dump of the Atari system font that includes all the symbols characters etc.
+- c64-both.c64 - A dump of the Commodore 64 upper+lower case
+- c64-upper.c64 - A dump of the Commodore 64 upper case + symbols
