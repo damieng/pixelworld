@@ -4,8 +4,10 @@ using System.IO;
 
 namespace PixelWorld.BinarySource
 {
-    public class Z80BinarySource : IBinarySource
+    public class Z80BinarySource : ZXSpectrumBinarySource, IBinarySource
     {
+        public static IBinarySource Instance { get; } = new Z80BinarySource();
+
         enum MemoryModel
         {
             ZX48,
@@ -18,14 +20,14 @@ namespace PixelWorld.BinarySource
             // Use Ziggy's Z80 loader to decode the file
             try
             {
-                var z80Snapshot = Z80File.LoadZ80(source);
-                var memoryModel = GetMemoryModel(z80Snapshot);
+                var snapshot = Z80File.LoadZ80(source);
+                var memoryModel = GetMemoryModel(snapshot);
 
                 return memoryModel switch
                 {
-                    MemoryModel.ZX48 => Setup48KMemory(z80Snapshot),
-                    MemoryModel.ZX128 => Setup128KMemory(z80Snapshot),
-                    MemoryModel.ZXPlus3 => SetupPlus3Memory(z80Snapshot),
+                    MemoryModel.ZX48 => Setup48KMemory(snapshot),
+                    MemoryModel.ZX128 => Setup128KMemory(snapshot.RAM_BANK, snapshot.PORT_7FFD),
+                    MemoryModel.ZXPlus3 => SetupPlus3Memory(snapshot),
                     _ => throw new NotSupportedException($"Unknown MemoryModel {memoryModel}"),
                 };
             }
@@ -36,79 +38,35 @@ namespace PixelWorld.BinarySource
             }
         }
 
-        private static ArraySegment<byte> SetupPlus3Memory(Z80_SNAPSHOT z80Snapshot)
+        private static ArraySegment<byte> SetupPlus3Memory(Z80_SNAPSHOT snapshot)
         {
-            if ((z80Snapshot.PORT_1FFD & 1) == 0)
-                return Setup128KMemory(z80Snapshot);
+            if ((snapshot.PORT_1FFD & 1) == 0)
+                return Setup128KMemory(snapshot.RAM_BANK, snapshot.PORT_7FFD);
 
             throw new NotSupportedException("Need to implement +3 ROM bank paging");
         }
 
-        private static readonly int[] mappablePages = { 0, 2, 6, 8, 12, 14 };
-
-        private static ArraySegment<byte> Setup128KMemory(Z80_SNAPSHOT z80Snapshot)
-        {
-            var extraSpace = 16;
-            var bankAtC8000 = GetC800RamBank(z80Snapshot.PORT_7FFD);
-            if (bankAtC8000 == 10 || bankAtC8000 == 04)
-            {
-                // This means the top bank is duplicated. Which is stupid but happens.
-                extraSpace = 32;
-            }
-
-            var ram = new byte[(extraSpace + 128) * 1024]; // Leave first 16KB ROM blank
-
-
-            CopyBank(z80Snapshot, 10, ram, 0x4000);
-            CopyBank(z80Snapshot, 04, ram, 0x8000);
-            CopyBank(z80Snapshot, bankAtC8000, ram, 0xC000);
-
-            int nextAddress = 0x10000;
-            for (var i = 0; i < mappablePages.Length; i++)
-            {
-                var page = mappablePages[i];
-                if (page != bankAtC8000)
-                {
-                    CopyBank(z80Snapshot, page, ram, nextAddress);
-                    nextAddress += 0x4000;
-                }
-            }
-
-            return new ArraySegment<byte>(ram);
-        }
-
-        private static ArraySegment<byte> Setup48KMemory(Z80_SNAPSHOT z80Snapshot)
+        private static ArraySegment<byte> Setup48KMemory(Z80_SNAPSHOT snapshot)
         {
             var memory = new byte[(16 + 48) * 1024]; // Leave first 16KB ROM blank
-            CopyBank(z80Snapshot, 10, memory, 0x4000);
-            CopyBank(z80Snapshot, 04, memory, 0x8000);
-            CopyBank(z80Snapshot, 00, memory, 0xC000);
+            CopyBank(snapshot.RAM_BANK, 10, memory, 0x4000);
+            CopyBank(snapshot.RAM_BANK, 04, memory, 0x8000);
+            CopyBank(snapshot.RAM_BANK, 00, memory, 0xC000);
             return new ArraySegment<byte>(memory);
         }
 
-        private static int GetC800RamBank(int out7ffd)
+        private static MemoryModel GetMemoryModel(Z80_SNAPSHOT snapshot)
         {
-            return (out7ffd & 0x07) * 2;
-        }
+            if (snapshot.FileVersion == 1) return MemoryModel.ZX48;
 
-        private static MemoryModel GetMemoryModel(Z80_SNAPSHOT z80Snapshot)
-        {
-            if (z80Snapshot.FileVersion == 1) return MemoryModel.ZX48;
-
-            return z80Snapshot.Byte34 switch
+            return snapshot.Byte34 switch
             {
                 0 or 1 or 2 => MemoryModel.ZX48,
-                3 => z80Snapshot.FileVersion == 3 ? MemoryModel.ZX48 : MemoryModel.ZX128,
+                3 => snapshot.FileVersion == 3 ? MemoryModel.ZX48 : MemoryModel.ZX128,
                 4 or 5 or 6 or 11 => MemoryModel.ZX128,
                 7 or 8 or 13 => MemoryModel.ZXPlus3,
-                _ => throw new NotSupportedException($"Unknown memory model for v{z80Snapshot.FileVersion} indicator {z80Snapshot.Byte34}"),
+                _ => throw new NotSupportedException($"Unknown memory model for v{snapshot.FileVersion} indicator {snapshot.Byte34}"),
             };
-        }
-
-        private static void CopyBank(Z80_SNAPSHOT z80Snapshot, int bank, byte[] ram, int address)
-        {
-            Array.Copy(z80Snapshot.RAM_BANK[bank], 0, ram, address, 8192);
-            Array.Copy(z80Snapshot.RAM_BANK[bank + 1], 0, ram, address + 8192, 8192);
         }
     }
 }
