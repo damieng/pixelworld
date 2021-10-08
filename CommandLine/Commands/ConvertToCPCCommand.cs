@@ -8,9 +8,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace CommandLine.Commands
 {
     [Description("Convert to Amstrad CPC BASIC file")]
-    public class ConvertToCPCCommand : Command<BasicSettings>
+    public class ConvertToCPCCommand : Command<TextOutputSettings>
     {
-        public override int Execute([NotNull] CommandContext context, [NotNull] BasicSettings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] TextOutputSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
             Converter.ConvertToAmstradCPC(files, Spectrum.UK, settings.OutputFolder, settings.Credit);

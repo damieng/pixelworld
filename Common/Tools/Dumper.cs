@@ -18,7 +18,8 @@ namespace PixelWorld.Tools
             foreach (var fileName in fileNames)
             {
                 Out.Write($"Opening file {fileName}");
-                ProcessFile(fileName, (a, b) => WriteDumpToDisk(a, b, outputFolder));
+                using var file = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+                ProcessStream(fileName, file, (a, b) => WriteDumpToDisk(a, b, outputFolder));
             }
 
             return 0;
@@ -35,48 +36,50 @@ namespace PixelWorld.Tools
             }
         }
 
-        static void ProcessFile(string fileName, Func<string, ArraySegment<byte>, int> processor)
-        {
-            switch (Path.GetExtension(fileName).ToLower())
-            {
-                case ".zip":
-                    using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Read))
-                        foreach (var entry in zip.Entries)
-                            ProcessStream(entry.Name, entry.Open(), processor);
-                    break;
-
-                default:
-                    using (var file = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        ProcessStream(fileName, file, processor);
-                    break;
-            }
-        }
-
-        static readonly Z80BinarySource z80Binary = new();
-
         public static void ProcessStream(string fileName, Stream stream, Func<string, ArraySegment<byte>, int> processor)
         {
-            switch (Path.GetExtension(fileName).ToLower())
+
+            string extension = Path.GetExtension(fileName).ToLower();
+            switch (extension)
             {
+                case ".zip":
+                    {
+                        using var zip = ZipFile.Open(fileName, ZipArchiveMode.Read);
+                        foreach (var entry in zip.Entries)
+                            ProcessStream(entry.Name, entry.Open(), processor);
+                        break;
+                    }
+
+                case ".sna":
+                    {
+                        processor(fileName, SNABinarySource.Instance.Read(stream));
+                        break;
+                    }
                 case ".z80":
                     {
-                        processor(fileName, z80Binary.Read(stream));
+                        processor(fileName, SNABinarySource.Instance.Read(stream));
+                        break;
+                    }
+
+                default:
+                    {
+                        Out.Write($"  Skipping file {fileName} as unknown extension {extension}");
                         break;
                     }
             }
         }
 
-        public static int WriteDumpToDisk(string name, ArraySegment<byte> dump, string outputFolder)
+        public static int WriteDumpToDisk(string fileName, ArraySegment<byte> dump, string outputFolder)
         {
             if (dump.Count < 768)
             {
-                Out.Write($"  Skipping {name} as too short {dump.Count}");
+                Out.Write($"  Skipping {fileName} as too short {dump.Count}");
                 return 0;
             }
 
-            Out.Write($"  Dumping {name}");
+            var newFileName = Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "dmp"));
 
-            var newFileName = Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(name), "*.dmp"));
+            Out.Write($"  Dumping {fileName} to {newFileName}");
 
             File.WriteAllBytes(newFileName, dump.Array);
             return 1;

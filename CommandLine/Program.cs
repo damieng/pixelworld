@@ -1,5 +1,7 @@
 ﻿using CommandLine.Commands;
+using PixelWorld;
 using Spectre.Console.Cli;
+using System;
 
 namespace CommandLine
 {
@@ -7,6 +9,8 @@ namespace CommandLine
     {
         static void Main(string[] args)
         {
+            Out.Attach(Console.WriteLine);
+
             var app = new CommandApp();
             app.Configure(config =>
             {
