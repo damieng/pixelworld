@@ -2,6 +2,7 @@
 // Original source: https://github.com/ArjunNair/Zero-Emulator/blob/master/Ziggy/Peripherals/SNAFile.cs
 
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace PixelWorld.BinarySource.Decoders
@@ -45,11 +46,11 @@ namespace PixelWorld.BinarySource.Decoders
     public class SNAFile
     {
         //Will return a filled snapshot structure from buffer
-        public static SNA_SNAPSHOT LoadSNA(System.IO.Stream fs)
+        public static SNA_SNAPSHOT LoadSNA(Stream fs)
         {
             SNA_SNAPSHOT snapshot;
 
-            using (System.IO.BinaryReader r = new(fs))
+            using (BinaryReader r = new(fs))
             {
                 int bytesToRead = (int)fs.Length;
 
@@ -148,7 +149,7 @@ namespace PixelWorld.BinarySource.Decoders
         public static SNA_SNAPSHOT LoadSNA(string filename)
         {
             SNA_SNAPSHOT sna;
-            using (System.IO.FileStream fs = new(filename, System.IO.FileMode.Open))
+            using (FileStream fs = new(filename, System.IO.FileMode.Open))
             {
                 sna = LoadSNA(fs);
             }

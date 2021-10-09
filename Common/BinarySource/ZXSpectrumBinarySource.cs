@@ -8,6 +8,8 @@ namespace PixelWorld.BinarySource
 
         protected static ArraySegment<byte> Setup128KMemory(byte[][] ramBanks, byte port7ffd)
         {
+            Out.Write("   Loading as ZX Spectrum 128K");
+
             var extraSpace = 16;
             var bankAtC8000 = GetC800RamBank(port7ffd);
             if (bankAtC8000 == 10 || bankAtC8000 == 04)

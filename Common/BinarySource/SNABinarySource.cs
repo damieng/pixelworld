@@ -1,37 +1,28 @@
-﻿using PixelWorld.BinarySource.Decoders;
-using System;
+﻿using System;
 using System.IO;
+using System.Text;
 
 namespace PixelWorld.BinarySource
 {
-    public class SNABinarySource : ZXSpectrumBinarySource, IBinarySource
+    public class SNABinarySource : IBinarySource
     {
         public static IBinarySource Instance { get; } = new SNABinarySource();
 
         public ArraySegment<Byte> Read(Stream source)
         {
-            // Use Ziggy SNA loader to decode the file
-            try
-            {
-                var snapshot = SNAFile.LoadSNA(source);
+            var signatureBuffer = new byte[8];
+            source.Read(signatureBuffer, 0, signatureBuffer.Length);
 
-                return snapshot switch
-                {
-                    SNA_48K sna48K => Setup48KMemory(sna48K),
-                    SNA_128K sna128K => Setup128KMemory(sna128K.RAM_BANK, sna128K.PORT_7FFD),
-                    _ => throw new NotSupportedException($"Unknown MemoryModel {snapshot.GetType()}"),
-                };
-            }
-            catch (Exception e)
+            if (Encoding.ASCII.GetString(signatureBuffer, 0, signatureBuffer.Length) == "MV - SNA")
             {
-                Out.Write($"  Unable to process {e.Message}");
-                return new ArraySegment<byte>();
+                Out.Write("  Loading as Amstrad CPC");
+                // Amstrad CPC SNA file
+                source.Seek(0x100, SeekOrigin.Begin);
+                return new ArraySegment<Byte>(source.ReadAllBytes());
             }
-        }
 
-        private static ArraySegment<byte> Setup48KMemory(SNA_48K snapshot)
-        {
-            return new ArraySegment<byte>(snapshot.RAM);
+            source.Seek(0, SeekOrigin.Begin);
+            return ZXSNABinarySource.Instance.Read(source);
         }
     }
 }

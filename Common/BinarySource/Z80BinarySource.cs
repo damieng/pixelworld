@@ -40,6 +40,8 @@ namespace PixelWorld.BinarySource
 
         private static ArraySegment<byte> SetupPlus3Memory(Z80_SNAPSHOT snapshot)
         {
+            Out.Write("  Loading as ZX Spectrum 128K +3");
+
             if ((snapshot.PORT_1FFD & 1) == 0)
                 return Setup128KMemory(snapshot.RAM_BANK, snapshot.PORT_7FFD);
 
@@ -48,6 +50,7 @@ namespace PixelWorld.BinarySource
 
         private static ArraySegment<byte> Setup48KMemory(Z80_SNAPSHOT snapshot)
         {
+            Out.Write("   Loading as ZX Spectrum 48K");
             var memory = new byte[(16 + 48) * 1024]; // Leave first 16KB ROM blank
             CopyBank(snapshot.RAM_BANK, 10, memory, 0x4000);
             CopyBank(snapshot.RAM_BANK, 04, memory, 0x8000);
