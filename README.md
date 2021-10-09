@@ -60,7 +60,7 @@ This finder looks for fonts by expecting certain pixel densities in relative to 
 
 The project should compile with VS 2019 or later.
 
-Some additional files are necessary for the conversions and should be placed in a `templates` folder.
+Some additional files are necessary for the conversions and should have their location specified by the `--templatePath` parameter.
 
 - atari8.fnt - A dump of the Atari system font that includes all the symbols characters etc.
 - c64-both.c64 - A dump of the Commodore 64 upper+lower case
