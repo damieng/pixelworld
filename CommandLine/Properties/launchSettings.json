@@ -2,8 +2,8 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "dump SenseOfBalance.sna .",
-      "workingDirectory": "e:\\retro\\sinclair\\spectrum\\games"
+      "commandLineArgs": "dump sceptre.sna .",
+      "workingDirectory": "C:\\Users\\Damien\\Desktop"
     }
   }
 }

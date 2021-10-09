@@ -30,9 +30,9 @@ namespace PixelWorld
             return memory.GetBuffer();
         }
 
-        public static string MakeFileName(string fileName, string extension, string outputFolder)
+        public static string MakeFileName(string fileName, string extension, string folder)
         {
-            return Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(fileName), extension));
+            return Path.Combine(folder, Path.ChangeExtension(Path.GetFileName(fileName), extension));
         }
 
         public static int GetGlobSplitPoint(string pathGlob)
