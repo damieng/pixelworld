@@ -30,7 +30,7 @@ namespace CommandLine
                 config.AddCommand<ConvertToFZXCommand>("zxtofzx");
                 config.AddCommand<ConvertToC64Command>("zxtoc64");
                 config.AddCommand<ConvertToCPCCommand>("zxtocpc");
-                config.AddCommand<ConvertToCPCCommand>("zxtoa8");
+                config.AddCommand<ConvertToAtari8BitCommand>("zxtoa8");
             });
 
             app.Run(args);
