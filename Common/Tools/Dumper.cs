@@ -57,7 +57,7 @@ namespace PixelWorld.Tools
                     }
                 case ".z80":
                     {
-                        processor(fileName, SNABinarySource.Instance.Read(stream));
+                        processor(fileName, ZXSNABinarySource.Instance.Read(stream));
                         break;
                     }
 
