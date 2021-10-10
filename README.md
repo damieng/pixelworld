@@ -40,21 +40,21 @@ You can also generate directly-usable files (all binary except the CPC)
 
 Finding bitmap fonts in a raw memory dump isn't trivial as there's no specific header however there are a few different strategies available in the code that can be combined and tweaked, they are:
 
-### EnvironmentGuidedFinder
+### [EnvironmentGuidedFinder](https://github.com/damieng/pixelworld/blob/main/Common/OffsetFinders/EnviromentGuidedFinder.cs)
 
 This relies on programmers using the ROM routines to print text to the screen and is surprisingly successful. It basically looks for a font at whatever RAM location is specified at memory locations 23606 & 23607.
 
-### KnownCharPatternFinder
+### [KnownCharPatternFinder](https://github.com/damieng/pixelworld/blob/main/Common/OffsetFinders/KnownCharPatternFinder.cs)
 
 This looks for fonts based on well-known glyphs that designers rarely changed such as the copyright symbol and by using their known position in the font works out where the font is located.
 
-### CandidatesInWindowFinder
+### [CandidatesInWindowFinder](https://github.com/damieng/pixelworld/blob/main/Common/OffsetFinders/CandidatesInWindowFinder.cs)
 
 This provides an array of potential glyphs without any knowledge of what they actually are. It requires you pass a certain number of glyphs and looks to find a minimum amount of them in a sequence in RAM.
 
 This works in conjunction with `SpectrumDisplay.GetCandidates` to basically divide the current screen RAM into 8x8 blocks and gather up as many unique glyphs as it can. The principle here is that the font is probably used on-screen and is aligned to the usual text grid.
 
-### GeneralHeuristicFinder
+### [GeneralHeuristicFinder](https://github.com/damieng/pixelworld/blob/main/Common/OffsetFinders/GeneralHeuristicFinder.cs)
 
 This finder looks for fonts by expecting certain pixel densities in relative to each other. For example ! should have less pixels than m. c should have less pixels than o etc.
 
