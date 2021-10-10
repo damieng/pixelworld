@@ -52,7 +52,7 @@ This looks for fonts based on well-known glyphs that designers rarely changed su
 
 This provides an array of potential glyphs without any knowledge of what they actually are. It requires you pass a certain number of glyphs and looks to find a minimum amount of them in a sequence in RAM.
 
-This works in conjunction with `SpectrumDisplay.GetCandidates` to basically divide the current screen RAM into 8x8 blocks and gather up as many unique glyphs as it can. The principle here is that the font is probably used on-screen and is aligned to the usual text grid.
+This works in conjunction with [SpectrumDisplay.GetCandidates](https://github.com/damieng/pixelworld/blob/main/Common/Display/SpectrumDisplay.cs#L69) to divide the current screen memory into as many unique 8x8 character blocks as it can. The principle here is that the font is probably used on-screen and is aligned to the usual (32x24) text grid.
 
 ### [GeneralHeuristicFinder](https://github.com/damieng/pixelworld/blob/main/Common/OffsetFinders/GeneralHeuristicFinder.cs)
 
