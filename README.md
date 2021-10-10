@@ -17,7 +17,9 @@ The code is in need of clean-up in various places, please bear with me.
 
 ### Conversions
 
-- `preview` to create a .png file
+The following commands work against the ZX Spectrum RAW 768 byte/.ch8 files:
+
+- `preview` to create a `.png` preview file
 
 Any of the following assembly generating commands can use the `--base hex|decimal` flags. The z80 one can also use `--base binary`.
 
@@ -62,9 +64,9 @@ The project should compile with VS 2019 or later.
 
 Some [template files are necessary for the conversions](https://github.com/damieng/pixelworld/discussions/14) and should have their location specified by the `--templatePath` parameter.
 
-- atari8.fnt - A dump of the Atari system font that includes all the symbols characters etc.
-- c64-both.c64 - A dump of the Commodore 64 upper+lower case
-- c64-upper.c64 - A dump of the Commodore 64 upper case + symbols
+- `atari8.fnt` - A dump of the Atari system font that includes all the symbols characters etc.
+- `c64-both.c64` - A dump of the Commodore 64 upper+lower case
+- `c64-upper.c64` - A dump of the Commodore 64 upper case + symbols
 
 ## Example usage
 
