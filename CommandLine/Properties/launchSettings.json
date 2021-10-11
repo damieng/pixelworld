@@ -2,8 +2,8 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "dump sceptre.sna .",
-      "workingDirectory": "C:\\Users\\Damien\\Desktop"
+      "commandLineArgs": "hunt \"Zub (1986)(Mastertronic Added Dimension).dmp\" .",
+      "workingDirectory": "e:\\Retro\\_Mixed\\fonts\\Sinclair\\RAM"
     }
   }
 }

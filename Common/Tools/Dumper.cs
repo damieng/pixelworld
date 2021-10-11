@@ -1,8 +1,6 @@
 ﻿using PixelWorld.BinarySource;
-using PixelWorld.DumpScanners;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -25,20 +23,8 @@ namespace PixelWorld.Tools
             return 0;
         }
 
-        public static void CreateScreen(string fileName, BinaryReader reader, string outputFolder)
+        public static void ProcessStream(string fileName, Stream stream, Func<string, ArraySegment<byte>, int> processor, bool processUnknown = false)
         {
-            var screenPreviewFileName = Utils.AddSubdirectory(Utils.MakeFileName(fileName, ".png", outputFolder), "Screens");
-            if (!File.Exists(screenPreviewFileName))
-            {
-                reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                using var bitmap = SpectrumDumpScanner.GetScreenPreview(reader);
-                bitmap?.Save(screenPreviewFileName, ImageFormat.Png);
-            }
-        }
-
-        public static void ProcessStream(string fileName, Stream stream, Func<string, ArraySegment<byte>, int> processor)
-        {
-
             string extension = Path.GetExtension(fileName).ToLower();
             switch (extension)
             {
@@ -52,18 +38,25 @@ namespace PixelWorld.Tools
 
                 case ".sna":
                     {
-                        processor(fileName, SNABinarySource.Instance.Read(stream));
+                        processor(fileName, SNABinarySource.Instance.GetMemory(stream));
                         break;
                     }
                 case ".z80":
                     {
-                        processor(fileName, ZXSNABinarySource.Instance.Read(stream));
+                        processor(fileName, ZXSNABinarySource.Instance.GetMemory(stream));
                         break;
                     }
 
                 default:
                     {
-                        Out.Write($"  Skipping file {fileName} as unknown extension {extension}");
+                        if (processUnknown)
+                        {
+                            processor(fileName, stream.ReadAllBytes());
+                        }
+                        else
+                        {
+                            Out.Write($"  Skipping file {fileName} as unknown extension {extension}");
+                        }
                         break;
                     }
             }

@@ -15,7 +15,7 @@ namespace PixelWorld.BinarySource
             ZXPlus3
         };
 
-        public ArraySegment<Byte> Read(Stream source)
+        public ArraySegment<Byte> GetMemory(Stream source)
         {
             // Use Ziggy's Z80 loader to decode the file
             try

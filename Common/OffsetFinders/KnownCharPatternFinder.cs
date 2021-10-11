@@ -19,7 +19,7 @@ namespace PixelWorld.OffsetFinders
     {
         public static List<int> FindOffsets(byte[] buffer, KnownCharPattern[] knownFont)
         {
-            var offsets = new List<int>();
+            var offsets = new HashSet<int>();
 
             var end = buffer.Length - Spectrum.FontSize;
 
@@ -36,7 +36,7 @@ namespace PixelWorld.OffsetFinders
                 }
             }
 
-            return offsets;
+            return new List<int>(offsets);
         }
     }
 }

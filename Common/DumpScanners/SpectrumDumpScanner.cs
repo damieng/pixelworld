@@ -76,13 +76,6 @@ namespace PixelWorld.DumpScanners
             return sha1.ToHex() == "7fa0e307a6e78cf198c3a480a18437dcbecae485c22634cea69cdea3240e7079fe6bedc3c35a76047fb244b4fa15aa35";
         }
 
-        public static Bitmap GetScreenPreview(BinaryReader reader)
-        {
-            reader.BaseStream.Seek(16384, SeekOrigin.Begin);
-            var buffer = reader.ReadBytes(screenLength);
-            return buffer.IsEmpty(0, buffer.Length) ? null : SpectrumDisplay.GetBitmap(buffer, 0);
-        }
-
         private static readonly KnownCharPattern[] RarelyChangedRomChars = {
             new KnownCharPattern(3, new byte[] // #
             {
@@ -151,7 +144,5 @@ namespace PixelWorld.DumpScanners
                 0b00111100
             })
         };
-
-        private const int screenLength = 6912;
     }
 }
