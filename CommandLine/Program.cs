@@ -20,6 +20,7 @@ namespace CommandLine
                 config.AddCommand<DumpCommand>("dump");
                 config.AddCommand<HuntCommand>("hunt");
 
+                config.AddCommand<ScreenshotCommand>("screenshot");
                 config.AddCommand<PreviewCommand>("preview");
 
                 config.AddCommand<Z80AsmCommand>("z80asm");

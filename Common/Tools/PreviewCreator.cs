@@ -15,7 +15,7 @@ namespace PixelWorld.Tools
                 using var source = File.OpenRead(fileName);
                 using var reader = new BinaryReader(source);
                 var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
-                var bitmap = sourceFont.CreateBitmap();
+                using var bitmap = sourceFont.CreateBitmap();
                 bitmap.Save(Utils.MakeFileName(fileName, "png", outputFolder));
             }
 

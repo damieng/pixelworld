@@ -8,7 +8,7 @@ namespace PixelWorld.BinarySource
     {
         public static IBinarySource Instance { get; } = new SNABinarySource();
 
-        public ArraySegment<Byte> Read(Stream source)
+        public ArraySegment<Byte> GetMemory(Stream source)
         {
             var signatureBuffer = new byte[8];
             source.Read(signatureBuffer, 0, signatureBuffer.Length);
@@ -22,7 +22,7 @@ namespace PixelWorld.BinarySource
             }
 
             source.Seek(0, SeekOrigin.Begin);
-            return ZXSNABinarySource.Instance.Read(source);
+            return ZXSNABinarySource.Instance.GetMemory(source);
         }
     }
 }

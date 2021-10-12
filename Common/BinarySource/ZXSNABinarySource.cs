@@ -8,7 +8,7 @@ namespace PixelWorld.BinarySource
     {
         public static IBinarySource Instance { get; } = new ZXSNABinarySource();
 
-        public ArraySegment<Byte> Read(Stream source)
+        public ArraySegment<Byte> GetMemory(Stream source)
         {
             // Use Ziggy SNA loader to decode the file
             try

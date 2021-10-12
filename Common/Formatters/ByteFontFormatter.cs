@@ -46,10 +46,11 @@ namespace PixelWorld.Formatters
         {
             fallback ??= blankWriter;
 
-           var writer = new BinaryWriter(output);
+            using var writer = new BinaryWriter(output);
             for (var i = 0; i < length; i++)
             {
-                if (charset.TryGetValue(i, out var charToWrite) && font.Glyphs.TryGetValue(charToWrite, out var glyph)) {
+                if (charset.TryGetValue(i, out var charToWrite) && font.Glyphs.TryGetValue(charToWrite, out var glyph))
+                {
                     for (int y = 0; y < charHeight; y++)
                     {
                         var b = new Byte();
@@ -60,7 +61,8 @@ namespace PixelWorld.Formatters
                         }
                         writer.Write(b);
                     }
-                } else
+                }
+                else
                 {
                     var buffer = fallback((int)writer.BaseStream.Position);
                     writer.Write(buffer.Array, buffer.Offset, buffer.Count);
