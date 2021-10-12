@@ -12,8 +12,9 @@ The code is in need of clean-up in various places, please bear with me.
 
 ### Ripping
 
-- `dump` to RAM-dump snapshot files (currently supports `.z80` and recurses through `.zip` archives)
+- `dump` to RAM-dump snapshot files (currently supports `.z80` and `.sna` and recurses through `.zip` archives)
 - `hunt` to look through RAM dumps for possible bitmap fonts (currently supports only ZX Spectrum fonts)
+- `screenshot` to create a screenshot from a RAM-dump or snapshot files
 
 ### Conversions
 
@@ -35,6 +36,8 @@ You can also generate directly-usable files (all binary except the CPC)
 - `zxtocbm` to create `.c64` and `.bin` binary ROM versions for the Commodore 64
 - `zxtoa8` to create a `.fnt` binary version for the Atari 8-bit series
 - `zxtocpc` to create a `.bas` BASIC file for use with the Amstrad CPC range
+
+Any command can be further detailed using the `--help` option which will detail the additional flags and options available.
 
 ## Hunt strategies
 
