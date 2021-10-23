@@ -43,7 +43,8 @@ namespace PixelWorld
 
         public static string AddSubdirectory(string fullPath, string subdirectory)
         {
-            var directory = Path.GetDirectoryName(fullPath);
+            var directory = Path.GetDirectoryName(fullPath) ?? throw new InvalidOperationException();
+            
             var fileName = Path.GetFileName(fullPath);
             return Path.Combine(directory, subdirectory, fileName);
         }

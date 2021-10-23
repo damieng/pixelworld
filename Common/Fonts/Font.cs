@@ -49,7 +49,7 @@ namespace PixelWorld.Fonts
             return s;
         }
 
-        public bool Equals(Font other)
+        public bool Equals(Font? other)
         {
             return other is not null 
                 && (ReferenceEquals(this, other) || string.Equals(Name, other.Name)
@@ -58,7 +58,7 @@ namespace PixelWorld.Fonts
                 && ((IStructuralEquatable) Glyphs.Values.ToArray()).Equals(other.Glyphs.Values.ToArray(), StructuralComparisons.StructuralEqualityComparer));
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is not null
                    && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Font) obj));

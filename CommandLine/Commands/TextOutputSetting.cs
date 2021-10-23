@@ -7,6 +7,6 @@ namespace CommandLine.Commands
     {
         [CommandOption("--credit")]
         [Description("Credit for the font on generated human-readable versions")]
-        public string Credit { get; set; }
+        public string Credit { get; set; } = "";
     }
 }

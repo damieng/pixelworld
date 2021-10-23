@@ -19,17 +19,17 @@ namespace PixelWorld.Fonts
             Data = data;
         }
 
-        public bool Equals(Glyph other)
+        public bool Equals(Glyph? other)
         {
-            return !(other is null)
+            return other is not null
                 && (ReferenceEquals(this, other) || Height == other.Height
                 && Width == other.Width
                 && ((IStructuralEquatable)Data).Equals(other.Data, StructuralComparisons.StructuralEqualityComparer));
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            return !(obj is null)
+            return obj is not null
                    && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Glyph)obj));
         }
 

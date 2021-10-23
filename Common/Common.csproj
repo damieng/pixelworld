@@ -5,6 +5,7 @@
     <AssemblyName>PixelWorld</AssemblyName>
     <RootNamespace>PixelWorld</RootNamespace>
     <Configurations>Debug;Release;Debug Dump;Debug Dedupe;Organize;ConvertZXtoC64;Preview;ZXToFZX</Configurations>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

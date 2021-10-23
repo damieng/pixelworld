@@ -64,6 +64,8 @@ namespace PixelWorld.Tools
 
         public static int WriteDumpToDisk(string fileName, ArraySegment<byte> dump, string outputFolder)
         {
+            if (dump.Array is null) throw new ArgumentOutOfRangeException(nameof(dump), "Array is null");
+            
             if (dump.Count < 768)
             {
                 Out.Write($"  Skipping {fileName} as too short {dump.Count}");

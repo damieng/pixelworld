@@ -8,6 +8,6 @@ namespace CommandLine.Commands
         [CommandOption("--templatePath <PATH>")]
         [Description("What path to use for binary templates containing missing glyphs.")]
         [DefaultValue(".")]
-        public string TemplatePath { get; set; }
+        public string TemplatePath { get; set; } = ".";
     }
 }

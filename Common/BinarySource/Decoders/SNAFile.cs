@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace PixelWorld.BinarySource.Decoders
 {
+    #nullable disable // Leave 3rd-party code as-is
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct SNA_HEADER
     {
@@ -144,16 +145,6 @@ namespace PixelWorld.BinarySource.Decoders
             }
             return snapshot;
         }
-
-        //Will return a filled snapshot structure from file
-        public static SNA_SNAPSHOT LoadSNA(string filename)
-        {
-            SNA_SNAPSHOT sna;
-            using (FileStream fs = new(filename, System.IO.FileMode.Open))
-            {
-                sna = LoadSNA(fs);
-            }
-            return sna;
-        }
     }
+    #nullable restore
 }

@@ -6,6 +6,7 @@ using System.IO;
 
 namespace PixelWorld.BinarySource.Decoders
 {
+    #nullable disable // Leave 3rd party code as-is.
     public class Z80_SNAPSHOT
     {
         public int TYPE;                //0 = 48k, 1 = 128k, 2 = +3, 3 = Pentagon 128k
@@ -348,11 +349,6 @@ namespace PixelWorld.BinarySource.Decoders
 
             return snapshot;
         }
-
-        public static Z80_SNAPSHOT LoadZ80(string filename)
-        {
-            using FileStream fs = new(filename, FileMode.Open);
-            return LoadZ80(fs);
-        }
     }
+    #nullable restore
 }

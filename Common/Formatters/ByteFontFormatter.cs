@@ -42,7 +42,7 @@ namespace PixelWorld.Formatters
             }
         }
 
-        public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset, int length, Func<int, ArraySegment<byte>> fallback = null)
+        public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset, int length, Func<int, ArraySegment<byte>>? fallback = null)
         {
             fallback ??= blankWriter;
 
@@ -65,7 +65,8 @@ namespace PixelWorld.Formatters
                 else
                 {
                     var buffer = fallback((int)writer.BaseStream.Position);
-                    writer.Write(buffer.Array, buffer.Offset, buffer.Count);
+                    if (buffer.Array is not null)
+                        writer.Write(buffer.Array, buffer.Offset, buffer.Count);
                 }
             }
         }

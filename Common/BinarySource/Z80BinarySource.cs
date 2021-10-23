@@ -21,6 +21,9 @@ namespace PixelWorld.BinarySource
             try
             {
                 var snapshot = Z80File.LoadZ80(source);
+                if (snapshot is null)
+                    throw new NotSupportedException("Could not decode as Z80 format file");
+
                 var memoryModel = GetMemoryModel(snapshot);
 
                 return memoryModel switch
@@ -68,7 +71,8 @@ namespace PixelWorld.BinarySource
                 3 => snapshot.FileVersion == 3 ? MemoryModel.ZX48 : MemoryModel.ZX128,
                 4 or 5 or 6 or 11 => MemoryModel.ZX128,
                 7 or 8 or 13 => MemoryModel.ZXPlus3,
-                _ => throw new NotSupportedException($"Unknown memory model for v{snapshot.FileVersion} indicator {snapshot.Byte34}"),
+                _ => throw new NotSupportedException(
+                    $"Unknown memory model for v{snapshot.FileVersion} indicator {snapshot.Byte34}"),
             };
         }
     }

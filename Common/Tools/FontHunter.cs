@@ -43,6 +43,8 @@ namespace PixelWorld.Tools
 
         private static int ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump, string outputFolder)
         {
+            if (dump.Array is null) throw new ArgumentOutOfRangeException(nameof(dump), "Array is null");
+
             using var memory = new MemoryStream(dump.Array);
             using var reader = new BinaryReader(memory);
             var fontIndex = 0;

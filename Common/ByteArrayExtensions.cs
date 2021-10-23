@@ -5,7 +5,7 @@ namespace PixelWorld
 {
     public class ByteArrayEqualityComparer : IEqualityComparer<byte[]>
     {
-        public bool Equals(byte[] x, byte[] y)
+        public bool Equals(byte[]? x, byte[]? y)
         {
             return x != null && y != null
                              && x[0] == y[0]
