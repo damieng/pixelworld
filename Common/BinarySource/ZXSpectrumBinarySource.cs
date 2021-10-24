@@ -12,7 +12,7 @@ namespace PixelWorld.BinarySource
 
             var extraSpace = 16;
             var bankAtC8000 = GetC800RamBank(port7ffd);
-            if (bankAtC8000 == 10 || bankAtC8000 == 04)
+            if (bankAtC8000 is 10 or 04)
             {
                 // This means the top bank is duplicated. Which is stupid but happens.
                 extraSpace = 32;

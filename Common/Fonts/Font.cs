@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
 namespace PixelWorld.Fonts
 {
-    public class Font : IEquatable<Font>
+
+    [DebuggerDisplay("Print(),nq")]
+        public class Font : IEquatable<Font>
     {
         public readonly string Name;
         public readonly int Height;
@@ -26,7 +29,7 @@ namespace PixelWorld.Fonts
             Height = height;
         }
 
-        public string ToDebug(string input)
+        public string Print(string input)
         {
             var s = "";
 
@@ -51,11 +54,12 @@ namespace PixelWorld.Fonts
 
         public bool Equals(Font? other)
         {
-            return other is not null 
-                && (ReferenceEquals(this, other) || string.Equals(Name, other.Name)
-                && Height == other.Height
-                && Glyphs.Count == other.Glyphs.Count
-                && ((IStructuralEquatable) Glyphs.Values.ToArray()).Equals(other.Glyphs.Values.ToArray(), StructuralComparisons.StructuralEqualityComparer));
+            return other is not null
+                   && (ReferenceEquals(this, other) || string.Equals(Name, other.Name)
+                       && Height == other.Height
+                       && Glyphs.Count == other.Glyphs.Count
+                       && ((IStructuralEquatable) Glyphs.Values.ToArray()).Equals(other.Glyphs.Values.ToArray(),
+                           StructuralComparisons.StructuralEqualityComparer));
         }
 
         public override bool Equals(object? obj)

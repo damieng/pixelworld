@@ -66,7 +66,6 @@ namespace PixelWorld.OffsetFinders
         {
             if (buffer.IsEmpty(i)) // Start with a space
             {
-                var spacesCount = 1;
                 var longestNoEmptyRun = 0;
                 var currentNoEmptyRun = 0;
                 var totalNotEmpty = 0;
@@ -101,19 +100,23 @@ namespace PixelWorld.OffsetFinders
                     }
                 }
 
-                var likelies = new Func<byte[], int, bool>[] { HasLikelyLowerDensities, HasLikelyUpperDensities, HasLikelyNumericDensities, HasLikelySymbolDensities };
+                var likely = new Func<byte[], int, bool>[]
+                {
+                    HasLikelyLowerDensities, HasLikelyUpperDensities, HasLikelyNumericDensities,
+                    HasLikelySymbolDensities
+                };
 
-                var likelyDensityCount = likelies.Count(l => l(buffer, i));
+                var likelyDensityCount = likely.Count(l => l(buffer, i));
 
-                return spacesCount < 10
-                    && duplicates < 5
-                    && longestNoEmptyRun >= 26
-                    && totalNotEmpty >= 36
-                    && IsMinus(buffer, i + 13 * 8)
-                    && IsUnderscore(buffer, i + 63 * 8)
-                    && (missingUppercase == 0 || missingLowercase == 0)
-                    && SkewChecks(buffer, i) >= 2
-                    && likelyDensityCount > 1;
+                return duplicates < 5
+                       && longestNoEmptyRun >= 26
+                       && totalNotEmpty >= 36
+                       && IsMinus(buffer, i + 13 * 8)
+                       && IsUnderscore(buffer, i + 63 * 8)
+                       && (missingUppercase == 0 || missingLowercase == 0)
+                       && missingNumbers == 0
+                       && SkewChecks(buffer, i) >= 2
+                       && likelyDensityCount > 1;
             }
 
             return false;

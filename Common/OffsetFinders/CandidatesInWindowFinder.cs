@@ -12,7 +12,7 @@ namespace PixelWorld.OffsetFinders
     /// </summary>
     public static class CandidatesInWindowFinder
     {
-        const int minUniqueInWindow = 36;
+        const int MinUniqueInWindow = 36;
 
         class CandidateLocation
         {
@@ -29,15 +29,14 @@ namespace PixelWorld.OffsetFinders
         public static List<int> FindOffsets(byte[] buffer, byte[][] candidates)
         {
             // We don't have enough candidates to even look
-            if (candidates.Length < minUniqueInWindow) return new List<int>();
+            if (candidates.Length < MinUniqueInWindow) return new List<int>();
 
             var end = buffer.Length - Spectrum.FontSize;
-
             var ranges = new Dictionary<int, int>();
 
             // This is our rolling window of candidates - we have one for each 'skew' as a matched glyph is
-            // only valid on the 8 byte boundry
-            var windows = Enumerable.Range(0, 8).Select(e => new Queue<CandidateLocation>()).ToArray();
+            // only valid on the 8 byte boundary
+            var windows = Enumerable.Range(0, 8).Select(_ => new Queue<CandidateLocation>()).ToArray();
 
             for (var i = 0; i < end; i++)
             {
@@ -61,11 +60,11 @@ namespace PixelWorld.OffsetFinders
                     }
                 }
 
-                if (window.Count > minUniqueInWindow)
+                if (window.Count > MinUniqueInWindow)
                 {
                     // See if we have enough unique candidates
                     var uniqueCount = window.Select(w => w.Candidate).Distinct().Count();
-                    if (uniqueCount > minUniqueInWindow)
+                    if (uniqueCount > MinUniqueInWindow)
                     {
                         // Look back to the previous space
                         var backOffset = window.Peek().Offset;
@@ -94,7 +93,7 @@ namespace PixelWorld.OffsetFinders
 
             // Okay, we now have a list of ranges and a count of the uniques they contain
             var offsets = new List<int>();
-            if (ranges.Count < 25) // Fuck you Bubble Bobble
+            if (ranges.Count < 25)
                 offsets.AddRange(ranges.Keys);
             return offsets.ToList();
         }

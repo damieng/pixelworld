@@ -25,9 +25,8 @@ namespace PixelWorld.OffsetFinders
 
             for (var i = 0; i < end; i++)
             {
-                for (var c = 0; c < knownFont.Length; c++)
+                foreach (var known in knownFont)
                 {
-                    var known = knownFont[c];
                     if (buffer.IsSame(i, known.Pattern))
                     {
                         offsets.Add(i - known.CharCode * 8);

@@ -18,7 +18,8 @@ namespace PixelWorld.Display
 
         static readonly Color[] palette =
         {
-            Color.Black, Color.DarkBlue, Color.DarkRed, Color.DarkMagenta, Color.Green, Color.DarkCyan, Color.Olive, Color.Gray,
+            Color.Black, Color.DarkBlue, Color.DarkRed, Color.DarkMagenta, Color.Green, Color.DarkCyan, Color.Olive,
+            Color.Gray,
             Color.Black, Color.Blue, Color.Red, Color.Magenta, Color.LimeGreen, Color.Cyan, Color.Yellow, Color.White
         };
 
@@ -26,12 +27,12 @@ namespace PixelWorld.Display
         {
             UInt16 pos = 0;
             for (var third = 0; third < 3; third++)
-                for (var line = 0; line < 8; line++)
-                    for (var y = 0; y < 63; y += 8)
-                    {
-                        lookupY[y + line + (third * 64)] = pos;
-                        pos += 32;
-                    }
+            for (var line = 0; line < 8; line++)
+            for (var y = 0; y < 63; y += 8)
+            {
+                lookupY[y + line + (third * 64)] = pos;
+                pos += 32;
+            }
         }
 
         public static bool IsBlank(byte[] buffer, int offset)
@@ -44,24 +45,24 @@ namespace PixelWorld.Display
             var bitmap = new Bitmap(PixelWidth, PixelHeight);
 
             for (var ay = 0; ay < AttributeHeight; ay++)
-                for (var ax = 0; ax < AttributeWidth; ax++)
+            for (var ax = 0; ax < AttributeWidth; ax++)
+            {
+                var attribute = buffer[offset + ay * AttributeWidth + AttributeOffset + ax];
+                var bright = (Byte) ((attribute & 64) >> 3);
+                var foreColor = palette[(attribute & 7) | bright];
+                var backColor = palette[((attribute & 56) >> 3) | bright];
+                for (var py = 0; py < 8; py++)
                 {
-                    var attribute = buffer[offset + ay * AttributeWidth + AttributeOffset + ax];
-                    var bright = (Byte)((attribute & 64) >> 3);
-                    var foreColor = palette[(attribute & 7) | bright];
-                    var backColor = palette[((attribute & 56) >> 3) | bright];
-                    for (var py = 0; py < 8; py++)
+                    var y = ay * 8 + py;
+                    var pixels = buffer[offset + lookupY[y] + ax];
+                    for (var px = 0; px < 8; px++)
                     {
-                        var y = ay * 8 + py;
-                        var pixels = buffer[offset + lookupY[y] + ax];
-                        for (var px = 0; px < 8; px++)
-                        {
-                            var a = 128 >> px;
-                            var x = ax * 8 + px;
-                            bitmap.SetPixel(x, y, (pixels & a) != 0 ? foreColor : backColor);
-                        }
+                        var a = 128 >> px;
+                        var x = ax * 8 + px;
+                        bitmap.SetPixel(x, y, (pixels & a) != 0 ? foreColor : backColor);
                     }
                 }
+            }
 
             return bitmap;
         }
@@ -71,26 +72,26 @@ namespace PixelWorld.Display
             var uniques = new HashSet<byte[]>(new ByteArrayEqualityComparer());
 
             for (var ay = 0; ay < AttributeHeight; ay++)
-                for (var ax = 0; ax < AttributeWidth; ax++)
+            for (var ax = 0; ax < AttributeWidth; ax++)
+            {
+                var block = new byte[8];
+                for (var py = 0; py < 8; py++)
                 {
-                    var block = new byte[8];
-                    for (var py = 0; py < 8; py++)
-                    {
-                        var y = ay * 8 + py;
-                        block[py] = buffer[offset + lookupY[y] + ax];
-                    }
-
-                    uniques.Add(block);
+                    var y = ay * 8 + py;
+                    block[py] = buffer[offset + lookupY[y] + ax];
                 }
 
+                uniques.Add(block);
+            }
+
             // Empty and full blocks match too many things and slow things down
-            uniques.Remove(emptyChar); 
+            uniques.Remove(emptyChar);
             uniques.Remove(fullChar);
 
             return uniques.ToArray();
         }
 
-        private static readonly byte[] emptyChar = { 0, 0, 0, 0, 0, 0, 0, 0 };
-        private static readonly byte[] fullChar = { 255, 255, 255, 255, 255, 255, 255, 255 };
+        private static readonly byte[] emptyChar = {0, 0, 0, 0, 0, 0, 0, 0};
+        private static readonly byte[] fullChar = {255, 255, 255, 255, 255, 255, 255, 255};
     }
 }

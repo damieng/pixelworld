@@ -7,7 +7,7 @@ namespace PixelWorld.Tools
 {
     public static class PreviewCreator
     {
-        public static int Preview(List<string> fileNames, string outputFolder)
+        public static void Preview(List<string> fileNames, string outputFolder)
         {
             foreach (var fileName in fileNames)
             {
@@ -18,8 +18,6 @@ namespace PixelWorld.Tools
                 using var bitmap = sourceFont.CreateBitmap();
                 bitmap.Save(Utils.MakeFileName(fileName, "png", outputFolder));
             }
-
-            return fileNames.Count;
         }
     }
 }

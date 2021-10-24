@@ -11,13 +11,13 @@ namespace PixelWorld.Transformers
             for (var y = 0; y < source.Height; y++)
             {
                 var ty = y + vertical;
-                if (wrap || (ty >= 0 && ty < source.Height))
+                if (wrap || ty >= 0 && ty < source.Height)
                 {
                     ty %= source.Height;
                     for (var x = 0; x < source.Width; x++)
                     {
                         var tx = x + horizontal;
-                        if (wrap || (tx < source.Width && tx >= 0))
+                        if (wrap || tx < source.Width && tx >= 0)
                         {
                             tx %= source.Width;
                             data[tx, ty] = source.Data[x, y]; ;
@@ -26,8 +26,7 @@ namespace PixelWorld.Transformers
                 }
             }
 
-            var target = new Glyph(newWidth ?? source.Width, newHeight ?? source.Height, data);
-            return target;
+            return new Glyph(newWidth ?? source.Width, newHeight ?? source.Height, data);
         }
     }
 }

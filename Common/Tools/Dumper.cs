@@ -9,7 +9,7 @@ namespace PixelWorld.Tools
 {
     public static class Dumper
     {
-        public static int Dump(List<string> fileNames, string outputFolder)
+        public static void Dump(List<string> fileNames, string outputFolder)
         {
             Out.Write($"\nDumping {fileNames.Count()} files");
 
@@ -19,11 +19,9 @@ namespace PixelWorld.Tools
                 using var file = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
                 ProcessStream(fileName, file, (a, b) => WriteDumpToDisk(a, b, outputFolder));
             }
-
-            return 0;
         }
 
-        public static void ProcessStream(string fileName, Stream stream, Func<string, ArraySegment<byte>, int> processor, bool processUnknown = false)
+        public static void ProcessStream(string fileName, Stream stream, Func<string, ArraySegment<byte>, bool> processor, bool processUnknown = false)
         {
             string extension = Path.GetExtension(fileName).ToLower();
             switch (extension)
@@ -62,14 +60,14 @@ namespace PixelWorld.Tools
             }
         }
 
-        public static int WriteDumpToDisk(string fileName, ArraySegment<byte> dump, string outputFolder)
+        public static bool WriteDumpToDisk(string fileName, ArraySegment<byte> dump, string outputFolder)
         {
             if (dump.Array is null) throw new ArgumentOutOfRangeException(nameof(dump), "Array is null");
             
             if (dump.Count < 768)
             {
                 Out.Write($"  Skipping {fileName} as too short {dump.Count}");
-                return 0;
+                return false;
             }
 
             var newFileName = Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "dmp"));
@@ -77,7 +75,7 @@ namespace PixelWorld.Tools
             Out.Write($"  Dumping {fileName} to {newFileName}");
 
             File.WriteAllBytes(newFileName, dump.Array);
-            return 1;
+            return true;
         }
     }
 }

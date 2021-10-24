@@ -11,9 +11,8 @@ namespace PixelWorld.Tools
 {
     public static class Converter
     {
-        public static int ConvertToAtari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+        public static void ConvertToAtari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
-            var outputCount = 0;
             var templateFull = Path.Combine(templatePath, "atari8.fnt");
             Out.Write("Using template " + templateFull);
             var template = File.ReadAllBytes(templateFull);
@@ -29,13 +28,10 @@ namespace PixelWorld.Tools
                     using var target = File.Create(targetFileName);
                     ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
                 }
-                outputCount++;
             }
-
-            return outputCount;
         }
 
-        public static int ConvertToFZX(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional, string outputFolder)
+        public static void ConvertToFZX(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional, string outputFolder)
         {
             foreach (var fileName in fileNames)
             {
@@ -46,14 +42,10 @@ namespace PixelWorld.Tools
                 using var target = File.Create(Utils.MakeFileName(fileName, "fzx", outputFolder));
                 FZXFontFormatter.Write(font, target, Spectrum.UK, makeProportional);
             }
-
-            return fileNames.Count;
         }
 
-        public static int ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
+        public static void ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
         {
-            var outputCount = 0;
-
             foreach (var sourceFileName in fileNames)
             {
                 var targetFileName = Utils.MakeFileName(sourceFileName, "bas", outputFolder);
@@ -92,7 +84,6 @@ namespace PixelWorld.Tools
 
                     File.WriteAllText(targetFileName, output.ToString());
                 }
-                outputCount++;
                 
                 void WriteSymbolLine(StringBuilder output, int charIdx, Glyph glyph)
                 {
@@ -115,14 +106,10 @@ namespace PixelWorld.Tools
                 }
                 return results;
             }
-
-            return outputCount;
         }
 
-        public static int ConvertToC64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+        public static void ConvertToC64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
-            var outputCount = 0;
-
             var bothCaseTemplate = Path.Combine(templatePath, "c64-both.ch8");
             var upperCaseTemplate = Path.Combine(templatePath, "c64-upper.ch8");
             Out.Write($"Using templates {bothCaseTemplate} and {upperCaseTemplate}");
@@ -172,11 +159,7 @@ namespace PixelWorld.Tools
 
                     characterRom.Close();
                 }
-
-                outputCount++;
             }
-
-            return outputCount;
         }
     }
 }

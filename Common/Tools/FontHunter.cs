@@ -10,7 +10,7 @@ namespace PixelWorld.Tools
 {
     public static class FontHunter
     {
-        public static int Hunt(List<string> fileNames, string outputFolder)
+        public static void Hunt(List<string> fileNames, string outputFolder)
         {
             var inputsWithOutputsCount = 0;
             var outputCount = 0;
@@ -31,8 +31,6 @@ namespace PixelWorld.Tools
 
             Out.Write($"{inputsWithOutputsCount} files yielded {outputCount} results");
             Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
-
-            return 0;
         }
 
         static int ExtractFontFromDumpFile(string fileName, string outputFolder)

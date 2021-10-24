@@ -10,7 +10,7 @@ namespace PixelWorld.Formatters
 {
     public class AssemblyFontFormatter
     {
-        public static int CreateAssemblyDefines(string language, string defineByteInstruction, string format, List<string> fileNames, string outputFolder, string credit)
+        public static void CreateAssemblyDefines(string language, string defineByteInstruction, string format, List<string> fileNames, string outputFolder, string credit)
         {
             foreach (var fileName in fileNames)
             {
@@ -41,11 +41,9 @@ namespace PixelWorld.Formatters
 
                 File.WriteAllText(Utils.MakeFileName(fileName, language + ".asm", outputFolder), output.ToString());
             }
-
-            return fileNames.Count;
         }
 
-        public static int GenZ80AsmBinary(List<string> fileNames, string outputFolder, string credit)
+        public static void GenZ80AsmBinary(List<string> fileNames, string outputFolder, string credit)
         {
             foreach (var fileName in fileNames)
             {
@@ -75,8 +73,6 @@ namespace PixelWorld.Formatters
 
                 File.WriteAllText(Utils.MakeFileName(fileName, "z80.asm", outputFolder), output.ToString());
             }
-
-            return fileNames.Count;
         }
     }
 }

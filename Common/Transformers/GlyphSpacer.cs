@@ -7,14 +7,14 @@ namespace PixelWorld.Transformers
     {
         public static Glyph Proportional(Glyph source, int leftPad = 0, int rightPad = 0)
         {
-            var margins = CountLeftAndRightBlankColumns(source);
-            var actualWidth = source.Width - margins.Item1 - margins.Item2;
+            var (right, left) = CountLeftAndRightBlankColumns(source);
+            var actualWidth = source.Width - right - left;
             var newWidth = actualWidth + leftPad + rightPad;
 
-            return GlyphShifter.Shift(source, 0 - margins.Item1 + leftPad, 0, false, newWidth);
+            return GlyphShifter.Shift(source, 0 - right + leftPad, 0, false, newWidth);
         }
 
-        private static Tuple<int, int> CountLeftAndRightBlankColumns(Glyph glyph)
+        private static (int right, int left) CountLeftAndRightBlankColumns(Glyph glyph)
         {
             var rightSpace = 0;
             var rightIndex = 0;
@@ -27,7 +27,7 @@ namespace PixelWorld.Transformers
             while (leftIndex > rightIndex && glyph.IsColumnBlank(leftIndex--))
                 leftSpace++;
 
-            return Tuple.Create(rightSpace, leftSpace);
+            return (rightSpace, leftSpace);
         }
     }
 }

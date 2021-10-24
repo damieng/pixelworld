@@ -28,7 +28,7 @@ namespace CommandLine.Commands
             return 0;
         }
 
-        static int WriteScreenToDisk(string fileName, ArraySegment<byte> memory, ScreenshotSettings settings)
+        static bool WriteScreenToDisk(string fileName, ArraySegment<byte> memory, ScreenshotSettings settings)
         {
             var address = settings.Address ?? (memory.Count == 49152 ? 0 : 16384);
 
@@ -48,7 +48,7 @@ namespace CommandLine.Commands
                 File.WriteAllBytes(newFileName, screenBuffer);
             }
 
-            return 1;
+            return true;
         }
     }
 }

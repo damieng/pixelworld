@@ -44,14 +44,17 @@ namespace PixelWorld
         public static string AddSubdirectory(string fullPath, string subdirectory)
         {
             var directory = Path.GetDirectoryName(fullPath) ?? throw new InvalidOperationException();
-            
+
             var fileName = Path.GetFileName(fullPath);
             return Path.Combine(directory, subdirectory, fileName);
         }
 
         public static Dictionary<int, char> ToIndexedDictionary(this string sequence)
         {
-            return sequence.Select((c, i) => Tuple.Create(c, i)).Where((c, i) => c.Item1 != '\0').ToDictionary(k => k.Item2, v => v.Item1);
+            return sequence
+                .Select((c, i) => Tuple.Create(c, i))
+                .Where((c, i) => c.Item1 != '\0')
+                .ToDictionary(k => k.Item2, v => v.Item1);
         }
     }
 }

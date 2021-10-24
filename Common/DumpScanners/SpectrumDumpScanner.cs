@@ -33,7 +33,7 @@ namespace PixelWorld.DumpScanners
             var candidates = SpectrumDisplay.GetCandidates(buffer, 16384);
 
             var rst = EnviromentGuidedFinder.FindOffsets(buffer);
-            var rom = KnownCharPatternFinder.FindOffsets(buffer, RarelyChangedRomChars);
+            var rom = KnownCharPatternFinder.FindOffsets(buffer, rarelyChangedRomChars);
             var scr = CandidatesInWindowFinder.FindOffsets(buffer, candidates);
             var heu = GeneralHeuristicFinder.FindOffsets(buffer);
 
@@ -58,11 +58,10 @@ namespace PixelWorld.DumpScanners
 
         public static void OutFinderDetail(List<int> offsets, string method, HashSet<int> dupes)
         {
-            if (offsets.Count > 0)
-            {
-                var uniques = offsets.Count(o => !dupes.Contains(o));
-                Out.Write($"  {method} found offsets ({uniques} uniques) {String.Join(", ", offsets)}");
-            }
+            if (offsets.Count <= 0) return;
+            
+            var uniques = offsets.Count(o => !dupes.Contains(o));
+            Out.Write($"  {method} found offsets ({uniques} uniques) {String.Join(", ", offsets)}");
         }
 
         public static bool IsMissingTooManyGlyphs(byte[] buffer, int offset)
@@ -73,10 +72,12 @@ namespace PixelWorld.DumpScanners
         public static bool IsRomFont(byte[] buffer, int offset)
         {
             var sha1 = SHA384.Create().ComputeHash(buffer, offset, Spectrum.FontSize);
-            return sha1.ToHex() == "7fa0e307a6e78cf198c3a480a18437dcbecae485c22634cea69cdea3240e7079fe6bedc3c35a76047fb244b4fa15aa35";
+            return sha1.ToHex() ==
+                   "7fa0e307a6e78cf198c3a480a18437dcbecae485c22634cea69cdea3240e7079fe6bedc3c35a76047fb244b4fa15aa35";
         }
 
-        private static readonly KnownCharPattern[] RarelyChangedRomChars = {
+        private static readonly KnownCharPattern[] rarelyChangedRomChars =
+        {
             new(3, new byte[] // #
             {
                 0b00000000,
