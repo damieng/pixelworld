@@ -43,7 +43,7 @@ namespace PixelWorld.Tools
                     }
                 case ".z80":
                     {
-                        processor(fileName, ZXSNABinarySource.Instance.GetMemory(stream));
+                        processor(fileName, Z80BinarySource.Instance.GetMemory(stream));
                         break;
                     }
 
