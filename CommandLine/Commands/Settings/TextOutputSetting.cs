@@ -1,9 +1,9 @@
-﻿using Spectre.Console.Cli;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Spectre.Console.Cli;
 
-namespace CommandLine.Commands
+namespace CommandLine.Commands.Settings
 {
-    public class TextOutputSettings : BasicSettings
+    public class TextOutputSettings : RequiredSettings
     {
         [CommandOption("--credit")]
         [Description("Credit for the font on generated human-readable versions")]

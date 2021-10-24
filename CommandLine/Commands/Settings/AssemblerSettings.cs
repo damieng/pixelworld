@@ -1,7 +1,7 @@
-﻿using Spectre.Console.Cli;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Spectre.Console.Cli;
 
-namespace CommandLine.Commands
+namespace CommandLine.Commands.Settings
 {
     public class AssemblerSettings : TextOutputSettings
     {

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing.Imaging;
 using System.IO;
+using CommandLine.Commands.Settings;
 
 namespace CommandLine.Commands
 {

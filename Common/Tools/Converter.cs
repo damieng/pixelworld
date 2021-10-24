@@ -50,16 +50,15 @@ namespace PixelWorld.Tools
             return fileNames.Count;
         }
 
-        public static int ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit)
+        public static int ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
         {
-            int outputCount = 0;
-            var line = 9000;
+            var outputCount = 0;
 
             foreach (var sourceFileName in fileNames)
             {
                 var targetFileName = Utils.MakeFileName(sourceFileName, "bas", outputFolder);
 
-                line = 9000;
+                var line = startLine;
 
                 Out.Write($"Converting file {sourceFileName} to {targetFileName}");
                 using (var source = File.OpenRead(sourceFileName))
@@ -94,11 +93,11 @@ namespace PixelWorld.Tools
                     File.WriteAllText(targetFileName, output.ToString());
                 }
                 outputCount++;
-            }
-
-            void WriteSymbolLine(StringBuilder output, int charIdx, Glyph glyph)
-            {
-                output.AppendFormat("{0} SYMBOL {1},{2}\r\n", line += 10, charIdx, String.Join(',', MakeList(glyph.Data)));
+                
+                void WriteSymbolLine(StringBuilder output, int charIdx, Glyph glyph)
+                {
+                    output.AppendFormat("{0} SYMBOL {1},{2}\r\n", line += 10, charIdx, String.Join(',', MakeList(glyph.Data)));
+                }
             }
 
             int[] MakeList(bool[,] data)

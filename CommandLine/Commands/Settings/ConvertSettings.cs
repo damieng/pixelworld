@@ -1,9 +1,9 @@
-﻿using Spectre.Console.Cli;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Spectre.Console.Cli;
 
-namespace CommandLine.Commands
+namespace CommandLine.Commands.Settings
 {
-    public class ConvertSettings : BasicSettings
+    public class ConvertSettings : RequiredSettings
     {
         [CommandOption("--templatePath <PATH>")]
         [Description("What path to use for binary templates containing missing glyphs.")]

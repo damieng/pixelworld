@@ -14,35 +14,26 @@ namespace CommandLine.Commands
 
     public sealed class NumberBaseConverter : TypeConverter
     {
-        private readonly Dictionary<string, NumberBase> lookup;
-
-        public NumberBaseConverter()
-        {
-            lookup = new Dictionary<string, NumberBase>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, NumberBase> lookup =
+            new(StringComparer.OrdinalIgnoreCase)
             {
-                { "hex", NumberBase.Hex },
-                { "16", NumberBase.Hex },
-                { "decimal", NumberBase.Decimal },
-                { "10", NumberBase.Decimal },
-                { "binary", NumberBase.Binary },
-                { "2", NumberBase.Binary },
+                {"hex", NumberBase.Hex},
+                {"16", NumberBase.Hex},
+                {"decimal", NumberBase.Decimal},
+                {"10", NumberBase.Decimal},
+                {"binary", NumberBase.Binary},
+                {"2", NumberBase.Binary},
             };
-        }
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value is string stringValue)
-            {
-                var result = lookup.TryGetValue(stringValue, out var numberBase);
-                if (!result)
-                {
-                    const string format = "The value '{0}' is not a number base.";
-                    var message = string.Format(CultureInfo.InvariantCulture, format, value);
-                    throw new InvalidOperationException(message);
-                }
-                return numberBase;
-            }
-            throw new NotSupportedException("Can't convert value to number base.");
+            if (value is not string stringValue)
+                throw new NotSupportedException("Can't convert value to number base.");
+            
+            if (!lookup.TryGetValue(stringValue, out var numberBase))
+                throw new InvalidOperationException($"The value '{value}' is not a number base.");
+
+            return numberBase;
         }
     }
 }

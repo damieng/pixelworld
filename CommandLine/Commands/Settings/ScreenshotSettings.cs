@@ -1,9 +1,9 @@
-﻿using Spectre.Console.Cli;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Spectre.Console.Cli;
 
-namespace CommandLine.Commands
+namespace CommandLine.Commands.Settings
 {
-    public class ScreenshotSettings : BasicSettings
+    public class ScreenshotSettings : RequiredSettings
     {
         [CommandOption("--address <MEMORY>")]
         [Description("What memory address to use - otherwise auto detected.")]

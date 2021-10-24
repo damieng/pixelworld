@@ -1,8 +1,8 @@
 ﻿using Spectre.Console.Cli;
 
-namespace CommandLine.Commands
+namespace CommandLine.Commands.Settings
 {
-    public class BasicSettings : CommandSettings
+    public class RequiredSettings : CommandSettings
     {
         [CommandArgument(0, "[FileGlob]")]
         public string Glob { get; set; } = "";
