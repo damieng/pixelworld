@@ -8,9 +8,9 @@ using CommandLine.Commands.Settings;
 namespace CommandLine.Commands
 {
     [Description("Generate Intel 8086 assembly def files")]
-    public class X86AsmCommand : Command<AssemblerSettings>
+    public class Generate8086AssemblyCommand : Command<AssemblySettings>
     {
-        public override int Execute([NotNull] CommandContext context, [NotNull] AssemblerSettings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
             switch (settings.Base)

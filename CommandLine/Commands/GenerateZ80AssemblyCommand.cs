@@ -8,9 +8,9 @@ using CommandLine.Commands.Settings;
 namespace CommandLine.Commands
 {
     [Description("Generate Z80 assembly def files")]
-    public class Z80AsmCommand : Command<AssemblerSettings>
+    public class Z80AssemblyCommand : Command<AssemblySettings>
     {
-        public override int Execute([NotNull] CommandContext context, [NotNull] AssemblerSettings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
             switch (settings.Base)
