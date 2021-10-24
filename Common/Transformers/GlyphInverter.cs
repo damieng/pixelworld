@@ -13,8 +13,8 @@ namespace PixelWorld.Transformers
         {
             var target = new bool[source.Length, source.GetUpperBound(1)];
 
-            for (int x = 0; x < source.Length; x++)
-                for (int y = 0; y < source.GetUpperBound(1); y++)
+            for (var x = 0; x < source.Length; x++)
+                for (var y = 0; y < source.GetUpperBound(1); y++)
                     target[x, y] = !source[x, y];
 
             return target;

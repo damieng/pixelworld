@@ -14,10 +14,10 @@ namespace PixelWorld.Formatters
             {
                 writer.WriteLine("{0}", pair.Key);
                 var glyph = pair.Value;
-                for (int y = 0; y < glyph.Height; y++)
+                for (var y = 0; y < glyph.Height; y++)
                 {
                     string line = "";
-                    for (int x = 0; x < glyph.Width; x++)
+                    for (var x = 0; x < glyph.Width; x++)
                     {
                         line += glyph.Data[x, y] ? "#" : " ";
                     }

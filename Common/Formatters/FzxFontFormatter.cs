@@ -37,7 +37,7 @@ namespace PixelWorld.Formatters
                 var relativeOffset = dataOffset - writer.BaseStream.Position;
 
                 var blanks = blankRows[glyph.Key];
-                var shift = blanks.Item1 == 8 ? 0 : blanks.Item1; // Spaces are treate weird
+                var shift = blanks.Item1 == 8 ? 0 : blanks.Item1; // Spaces are treated weird
 
                 writer.Write((UInt16)(kern | relativeOffset));
 
@@ -53,10 +53,10 @@ namespace PixelWorld.Formatters
             {
                 var blanks = blankRows[glyph.Key];
                 var bottom = font.Height - blanks.Item2;
-                for (int y = blanks.Item1; y < bottom; y++)
+                for (var y = blanks.Item1; y < bottom; y++)
                 {
                     var b = new Byte();
-                    for (int x = 0; x < glyph.Value.Width; x++)
+                    for (var x = 0; x < glyph.Value.Width; x++)
                     {
                         if (glyph.Value.Data[x, y])
                             b |= (byte)(1 << 8 - x - 1);

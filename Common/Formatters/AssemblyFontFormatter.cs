@@ -23,11 +23,11 @@ namespace PixelWorld.Formatters
                 foreach (var glyph in font.Glyphs)
                 {
                     output.Append("\t" + defineByteInstruction);
-                    for (int y = 0; y < font.Height; y++)
+                    for (var y = 0; y < font.Height; y++)
                     {
                         var b = new Byte();
                         var charWidth = glyph.Value.Width;
-                        for (int x = 0; x < charWidth; x++)
+                        for (var x = 0; x < charWidth; x++)
                         {
                             if (glyph.Value.Data[x, y])
                                 b |= (byte)(1 << charWidth - 1 - x);
@@ -59,16 +59,16 @@ namespace PixelWorld.Formatters
                 {
                     output.AppendFormat("\t; {0}\n", glyph.Key);
 
-                    for (int y = 0; y < font.Height; y++)
+                    for (var y = 0; y < font.Height; y++)
                     {
                         var b = new Byte();
                         var charWidth = glyph.Value.Width;
-                        for (int x = 0; x < charWidth; x++)
+                        for (var x = 0; x < charWidth; x++)
                         {
                             if (glyph.Value.Data[x, y])
                                 b |= (byte)(1 << charWidth - 1 - x);
                         }
-                        string binary = "00000000" + System.Convert.ToString(b, 2);
+                        string binary = "00000000" + Convert.ToString(b, 2);
                         output.AppendFormat("\tdefb %{0}\n", binary.Substring(binary.Length - 8, 8));
                     }
                 }

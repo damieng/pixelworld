@@ -2,7 +2,7 @@
 
 namespace PixelWorld.Machines
 {
-    public class Atari8
+    public static class Atari8
     {
         public static IReadOnlyDictionary<int, char> US {get; } = (
             " !\"#$%&'()*+,-./0123456789:;<=>?" +

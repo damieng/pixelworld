@@ -10,10 +10,10 @@ namespace PixelWorld.Tools
 {
     public static class FontHunter
     {
-        public static int Hunt(IEnumerable<string> fileNames, string outputFolder)
+        public static int Hunt(List<string> fileNames, string outputFolder)
         {
-            int inputsWithOutputsCount = 0;
-            int outputCount = 0;
+            var inputsWithOutputsCount = 0;
+            var outputCount = 0;
 
             var inputCount = fileNames.Count();
             Out.Write($"\nHunting {inputCount} files");

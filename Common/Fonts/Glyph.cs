@@ -55,7 +55,7 @@ namespace PixelWorld.Fonts
         {
             for (var y = 0; y < Height; y++)
                 for (var x = 0; x < Width; x++)
-                    if (Data[y,x] == true)
+                    if (Data[y,x])
                         return false;
             return true;
         }
@@ -63,7 +63,7 @@ namespace PixelWorld.Fonts
         public bool IsRowBlank(int row)
         {
             for (var x = 0; x < Width; x++)
-                if (Data[x, row] == true)
+                if (Data[x, row])
                     return false;
             return true;
         }
@@ -71,7 +71,7 @@ namespace PixelWorld.Fonts
         public bool IsColumnBlank(int column)
         {
             for (var y = 0; y < Height; y++)
-                if (Data[column, y] == true)
+                if (Data[column, y])
                     return false;
             return true;
         }

@@ -13,7 +13,7 @@ namespace PixelWorld.Tools
     {
         public static int ConvertToAtari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
-            int outputCount = 0;
+            var outputCount = 0;
             var templateFull = Path.Combine(templatePath, "atari8.fnt");
             Out.Write("Using template " + templateFull);
             var template = File.ReadAllBytes(templateFull);
@@ -103,10 +103,10 @@ namespace PixelWorld.Tools
             int[] MakeList(bool[,] data)
             {
                 var results = new int[8];
-                for (int y = 0; y < 8; y++)
+                for (var y = 0; y < 8; y++)
                 {
                     var b = new Byte();
-                    for (int x = 0; x < 8; x++)
+                    for (var x = 0; x < 8; x++)
                     {
                         if (data[x, y])
                             b |= (byte)(1 << 8 - 1 - x);
@@ -121,7 +121,7 @@ namespace PixelWorld.Tools
 
         public static int ConvertToC64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
-            int outputCount = 0;
+            var outputCount = 0;
 
             var bothCaseTemplate = Path.Combine(templatePath, "c64-both.ch8");
             var upperCaseTemplate = Path.Combine(templatePath, "c64-upper.ch8");

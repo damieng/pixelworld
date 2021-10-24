@@ -83,7 +83,7 @@ namespace PixelWorld.Fonts
             var bitmap = new Bitmap(previewWidth, Height * rows);
             var xOff = 0;
             var yOff = 0;
-            int cIdx = 0;
+            var cIdx = 0;
 
             foreach (var glyph in Glyphs)
             {

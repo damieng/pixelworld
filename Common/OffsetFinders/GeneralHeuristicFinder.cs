@@ -66,21 +66,21 @@ namespace PixelWorld.OffsetFinders
         {
             if (buffer.IsEmpty(i)) // Start with a space
             {
-                int spacesCount = 1;
-                int longestNoEmptyRun = 0;
-                int currentNoEmptyRun = 0;
-                int totalNotEmpty = 0;
-                int missingNumbers = 0;
-                int missingLowercase = 0;
-                int missingUppercase = 0;
-                int duplicates = 0;
+                var spacesCount = 1;
+                var longestNoEmptyRun = 0;
+                var currentNoEmptyRun = 0;
+                var totalNotEmpty = 0;
+                var missingNumbers = 0;
+                var missingLowercase = 0;
+                var missingUppercase = 0;
+                var duplicates = 0;
 
-                for (int c = 0; c < 95; c++)
+                for (var c = 0; c < 95; c++)
                 {
                     if (buffer.IsEmpty(i + c * 8) || buffer.IsFull(i + c * 8))
                     {
                         currentNoEmptyRun = 0;
-                        int asc = c + 32;
+                        var asc = c + 32;
                         if (asc >= '0' && asc <= '9')
                             missingNumbers++;
                         else if (asc >= 'a' && asc <= 'z')
@@ -90,7 +90,7 @@ namespace PixelWorld.OffsetFinders
                     }
                     else
                     {
-                        for (int z = c + 1; z < 95; z++)
+                        for (var z = c + 1; z < 95; z++)
                             if (buffer.IsSame(i + c * 8, i + z * 8))
                                 duplicates++;
 
@@ -103,7 +103,7 @@ namespace PixelWorld.OffsetFinders
 
                 var likelies = new Func<byte[], int, bool>[] { HasLikelyLowerDensities, HasLikelyUpperDensities, HasLikelyNumericDensities, HasLikelySymbolDensities };
 
-                int likelyDensityCount = likelies.Count(l => l(buffer, i));
+                var likelyDensityCount = likelies.Count(l => l(buffer, i));
 
                 return spacesCount < 10
                     && duplicates < 5
@@ -121,7 +121,7 @@ namespace PixelWorld.OffsetFinders
 
         private static int SkewChecks(byte[] buffer, int offset)
         {
-            int looksUnskewed = 0;
+            var looksUnskewed = 0;
             if (buffer[offset + (94 * 8) + 7] == 0)
                 looksUnskewed++;
             if (buffer[offset + (95 * 8) + 7] != 0)

@@ -9,7 +9,7 @@ namespace PixelWorld.Tools
 {
     public static class Dumper
     {
-        public static int Dump(IEnumerable<string> fileNames, string outputFolder)
+        public static int Dump(List<string> fileNames, string outputFolder)
         {
             Out.Write($"\nDumping {fileNames.Count()} files");
 

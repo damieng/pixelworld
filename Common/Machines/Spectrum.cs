@@ -2,7 +2,7 @@
 
 namespace PixelWorld.Machines
 {
-    public class Spectrum
+    public static class Spectrum
     {
         public static IReadOnlyDictionary<int, char> UK { get; } =
             " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_£abcdefghijklmnopqrstuvwxyz{|}~©"

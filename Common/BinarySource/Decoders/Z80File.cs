@@ -42,11 +42,11 @@ namespace PixelWorld.BinarySource.Decoders
             }
             else //Compressed data (needs testing!)
             {
-                int dataBlockOffset = counter;
-                int memStart = 0;
+                var dataBlockOffset = counter;
+                var memStart = 0;
                 while (counter - dataBlockOffset < dataLength)
                 {
-                    byte bite = buffer[counter++];
+                    var bite = buffer[counter++];
 
                     if (bite == 0xED && counter - dataBlockOffset < dataLength)
                     {
@@ -55,10 +55,10 @@ namespace PixelWorld.BinarySource.Decoders
                         {
                             counter++;
                             int dataSize = buffer[counter++];
-                            byte data = buffer[counter++];
+                            var data = buffer[counter++];
 
                             //compressed data
-                            for (int f = 0; f < dataSize; f++)
+                            for (var f = 0; f < dataSize; f++)
                             {
                                 bank[memStart++] = data;
                             }
@@ -79,7 +79,7 @@ namespace PixelWorld.BinarySource.Decoders
             using (MemoryStream ms = new())
             {
                 fs.CopyTo(ms);
-                byte[] buffer = ms.GetBuffer();
+                var buffer = ms.GetBuffer();
                 if (buffer.Length == 0)
                     return null; //something bad happened!
 
@@ -92,7 +92,7 @@ namespace PixelWorld.BinarySource.Decoders
                 snapshot.I = buffer[10];
                 snapshot.R = buffer[11];
 
-                byte byte12 = buffer[12];
+                var byte12 = buffer[12];
                 if (byte12 == 255)
                     byte12 = 1;
 
@@ -111,12 +111,12 @@ namespace PixelWorld.BinarySource.Decoders
                 snapshot.IFF1 = buffer[27] != 0;
                 snapshot.IFF2 = buffer[28] != 0;
 
-                byte byte29 = buffer[29];
+                var byte29 = buffer[29];
 
                 snapshot.IM = (byte)(byte29 & 0x3);
                 snapshot.ISSUE2 = (byte29 & 0x08) != 0;
 
-                for (int f = 0; f < 16; f++)
+                for (var f = 0; f < 16; f++)
                 {
                     snapshot.RAM_BANK[f] = new byte[8192];
                 }
@@ -166,7 +166,7 @@ namespace PixelWorld.BinarySource.Decoders
                             snapshot.TYPE = 3;
                             break;
                     }
-                    int counter = 32 + headerLength;
+                    var counter = 32 + headerLength;
 
                     //128K or Pentagon?
                     // if ((snapshot.TYPE == 1) || (snapshot.TYPE == 3))
@@ -175,7 +175,7 @@ namespace PixelWorld.BinarySource.Decoders
                         snapshot.AY_FOR_48K = (buffer[37] & 0x4) != 0;
                         snapshot.PORT_FFFD = buffer[38];
                         snapshot.AY_REGS = new byte[16];
-                        for (int f = 0; f < 16; f++)
+                        for (var f = 0; f < 16; f++)
                             snapshot.AY_REGS[f] = buffer[39 + f];
                     }
 
@@ -187,13 +187,13 @@ namespace PixelWorld.BinarySource.Decoders
                             snapshot.PORT_1FFD = buffer[86];
                     }
 
-                    byte[] _bank = new byte[16384];
+                    var _bank = new byte[16384];
 
                     //Load rest of the data
                     while (counter < buffer.Length - 1)
                     {
                         //Get length of data block
-                        int dataLength = buffer[counter] | (buffer[counter + 1] << 8);
+                        var dataLength = buffer[counter] | (buffer[counter + 1] << 8);
                         counter += 2;
                         if (counter >= buffer.Length) break; // Some 128K .z80 files have a trailing zero or two
                         int page = buffer[counter++];
@@ -278,9 +278,9 @@ namespace PixelWorld.BinarySource.Decoders
                     snapshot.FileVersion = 1;
                     snapshot.TYPE = 0;
                     //int screenAddr = GetPageAddress(10);
-                    byte[] RAM_48K = new byte[49152];
+                    var RAM_48K = new byte[49152];
 
-                    bool isCompressed = (byte12 & 0x20) != 0;
+                    var isCompressed = (byte12 & 0x20) != 0;
                     if (!isCompressed)
                     {
                         //copy ram bank 5
@@ -288,23 +288,23 @@ namespace PixelWorld.BinarySource.Decoders
                     }
                     else
                     {
-                        int byteCounter = 30;
-                        int memCounter = 0;
+                        var byteCounter = 30;
+                        var memCounter = 0;
 
                         while (true)
                         {
-                            byte bite = buffer[byteCounter++];
+                            var bite = buffer[byteCounter++];
                             if (memCounter >= RAM_48K.Length) break;
                             if (bite == 0)
                             {
                                 //check if this is the end marker
-                                byte bite2 = buffer[byteCounter];
+                                var bite2 = buffer[byteCounter];
                                 if (bite2 == 0xED)
                                 {
-                                    byte bite3 = buffer[byteCounter + 1];
+                                    var bite3 = buffer[byteCounter + 1];
                                     if (bite3 == 0xED)
                                     {
-                                        byte bite4 = buffer[byteCounter + 2];
+                                        var bite4 = buffer[byteCounter + 2];
                                         if (bite4 == 0)
                                         {
                                             break;
@@ -316,15 +316,15 @@ namespace PixelWorld.BinarySource.Decoders
                             else
                                 if (bite == 0xED)
                             {
-                                byte bite2 = buffer[byteCounter];
+                                var bite2 = buffer[byteCounter];
                                 if (bite2 == 0xED)
                                 {
                                     byteCounter++;
                                     int dataLength = buffer[byteCounter++];
-                                    byte data = buffer[byteCounter++];
+                                    var data = buffer[byteCounter++];
 
                                     //compressed data
-                                    for (int f = 0; f < dataLength; f++)
+                                    for (var f = 0; f < dataLength; f++)
                                     {
                                         RAM_48K[memCounter++] = data;
                                     }

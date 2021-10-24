@@ -2,7 +2,7 @@
 
 namespace PixelWorld.Machines
 {
-    public class Commodore64
+    public static class Commodore64
     {
         public static IReadOnlyDictionary<int, char> BothUK { get; } =
             "@abcdefghijklmnopqrstuvwxyz[£]\0\0 !\"#$%&'()*+,-./0123456789:;<=>?\0ABCDEFGHIJKLMNOPQRSTUVWXYZ"

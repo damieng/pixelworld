@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace PixelWorld.Transformers
 {
-    public class FontInverter
+    public static class FontInverter
     {
         public static Font Invert(Font source)
         {

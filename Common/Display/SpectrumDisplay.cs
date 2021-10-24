@@ -14,7 +14,7 @@ namespace PixelWorld.Display
         const int PixelHeight = 8 * AttributeHeight;
         const int AttributeOffset = PixelWidth * AttributeHeight;
 
-        static readonly UInt16[] LookupY = new UInt16[PixelHeight];
+        static readonly UInt16[] lookupY = new UInt16[PixelHeight];
 
         static readonly Color[] palette =
         {
@@ -29,7 +29,7 @@ namespace PixelWorld.Display
                 for (var line = 0; line < 8; line++)
                     for (var y = 0; y < 63; y += 8)
                     {
-                        LookupY[y + line + (third * 64)] = pos;
+                        lookupY[y + line + (third * 64)] = pos;
                         pos += 32;
                     }
         }
@@ -53,7 +53,7 @@ namespace PixelWorld.Display
                     for (var py = 0; py < 8; py++)
                     {
                         var y = ay * 8 + py;
-                        var pixels = buffer[offset + LookupY[y] + ax];
+                        var pixels = buffer[offset + lookupY[y] + ax];
                         for (var px = 0; px < 8; px++)
                         {
                             var a = 128 >> px;
@@ -77,20 +77,20 @@ namespace PixelWorld.Display
                     for (var py = 0; py < 8; py++)
                     {
                         var y = ay * 8 + py;
-                        block[py] = buffer[offset + LookupY[y] + ax];
+                        block[py] = buffer[offset + lookupY[y] + ax];
                     }
 
                     uniques.Add(block);
                 }
 
             // Empty and full blocks match too many things and slow things down
-            uniques.Remove(EmptyChar); 
-            uniques.Remove(FullChar);
+            uniques.Remove(emptyChar); 
+            uniques.Remove(fullChar);
 
             return uniques.ToArray();
         }
 
-        private static readonly byte[] EmptyChar = { 0, 0, 0, 0, 0, 0, 0, 0 };
-        private static readonly byte[] FullChar = { 255, 255, 255, 255, 255, 255, 255, 255 };
+        private static readonly byte[] emptyChar = { 0, 0, 0, 0, 0, 0, 0, 0 };
+        private static readonly byte[] fullChar = { 255, 255, 255, 255, 255, 255, 255, 255 };
     }
 }

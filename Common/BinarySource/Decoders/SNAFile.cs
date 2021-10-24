@@ -53,10 +53,10 @@ namespace PixelWorld.BinarySource.Decoders
 
             using (BinaryReader r = new(fs))
             {
-                int bytesToRead = (int)fs.Length;
+                var bytesToRead = (int)fs.Length;
 
-                byte[] buffer = new byte[bytesToRead];
-                int bytesRead = r.Read(buffer, 0, bytesToRead);
+                var buffer = new byte[bytesToRead];
+                var bytesRead = r.Read(buffer, 0, bytesToRead);
 
                 if (bytesRead == 0)
                     return null; //something bad happened!
@@ -106,7 +106,7 @@ namespace PixelWorld.BinarySource.Decoders
                 else
                 {
                     //128k snapshot
-                    for (int f = 0; f < 16; f++)
+                    for (var f = 0; f < 16; f++)
                     {
                         ((SNA_128K)snapshot).RAM_BANK[f] = new byte[8192];
                     }
@@ -121,7 +121,7 @@ namespace PixelWorld.BinarySource.Decoders
 
                     ((SNA_128K)snapshot).PORT_7FFD = buffer[49181]; //we'll load this in earlier 'cos we need it now!
 
-                    int BankInPage4 = ((SNA_128K)snapshot).PORT_7FFD & 0x07;
+                    var BankInPage4 = ((SNA_128K)snapshot).PORT_7FFD & 0x07;
 
                     //Copy currently paged in bank (actually we don't care here 'cos we're simply filling in all the b(l)anks)
                     Array.Copy(buffer, 27 + 16384 + 16384, ((SNA_128K)snapshot).RAM_BANK[BankInPage4 * 2], 0, 8192);
@@ -131,8 +131,8 @@ namespace PixelWorld.BinarySource.Decoders
 
                     ((SNA_128K)snapshot).TR_DOS = buffer[49182];
 
-                    int t = 0;
-                    for (int f = 0; f < 8; f++)
+                    var t = 0;
+                    for (var f = 0; f < 8; f++)
                     {
                         if (f == 5 || f == 2 || f == BankInPage4)
                             continue;

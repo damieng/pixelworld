@@ -12,7 +12,7 @@ using Font = PixelWorld.Fonts.Font;
 
 namespace PixelWorld.DumpScanners
 {
-    public class SpectrumDumpScanner
+    public static class SpectrumDumpScanner
     {
         public static List<Font> Read(BinaryReader reader, string name)
         {
@@ -77,7 +77,7 @@ namespace PixelWorld.DumpScanners
         }
 
         private static readonly KnownCharPattern[] RarelyChangedRomChars = {
-            new KnownCharPattern(3, new byte[] // #
+            new(3, new byte[] // #
             {
                 0b00000000,
                 0b00100100,
@@ -88,7 +88,7 @@ namespace PixelWorld.DumpScanners
                 0b00100100,
                 0b00000000,
             }),
-            new KnownCharPattern(4, new byte[] // $
+            new(4, new byte[] // $
             {
                 0b00000000,
                 0b00001000,
@@ -99,7 +99,7 @@ namespace PixelWorld.DumpScanners
                 0b00111110,
                 0b00001000,
             }),
-            new KnownCharPattern(6, new byte[] // &
+            new(6, new byte[] // &
             {
                 0b00000000,
                 0b00010000,
@@ -110,7 +110,7 @@ namespace PixelWorld.DumpScanners
                 0b00111010,
                 0b00000000,
             }),
-            new KnownCharPattern(32, new byte[] // @
+            new(32, new byte[] // @
             {
                 0b00000000,
                 0b00111100,
@@ -121,7 +121,7 @@ namespace PixelWorld.DumpScanners
                 0b00111100,
                 0b00000000,
             }),
-            new KnownCharPattern(64, new byte[] // £
+            new(64, new byte[] // £
             {
                 0b00000000,
                 0b00011100,
@@ -132,7 +132,7 @@ namespace PixelWorld.DumpScanners
                 0b01111110,
                 0b00000000,
             }),
-            new KnownCharPattern(95, new byte[] // ©
+            new(95, new byte[] // ©
             {
                 0b00111100,
                 0b01000010,

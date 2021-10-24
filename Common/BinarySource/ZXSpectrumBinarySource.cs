@@ -24,7 +24,7 @@ namespace PixelWorld.BinarySource
             CopyBank(ramBanks, 04, memory, 0x8000);
             CopyBank(ramBanks, bankAtC8000, memory, 0xC000);
 
-            int nextAddress = 0x10000;
+            var nextAddress = 0x10000;
             for (var i = 0; i < mappablePages.Length; i++)
             {
                 var page = mappablePages[i];
