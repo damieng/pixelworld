@@ -2,9 +2,7 @@
 using PixelWorld.Formatters;
 using PixelWorld.Machines;
 using PixelWorld.OffsetFinders;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -32,7 +30,7 @@ namespace PixelWorld.DumpScanners
         {
             var candidates = SpectrumDisplay.GetCandidates(buffer, 16384);
 
-            var rst = EnviromentGuidedFinder.FindOffsets(buffer);
+            var rst = EnvironmentGuidedFinder.FindOffsets(buffer);
             var rom = KnownCharPatternFinder.FindOffsets(buffer, rarelyChangedRomChars);
             var scr = CandidatesInWindowFinder.FindOffsets(buffer, candidates);
             var heu = GeneralHeuristicFinder.FindOffsets(buffer);
@@ -61,7 +59,7 @@ namespace PixelWorld.DumpScanners
             if (offsets.Count <= 0) return;
             
             var uniques = offsets.Count(o => !dupes.Contains(o));
-            Out.Write($"  {method} found offsets ({uniques} uniques) {String.Join(", ", offsets)}");
+            Out.Write($"  {method} found offsets ({uniques} uniques) {string.Join(", ", offsets)}");
         }
 
         public static bool IsMissingTooManyGlyphs(byte[] buffer, int offset)
@@ -87,7 +85,7 @@ namespace PixelWorld.DumpScanners
                 0b00100100,
                 0b01111110,
                 0b00100100,
-                0b00000000,
+                0b00000000
             }),
             new(4, new byte[] // $
             {
@@ -98,7 +96,7 @@ namespace PixelWorld.DumpScanners
                 0b00111110,
                 0b00001010,
                 0b00111110,
-                0b00001000,
+                0b00001000
             }),
             new(6, new byte[] // &
             {
@@ -109,7 +107,7 @@ namespace PixelWorld.DumpScanners
                 0b00101010,
                 0b01000100,
                 0b00111010,
-                0b00000000,
+                0b00000000
             }),
             new(32, new byte[] // @
             {
@@ -120,7 +118,7 @@ namespace PixelWorld.DumpScanners
                 0b01011110,
                 0b01000000,
                 0b00111100,
-                0b00000000,
+                0b00000000
             }),
             new(64, new byte[] // £
             {
@@ -131,7 +129,7 @@ namespace PixelWorld.DumpScanners
                 0b00100000,
                 0b00100000,
                 0b01111110,
-                0b00000000,
+                0b00000000
             }),
             new(95, new byte[] // ©
             {

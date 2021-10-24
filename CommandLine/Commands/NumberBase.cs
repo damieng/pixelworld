@@ -9,7 +9,7 @@ namespace CommandLine.Commands
     {
         Binary = 2,
         Decimal = 10,
-        Hex = 16,
+        Hex = 16
     }
 
     public sealed class NumberBaseConverter : TypeConverter
@@ -22,7 +22,7 @@ namespace CommandLine.Commands
                 {"decimal", NumberBase.Decimal},
                 {"10", NumberBase.Decimal},
                 {"binary", NumberBase.Binary},
-                {"2", NumberBase.Binary},
+                {"2", NumberBase.Binary}
             };
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)

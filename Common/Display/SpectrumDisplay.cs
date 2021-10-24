@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using PixelWorld.Formatters;
 
 namespace PixelWorld.Display
 {
@@ -30,7 +29,7 @@ namespace PixelWorld.Display
             for (var line = 0; line < 8; line++)
             for (var y = 0; y < 63; y += 8)
             {
-                lookupY[y + line + (third * 64)] = pos;
+                lookupY[y + line + third * 64] = pos;
                 pos += 32;
             }
         }

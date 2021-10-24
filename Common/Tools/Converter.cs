@@ -21,13 +21,11 @@ namespace PixelWorld.Tools
             {
                 var targetFileName = Utils.MakeFileName(sourceFileName, "fnt", outputFolder);
                 Out.Write($"Converting file {sourceFileName} to {targetFileName}");
-                using (var source = File.OpenRead(sourceFileName))
-                using (var reader = new BinaryReader(source))
-                {
-                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
-                    using var target = File.Create(targetFileName);
-                    ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
-                }
+                using var source = File.OpenRead(sourceFileName);
+                using var reader = new BinaryReader(source);
+                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+                using var target = File.Create(targetFileName);
+                ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
             }
         }
 
@@ -61,23 +59,20 @@ namespace PixelWorld.Tools
                     var output = new StringBuilder();
 
                     output.AppendFormat("{0} REM {1} font\r\n", line, Path.GetFileNameWithoutExtension(sourceFileName));
-                    if (!String.IsNullOrEmpty(credit))
-                    {
-                        output.AppendFormat("{0} REM {1}\r\n", line += 10, credit);
-                    }
+                    if (!String.IsNullOrEmpty(credit)) output.AppendFormat("{0} REM {1}\r\n", line += 10, credit);
 
                     var spaceIsBlank = sourceFont.Glyphs[' '].IsBlank();
                     output.AppendFormat("{0} SYMBOL AFTER {1}\r\n", line += 10, spaceIsBlank ? 33 : 32);
 
-                    foreach (var g in sourceFont.Glyphs.Where(g => !g.Value.IsBlank()).OrderBy(g => g.Key))
+                    foreach (var (key, value) in sourceFont.Glyphs.Where(g => !g.Value.IsBlank()).OrderBy(g => g.Key))
                     {
-                        switch (g.Key)
+                        switch (key)
                         {
                             case '©':
-                                WriteSymbolLine(output, 164, g.Value);
+                                WriteSymbolLine(output, 164, value);
                                 break;
                             default:
-                                WriteSymbolLine(output, g.Key, g.Value);
+                                WriteSymbolLine(output, key, value);
                                 break;
                         }
                     }
@@ -128,37 +123,34 @@ namespace PixelWorld.Tools
 
             foreach (var sourceFileName in fileNames)
             {
+                using var source = File.OpenRead(sourceFileName);
+                using var reader = new BinaryReader(source);
+                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+                var characterRom = File.Create(Utils.MakeFileName(sourceFileName, "bin", outputFolder));
 
-                using (var source = File.OpenRead(sourceFileName))
-                using (var reader = new BinaryReader(source))
+                foreach (var (template, charset, suffix) in cases)
                 {
-                    var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
-                    var characterRom = File.Create(Utils.MakeFileName(sourceFileName, "bin", outputFolder));
+                    var targetFileName = Utils.MakeFileName(sourceFileName, suffix + ".64c", outputFolder);
 
-                    foreach (var (template, charset, suffix) in cases)
-                    {
-                        var targetFileName = Utils.MakeFileName(sourceFileName, suffix + ".64c", outputFolder);
+                    Out.Write($"Converting file {sourceFileName} to {targetFileName}");
 
-                        Out.Write($"Converting file {sourceFileName} to {targetFileName}");
+                    using var memoryStream = new MemoryStream();
+                    ByteFontFormatter.Write(sourceFont, memoryStream, charset, 128, i => new ArraySegment<byte>(template, i, 8));
 
-                        using var memoryStream = new MemoryStream();
-                        ByteFontFormatter.Write(sourceFont, memoryStream, charset, 128, i => new ArraySegment<byte>(template, i, 8));
+                    var targetFile = File.Create(targetFileName);
+                    targetFile.Write(new byte[] { 0x00, 0x38 }); // 64C header
+                    memoryStream.WriteTo(targetFile);
+                    memoryStream.WriteTo(characterRom);
 
-                        var targetFile = File.Create(targetFileName);
-                        targetFile.Write(new byte[] { 0x00, 0x38 }); // 64C header
-                        memoryStream.WriteTo(targetFile);
-                        memoryStream.WriteTo(characterRom);
+                    memoryStream.GetBuffer().InvertBuffer();
 
-                        memoryStream.GetBuffer().InvertBuffer();
+                    memoryStream.WriteTo(targetFile);
+                    memoryStream.WriteTo(characterRom);
 
-                        memoryStream.WriteTo(targetFile);
-                        memoryStream.WriteTo(characterRom);
-
-                        targetFile.Close();
-                    }
-
-                    characterRom.Close();
+                    targetFile.Close();
                 }
+
+                characterRom.Close();
             }
         }
     }

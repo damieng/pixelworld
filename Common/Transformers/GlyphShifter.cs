@@ -20,7 +20,7 @@ namespace PixelWorld.Transformers
                         if (wrap || tx < source.Width && tx >= 0)
                         {
                             tx %= source.Width;
-                            data[tx, ty] = source.Data[x, y]; ;
+                            data[tx, ty] = source.Data[x, y];
                         }
                     }
                 }

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 
 namespace PixelWorld.Tools
 {
@@ -11,7 +10,7 @@ namespace PixelWorld.Tools
     {
         public static void Dump(List<string> fileNames, string outputFolder)
         {
-            Out.Write($"\nDumping {fileNames.Count()} files");
+            Out.Write($"\nDumping {fileNames.Count} files");
 
             foreach (var fileName in fileNames)
             {

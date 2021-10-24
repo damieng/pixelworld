@@ -53,7 +53,7 @@ namespace PixelWorld
         {
             return sequence
                 .Select((c, i) => Tuple.Create(c, i))
-                .Where((c, i) => c.Item1 != '\0')
+                .Where(c => c.Item1 != '\0')
                 .ToDictionary(k => k.Item2, v => v.Item1);
         }
     }

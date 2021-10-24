@@ -80,11 +80,11 @@ namespace PixelWorld.OffsetFinders
                     {
                         currentNoEmptyRun = 0;
                         var asc = c + 32;
-                        if (asc >= '0' && asc <= '9')
+                        if (asc is >= '0' and <= '9')
                             missingNumbers++;
-                        else if (asc >= 'a' && asc <= 'z')
+                        else if (asc is >= 'a' and <= 'z')
                             missingLowercase++;
-                        else if (asc >= 'A' && asc <= 'Z')
+                        else if (asc is >= 'A' and <= 'Z')
                             missingUppercase++;
                     }
                     else
@@ -125,9 +125,9 @@ namespace PixelWorld.OffsetFinders
         private static int SkewChecks(byte[] buffer, int offset)
         {
             var looksUnskewed = 0;
-            if (buffer[offset + (94 * 8) + 7] == 0)
+            if (buffer[offset + 94 * 8 + 7] == 0)
                 looksUnskewed++;
-            if (buffer[offset + (95 * 8) + 7] != 0)
+            if (buffer[offset + 95 * 8 + 7] != 0)
                 looksUnskewed++;
             return looksUnskewed;
         }

@@ -1,5 +1,4 @@
-﻿using PixelWorld.Formatters;
-using PixelWorld.Machines;
+﻿using PixelWorld.Machines;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,13 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PixelWorld.Formatters
 {
-    public class AssemblyFontFormatter
+    public static class AssemblyFontFormatter
     {
         public static void CreateAssemblyDefines(string language, string defineByteInstruction, string format, List<string> fileNames, string outputFolder, string credit)
         {

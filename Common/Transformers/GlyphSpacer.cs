@@ -1,5 +1,4 @@
 ﻿using PixelWorld.Fonts;
-using System;
 
 namespace PixelWorld.Transformers
 {

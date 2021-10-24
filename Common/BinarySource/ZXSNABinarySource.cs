@@ -20,7 +20,7 @@ namespace PixelWorld.BinarySource
                     SNA_48K sna48K => Setup48KMemory(sna48K),
                     SNA_128K sna128K => Setup128KMemory(sna128K.RAM_BANK, sna128K.PORT_7FFD),
                     null => throw new NotSupportedException("Could not decode as ZX Spectrum SNA format file"),
-                    _ => throw new NotSupportedException($"Unknown SNA MemoryModel {snapshot.GetType()}"),
+                    _ => throw new NotSupportedException($"Unknown SNA MemoryModel {snapshot.GetType()}")
                 };
             }
             catch (Exception e)

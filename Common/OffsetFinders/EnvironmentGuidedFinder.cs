@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PixelWorld.OffsetFinders
 {
-    public class EnviromentGuidedFinder
+    public static class EnvironmentGuidedFinder
     {
         private const int CharsEnvVar = 23606;
 

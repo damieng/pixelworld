@@ -4,7 +4,6 @@ using PixelWorld.Machines;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace PixelWorld.Tools
 {
@@ -15,7 +14,7 @@ namespace PixelWorld.Tools
             var inputsWithOutputsCount = 0;
             var outputCount = 0;
 
-            var inputCount = fileNames.Count();
+            var inputCount = fileNames.Count;
             Out.Write($"\nHunting {inputCount} files");
 
             foreach (var fileName in fileNames)

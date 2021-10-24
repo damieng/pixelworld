@@ -13,7 +13,7 @@ namespace PixelWorld.BinarySource
             ZX48,
             ZX128,
             ZXPlus3
-        };
+        }
 
         public ArraySegment<Byte> GetMemory(Stream source)
         {
@@ -31,7 +31,7 @@ namespace PixelWorld.BinarySource
                     MemoryModel.ZX48 => Setup48KMemory(snapshot),
                     MemoryModel.ZX128 => Setup128KMemory(snapshot.RAM_BANK, snapshot.PORT_7FFD),
                     MemoryModel.ZXPlus3 => SetupPlus3Memory(snapshot),
-                    _ => throw new NotSupportedException($"Unknown MemoryModel {memoryModel}"),
+                    _ => throw new NotSupportedException($"Unknown MemoryModel {memoryModel}")
                 };
             }
             catch (Exception e)
@@ -72,7 +72,7 @@ namespace PixelWorld.BinarySource
                 4 or 5 or 6 or 11 => MemoryModel.ZX128,
                 7 or 8 or 13 => MemoryModel.ZXPlus3,
                 _ => throw new NotSupportedException(
-                    $"Unknown memory model for v{snapshot.FileVersion} indicator {snapshot.Byte34}"),
+                    $"Unknown memory model for v{snapshot.FileVersion} indicator {snapshot.Byte34}")
             };
         }
     }
