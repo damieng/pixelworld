@@ -126,7 +126,7 @@ namespace PixelWorld.Tools
                 using var source = File.OpenRead(sourceFileName);
                 using var reader = new BinaryReader(source);
                 var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
-                var characterRom = File.Create(Utils.MakeFileName(sourceFileName, "bin", outputFolder));
+                using var characterRom = File.Create(Utils.MakeFileName(sourceFileName, "bin", outputFolder));
 
                 foreach (var (template, charset, suffix) in cases)
                 {
@@ -137,7 +137,7 @@ namespace PixelWorld.Tools
                     using var memoryStream = new MemoryStream();
                     ByteFontFormatter.Write(sourceFont, memoryStream, charset, 128, i => new ArraySegment<byte>(template, i, 8));
 
-                    var targetFile = File.Create(targetFileName);
+                    using var targetFile = File.Create(targetFileName);
                     targetFile.Write(new byte[] { 0x00, 0x38 }); // 64C header
                     memoryStream.WriteTo(targetFile);
                     memoryStream.WriteTo(characterRom);
@@ -146,11 +146,7 @@ namespace PixelWorld.Tools
 
                     memoryStream.WriteTo(targetFile);
                     memoryStream.WriteTo(characterRom);
-
-                    targetFile.Close();
                 }
-
-                characterRom.Close();
             }
         }
     }

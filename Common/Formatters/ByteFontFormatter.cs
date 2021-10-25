@@ -46,7 +46,7 @@ namespace PixelWorld.Formatters
         {
             fallback ??= blankWriter;
 
-            using var writer = new BinaryWriter(output);
+            var writer = new BinaryWriter(output); // Do not dispose as it will close underlying stream
             for (var i = 0; i < length; i++)
             {
                 if (charset.TryGetValue(i, out var charToWrite) && font.Glyphs.TryGetValue(charToWrite, out var glyph))
