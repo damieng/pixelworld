@@ -11,6 +11,20 @@ namespace PixelWorld.Tools
 {
     public static class Converter
     {
+        public static void ConvertToUfo(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder)
+        {
+            foreach (var sourceFileName in fileNames)
+            {
+                var targetFolderName = Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(sourceFileName), ".ufo"));
+                Out.Write($"Converting file {sourceFileName} to {targetFolderName}");
+                using var source = File.OpenRead(sourceFileName);
+                using var reader = new BinaryReader(source);
+                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+                UfoFontFormatter.Write(sourceFont, targetFolderName);
+            }
+
+        }
+
         public static void ConvertToAtari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
             var templateFull = Path.Combine(templatePath, "atari8.fnt");
@@ -79,7 +93,7 @@ namespace PixelWorld.Tools
 
                     File.WriteAllText(targetFileName, output.ToString());
                 }
-                
+
                 void WriteSymbolLine(StringBuilder output, int charIdx, Glyph glyph)
                 {
                     output.AppendFormat("{0} SYMBOL {1},{2}\r\n", line += 10, charIdx, String.Join(',', MakeList(glyph.Data)));

@@ -15,7 +15,7 @@ namespace CommandLine
             app.Configure(config =>
             {
                 config.SetApplicationName("pw.exe");
-                config.SetApplicationVersion("0.7");
+                config.SetApplicationVersion("0.8");
 
                 config.AddCommand<DumpCommand>("dump");
                 config.AddCommand<HuntCommand>("hunt");
@@ -32,6 +32,7 @@ namespace CommandLine
                 config.AddCommand<ConvertToC64Command>("zxtoc64");
                 config.AddCommand<ConvertToCPCCommand>("zxtocpc");
                 config.AddCommand<ConvertToAtari8BitCommand>("zxtoa8");
+                config.AddCommand<ConvertToUfoCommand>("zxtoufo");
             });
 
             app.Run(args);

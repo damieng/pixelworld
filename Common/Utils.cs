@@ -13,7 +13,7 @@ namespace PixelWorld
         {
             var splitPoint = GetGlobSplitPoint(inputPattern);
             var pattern = inputPattern[splitPoint..];
-            var directory = splitPoint > 0 ? inputPattern.Substring(0, splitPoint) : ".";
+            var directory = splitPoint > 0 ? inputPattern[..splitPoint] : ".";
             Out.Write($"Matching files {pattern} in {directory}");
 
             var matcher = new Matcher(StringComparison.CurrentCultureIgnoreCase);
