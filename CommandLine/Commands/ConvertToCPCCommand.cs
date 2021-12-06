@@ -14,7 +14,7 @@ namespace CommandLine.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] BASICOutputSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            Converter.ConvertToAmstradCPC(files, Spectrum.UK, settings.OutputFolder, settings.Credit, settings.Line);
+            ConvertTo.AmstradCPC(files, Spectrum.UK, settings.OutputFolder, settings.Credit, settings.Line);
             return 0;
         }
     }

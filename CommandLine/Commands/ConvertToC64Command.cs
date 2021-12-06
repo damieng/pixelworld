@@ -14,7 +14,7 @@ namespace CommandLine.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            Converter.ConvertToC64(files, Spectrum.UK, settings.OutputFolder, settings.TemplatePath);
+            ConvertTo.Commodore64(files, Spectrum.UK, settings.OutputFolder, settings.TemplatePath);
             return 0;
         }
     }

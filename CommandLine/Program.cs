@@ -22,6 +22,7 @@ namespace CommandLine
 
                 config.AddCommand<ScreenshotCommand>("screenshot");
                 config.AddCommand<PreviewCommand>("preview");
+                config.AddCommand<ConvertFromPngCommand>("pngtoch8");
 
                 config.AddCommand<Z80AssemblyCommand>("z80asm");
                 config.AddCommand<Generate6502AssemblyCommand>("6502asm");

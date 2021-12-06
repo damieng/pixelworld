@@ -9,9 +9,9 @@ using System.Text;
 
 namespace PixelWorld.Tools
 {
-    public static class Converter
+    public static class ConvertTo
     {
-        public static void ConvertToUfo(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder)
+        public static void Ufo(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder)
         {
             foreach (var sourceFileName in fileNames)
             {
@@ -22,10 +22,22 @@ namespace PixelWorld.Tools
                 var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
                 UfoFontFormatter.Write(sourceFont, targetFolderName);
             }
-
         }
 
-        public static void ConvertToAtari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+        public static void Png(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder)
+        {
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Generating preview file for {fileName}");
+                using var source = File.OpenRead(fileName);
+                using var reader = new BinaryReader(source);
+                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
+                using var output = File.OpenWrite(Utils.MakeFileName(fileName, "png", outputFolder));
+                PngFontFormatter.Write(sourceFont, output);
+            }
+        }
+
+        public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
             var templateFull = Path.Combine(templatePath, "atari8.fnt");
             Out.Write("Using template " + templateFull);
@@ -39,11 +51,11 @@ namespace PixelWorld.Tools
                 using var reader = new BinaryReader(source);
                 var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
                 using var target = File.Create(targetFileName);
-                ByteFontFormatter.Write(sourceFont, target, Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
+                ByteFontFormatter.Write(sourceFont, target, Machines.Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
             }
         }
 
-        public static void ConvertToFZX(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional, string outputFolder)
+        public static void FZX(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional, string outputFolder)
         {
             foreach (var fileName in fileNames)
             {
@@ -56,7 +68,7 @@ namespace PixelWorld.Tools
             }
         }
 
-        public static void ConvertToAmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
+        public static void AmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
         {
             foreach (var sourceFileName in fileNames)
             {
@@ -117,7 +129,7 @@ namespace PixelWorld.Tools
             }
         }
 
-        public static void ConvertToC64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+        public static void Commodore64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
             var bothCaseTemplate = Path.Combine(templatePath, "c64-both.ch8");
             var upperCaseTemplate = Path.Combine(templatePath, "c64-upper.ch8");
@@ -125,12 +137,12 @@ namespace PixelWorld.Tools
 
             var cases = new[] { (
                  template: File.ReadAllBytes(bothCaseTemplate),
-                 charset: Commodore64.BothUK,
+                 charset: Machines.Commodore64.BothUK,
                  suffix: "both"
                 ),
                 (
                  template: File.ReadAllBytes(upperCaseTemplate),
-                 charset: Commodore64.UpperUK,
+                 charset: Machines.Commodore64.UpperUK,
                  suffix: "upper"
                 )
             };

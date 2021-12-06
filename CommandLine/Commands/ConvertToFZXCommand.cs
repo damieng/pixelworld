@@ -14,7 +14,7 @@ namespace CommandLine.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] FZXSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            Converter.ConvertToFZX(files, Spectrum.UK, settings.Proportional, settings.OutputFolder);
+            ConvertTo.FZX(files, Spectrum.UK, settings.Proportional, settings.OutputFolder);
             return 0;
         }
     }

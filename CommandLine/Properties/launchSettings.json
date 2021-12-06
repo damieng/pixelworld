@@ -2,8 +2,8 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "hunt \"Zub (1986)(Mastertronic Added Dimension).dmp\" .",
-      "workingDirectory": "e:\\Retro\\_Mixed\\fonts\\Sinclair\\RAM"
+      "commandLineArgs": "pngtoch8 *.png test",
+      "workingDirectory": "d:\\zxo\\founded"
     }
   }
 }

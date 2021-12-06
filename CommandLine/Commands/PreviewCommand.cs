@@ -4,6 +4,7 @@ using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using CommandLine.Commands.Settings;
+using PixelWorld.Machines;
 
 namespace CommandLine.Commands
 {
@@ -13,7 +14,7 @@ namespace CommandLine.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            PreviewCreator.Preview(files, settings.OutputFolder);
+            ConvertTo.Png(files, Spectrum.UK, settings.OutputFolder);
             return 0;
         }
     }

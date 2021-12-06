@@ -8,13 +8,13 @@ using CommandLine.Commands.Settings;
 
 namespace CommandLine.Commands
 {
-    [Description("Convert to Atari 8-bit binary font file")]
-    public class ConvertToAtari8BitCommand : Command<ConvertSettings>
+    [Description("Convert from preview PNG file")]
+    public class ConvertFromPngCommand : Command<ConvertSettings>
     {
         public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            ConvertTo.Atari8(files, Spectrum.UK, settings.OutputFolder, settings.TemplatePath);
+            ConvertFrom.Png(files, Spectrum.UK, settings.OutputFolder);
             return 0;
         }
     }

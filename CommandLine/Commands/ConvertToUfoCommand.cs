@@ -14,7 +14,7 @@ namespace CommandLine.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            Converter.ConvertToUfo(files, Spectrum.UK, settings.OutputFolder);
+            ConvertTo.Ufo(files, Spectrum.UK, settings.OutputFolder);
             return 0;
         }
     }
