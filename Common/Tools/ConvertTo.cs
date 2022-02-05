@@ -39,13 +39,13 @@ namespace PixelWorld.Tools
 
         public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
-            var templateFull = Path.Combine(templatePath, "atari8.fnt");
-            Out.Write("Using template " + templateFull);
-            var template = File.ReadAllBytes(templateFull);
+            var templateFilename = Path.Combine(templatePath, "atari8.fnt");
+            Out.Write($"Using template {templateFilename}");
+            var template = File.ReadAllBytes(templateFilename);
 
             foreach (var sourceFileName in fileNames)
             {
-                var targetFileName = Utils.MakeFileName(sourceFileName, "fnt", outputFolder);
+                var targetFileName = Utils.MakeFileName(sourceFileName, Machines.Atari8.Extension, outputFolder);
                 Out.Write($"Converting file {sourceFileName} to {targetFileName}");
                 using var source = File.OpenRead(sourceFileName);
                 using var reader = new BinaryReader(source);
@@ -126,6 +126,26 @@ namespace PixelWorld.Tools
                     results[y] = b;
                 }
                 return results;
+            }
+        }
+
+        public static void MSX(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+        {
+            var templateFilename = Path.Combine(templatePath, "msx.fnt");
+            Out.Write($"Using template {templateFilename}");
+            var template = File.ReadAllBytes(templateFilename);
+
+            foreach (var sourceFileName in fileNames)
+            {
+                var targetFileName = Utils.MakeFileName(sourceFileName, Machines.MSX.Extension, outputFolder);
+                Out.Write($"Converting file {sourceFileName} to {targetFileName}");
+                using var source = File.OpenRead(sourceFileName);
+                using var reader = new BinaryReader(source);
+                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+                // TODO: Center font to left-most 5 pixels?
+                using var target = File.Create(targetFileName);
+                target.Write(template, 0, 32 * 8); // Low-ASCII
+                ByteFontFormatter.Write(sourceFont, target, Machines.MSX.International, 224, i => new ArraySegment<byte>(template, i, 8));
             }
         }
 

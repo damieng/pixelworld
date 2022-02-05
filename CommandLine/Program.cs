@@ -31,6 +31,7 @@ namespace CommandLine
 
                 config.AddCommand<ConvertToFZXCommand>("zxtofzx");
                 config.AddCommand<ConvertToC64Command>("zxtoc64");
+                config.AddCommand<ConvertToMSXCommand>("zxtomsx");
                 config.AddCommand<ConvertToCPCCommand>("zxtocpc");
                 config.AddCommand<ConvertToAtari8BitCommand>("zxtoa8");
                 config.AddCommand<ConvertToUfoCommand>("zxtoufo");
