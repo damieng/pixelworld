@@ -2,8 +2,8 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "pngtoch8 *.png test",
-      "workingDirectory": "d:\\zxo\\founded"
+      "commandLineArgs": "chead *.ch8 test",
+      "workingDirectory": "d:\\zxo\\_Ports\\Micropack"
     }
   }
 }

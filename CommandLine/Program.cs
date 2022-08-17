@@ -15,7 +15,7 @@ namespace CommandLine
             app.Configure(config =>
             {
                 config.SetApplicationName("pw.exe");
-                config.SetApplicationVersion("0.8");
+                config.SetApplicationVersion("0.9");
 
                 config.AddCommand<DumpCommand>("dump");
                 config.AddCommand<HuntCommand>("hunt");
@@ -28,6 +28,7 @@ namespace CommandLine
                 config.AddCommand<Generate6502AssemblyCommand>("6502asm");
                 config.AddCommand<Generate68000AssemblyCommand>("68000asm");
                 config.AddCommand<Generate8086AssemblyCommand>("x86asm");
+                config.AddCommand<GenerateCHeaderCommand>("chead");
 
                 config.AddCommand<ConvertToFZXCommand>("zxtofzx");
                 config.AddCommand<ConvertToC64Command>("zxtoc64");
