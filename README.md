@@ -29,6 +29,10 @@ Any of the following assembly generating commands can use the `--base hex|decima
 - `6502asm` to create MOS 6502 assembler source with `.byte` hex
 - `68000asm` to create Motorola 68000 assembler source with `DB.B` hex
 
+And the C-generating command:
+
+- `chead` to generate C-compatible header files
+
 You can also generate directly-usable files (all binary except the CPC)
 
 - `zxtofzx` to create a fixed-width `.fzx` 
