@@ -8,7 +8,7 @@ using CommandLine.Commands.Settings;
 namespace CommandLine.Commands
 {
     [Description("Generate Z80 assembly def files")]
-    public class Z80AssemblyCommand : Command<AssemblySettings>
+    public class GenerateZ80AssemblyCommand : Command<AssemblySettings>
     {
         public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)
         {

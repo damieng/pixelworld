@@ -24,7 +24,7 @@ namespace CommandLine
                 config.AddCommand<PreviewCommand>("preview");
                 config.AddCommand<ConvertFromPngCommand>("pngtoch8");
 
-                config.AddCommand<Z80AssemblyCommand>("z80asm");
+                config.AddCommand<GenerateZ80AssemblyCommand>("z80asm");
                 config.AddCommand<Generate6502AssemblyCommand>("6502asm");
                 config.AddCommand<Generate68000AssemblyCommand>("68000asm");
                 config.AddCommand<Generate8086AssemblyCommand>("x86asm");
