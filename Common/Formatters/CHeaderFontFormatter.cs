@@ -23,7 +23,7 @@ namespace PixelWorld.Formatters
                 output.AppendLine($"static const {byteType} FONT_{cFontName}_BITMAP[] = {{");
                 foreach (var glyph in font.Glyphs)
                 {
-                    output.Append("\t");
+                    output.Append('\t');
                     for (var y = 0; y < font.Height; y++)
                     {
                         var b = new Byte();

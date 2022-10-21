@@ -64,7 +64,7 @@ namespace PixelWorld.Tools
                 using var reader = new BinaryReader(source);
                 var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, charset);
                 using var target = File.Create(Utils.MakeFileName(fileName, "fzx", outputFolder));
-                FZXFontFormatter.Write(font, target, Spectrum.UK, makeProportional);
+                FZXFontFormatter.Write(font, target, makeProportional);
             }
         }
 

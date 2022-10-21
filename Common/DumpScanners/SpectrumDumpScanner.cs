@@ -14,7 +14,7 @@ namespace PixelWorld.DumpScanners
     {
         public static List<Font> Read(BinaryReader reader, string name)
         {
-            var buffer = reader.ReadBytes(1024 * 1024); // 1MB is enough for any Speccy
+            var buffer = reader.ReadBytes(1024 * 2048); // 2MB is enough for any Speccy
 
             var offsets = GetOffsets(buffer);
 
@@ -28,6 +28,7 @@ namespace PixelWorld.DumpScanners
 
         private static IEnumerable<int> GetOffsets(byte[] buffer)
         {
+            var address = buffer.Length == 65536 ? 16384 : 0;
             var candidates = SpectrumDisplay.GetCandidates(buffer, 16384);
 
             var rst = EnvironmentGuidedFinder.FindOffsets(buffer);
