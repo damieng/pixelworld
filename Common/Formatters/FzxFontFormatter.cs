@@ -8,8 +8,7 @@ namespace PixelWorld.Formatters
 {
     public static class FZXFontFormatter
     {
-        public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset,
-            bool makeProportional = false)
+        public static void Write(Font font, Stream output, bool makeProportional = false)
         {
             if (makeProportional)
                 font = FontSpacer.MakeProportional(font);
