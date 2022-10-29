@@ -49,7 +49,7 @@ Finding bitmap fonts in a raw memory dump isn't trivial as there's no specific h
 
 ### [EnvironmentGuidedFinder](https://github.com/damieng/pixelworld/blob/main/Common/OffsetFinders/EnviromentGuidedFinder.cs)
 
-This relies on programmers using the ROM routines to print text to the screen and is surprisingly successful. It basically looks for a font at whatever RAM location is specified at memory locations 23606 & 23607.
+This relies on programmers using the ROM routines to print text to the screen and is surprisingly successful. It basically looks for a font at whatever RAM location is specified at memory locations 23606 & 23607. It can only find one font however so games like Millionaire that use several get missed.
 
 ### [KnownCharPatternFinder](https://github.com/damieng/pixelworld/blob/main/Common/OffsetFinders/KnownCharPatternFinder.cs)
 
