@@ -14,7 +14,7 @@ The code is in need of clean-up in various places, please bear with me.
 
 - `dump` to RAM-dump snapshot files (currently supports `.z80` and `.sna` and recurses through `.zip` archives)
 - `hunt` to look through RAM dumps for possible bitmap fonts (currently supports only ZX Spectrum fonts)
-- `screenshot` to create a screenshot from a RAM-dump or snapshot files
+- `screenshot` to create a screenshot from a RAM-dump or snapshot files (in PNG or SCR format)
 
 ### Conversions
 
