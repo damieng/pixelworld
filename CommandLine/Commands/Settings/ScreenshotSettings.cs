@@ -17,6 +17,10 @@ namespace CommandLine.Commands.Settings
         [Description("Write a .scr version of the screenshot (default).")]
         public bool Scr { get; set; }
 
+        [CommandOption("--gif")]
+        [Description("Write an animated .gif of the screenshot.")]
+        public bool Gif { get; set; }
+
         [CommandOption("--flashed")]
         [Description("Write png with the alternate flashed attribute state.")]
         public bool Flashed { get; set; }

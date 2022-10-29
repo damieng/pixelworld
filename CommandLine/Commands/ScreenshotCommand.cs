@@ -40,7 +40,19 @@ namespace CommandLine.Commands
                 bitmap.Save(newFileName, ImageFormat.Png);
             }
 
-            if (settings.Scr || !settings.Png)
+            if (settings.Gif)
+            {
+                var newFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "gif"));
+                Out.Write($"  Dumping {fileName} @ {address} to {newFileName}");
+                using var animatedGif = AnimatedGif.AnimatedGif.Create(newFileName, 320); // 25 fps
+                using var frameOne = SpectrumDisplay.GetBitmap(memory.ToArray(), address, false);
+                animatedGif.AddFrame(frameOne, quality: AnimatedGif.GifQuality.Bit8);
+                using var frameTwo = SpectrumDisplay.GetBitmap(memory.ToArray(), address, true);
+                animatedGif.AddFrame(frameTwo, quality: AnimatedGif.GifQuality.Bit8);
+            }
+
+            // Write SCR if specified OR if nothing specified (so it is the default)
+            if (settings.Scr |(!settings.Png && !settings.Gif))
             {
                 var newFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "scr"));
                 Out.Write($"  Dumping {fileName} @ {address} to {newFileName}");
