@@ -2,8 +2,8 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "chead *.ch8 test",
-      "workingDirectory": "d:\\zxo\\_Ports\\Micropack"
+      "commandLineArgs": "screenshot *.z80 --png --flashed",
+      "workingDirectory": "c:\\temp"
     }
   }
 }

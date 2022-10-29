@@ -36,7 +36,7 @@ namespace CommandLine.Commands
             {
                 var newFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "png"));
                 Out.Write($"  Dumping {fileName} @ {address} to {newFileName}");
-                using var bitmap = SpectrumDisplay.GetBitmap(memory.ToArray(), address);
+                using var bitmap = SpectrumDisplay.GetBitmap(memory.ToArray(), address, settings.Flashed);
                 bitmap.Save(newFileName, ImageFormat.Png);
             }
 

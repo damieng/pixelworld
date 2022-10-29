@@ -14,7 +14,11 @@ namespace CommandLine.Commands.Settings
         public bool Png { get; set; }
 
         [CommandOption("--scr")]
-        [Description("Write a .scr version of the screenshot.")]
+        [Description("Write a .scr version of the screenshot (default).")]
         public bool Scr { get; set; }
+
+        [CommandOption("--flashed")]
+        [Description("Write png with the alternate flashed attribute state.")]
+        public bool Flashed { get; set; }
     }
 }
