@@ -9,12 +9,12 @@ using CommandLine.Commands.Settings;
 namespace CommandLine.Commands
 {
     [Description("Convert from preview PNG file")]
-    public class ConvertFromPngCommand : Command<ConvertSettings>
+    public class ConvertFromPngCommand : Command<RequiredSettings>
     {
-        public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            ConvertFrom.Png(files, Spectrum.UK, settings.OutputFolder);
+            ConvertFrom.Png(files, Commodore64.BothUK, settings.OutputFolder);
             return 0;
         }
     }

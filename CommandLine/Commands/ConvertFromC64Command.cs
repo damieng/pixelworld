@@ -8,13 +8,13 @@ using CommandLine.Commands.Settings;
 
 namespace CommandLine.Commands
 {
-    [Description("Convert to FZX-format font")]
-    public class ConvertToFZXCommand : Command<ProportionalSettings>
+    [Description("Convert from Commodore 64 binary font format")]
+    public class ConvertFromC64Command : Command<RequiredSettings>
     {
-        public override int Execute([NotNull] CommandContext context, [NotNull] ProportionalSettings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            ConvertTo.FZX(files, Spectrum.UK, settings.Proportional, settings.OutputFolder);
+            ConvertFrom.Commodore64(files, Commodore64.BothUK, settings.OutputFolder);
             return 0;
         }
     }
