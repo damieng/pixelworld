@@ -14,7 +14,7 @@ namespace CommandLine.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
         {
             var files = Utils.MatchGlobWithFiles(settings.Glob);
-            ConvertFrom.Png(files, Commodore64.BothUK, settings.OutputFolder);
+            ConvertFrom.Png(files, Spectrum.UK, settings.OutputFolder);
             return 0;
         }
     }
