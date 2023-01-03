@@ -16,7 +16,7 @@ namespace PixelWorld
             var directory = splitPoint > 0 ? inputPattern[..splitPoint] : ".";
             Out.Write($"Matching files {pattern} in {directory}");
 
-            var matcher = new Matcher(StringComparison.CurrentCultureIgnoreCase);
+            var matcher = new Matcher(StringComparison.OrdinalIgnoreCase);
             matcher.AddInclude(pattern);
 
             var matchResults = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
