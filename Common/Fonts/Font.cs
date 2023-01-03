@@ -9,7 +9,7 @@ namespace PixelWorld.Fonts
 {
 
     [DebuggerDisplay("Print(),nq")]
-        public class Font : IEquatable<Font>
+    public class Font : IEquatable<Font>
     {
         public readonly string Name;
         public readonly int Height;
@@ -58,14 +58,14 @@ namespace PixelWorld.Fonts
                    && (ReferenceEquals(this, other) || string.Equals(Name, other.Name)
                        && Height == other.Height
                        && Glyphs.Count == other.Glyphs.Count
-                       && ((IStructuralEquatable) Glyphs.Values.ToArray()).Equals(other.Glyphs.Values.ToArray(),
+                       && ((IStructuralEquatable)Glyphs.Values.ToArray()).Equals(other.Glyphs.Values.ToArray(),
                            StructuralComparisons.StructuralEqualityComparer));
         }
 
         public override bool Equals(object? obj)
         {
             return obj is not null
-                   && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Font) obj));
+                   && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Font)obj));
         }
 
         public override int GetHashCode()
@@ -73,18 +73,19 @@ namespace PixelWorld.Fonts
             return HashCode.Combine(Name, Height, Glyphs);
         }
 
-        public Bitmap CreateBitmap()
+        public Bitmap CreateBitmap(int rows = 3)
         {
-            const int rows = 3;
             var fullWidth = Glyphs.Sum(g => g.Value.Width);
             var previewWidth = fullWidth / rows;
-            var glphysPerRow = Glyphs.Count / rows;
-
-            // HACK: Allow subsetted fonts
-            previewWidth = 256;
-            glphysPerRow = 32;
+            var glyphsPerRow = Glyphs.Count / rows;
 
             var bitmap = new Bitmap(previewWidth, Height * rows);
+            DrawBitmap(bitmap, glyphsPerRow);
+            return bitmap;
+        }
+
+        public void DrawBitmap(Bitmap bitmap, int glphysPerRow)
+        {
             var xOff = 0;
             var yOff = 0;
             var cIdx = 0;
@@ -92,8 +93,8 @@ namespace PixelWorld.Fonts
             foreach (var glyph in Glyphs)
             {
                 for (var y = 0; y < Height; y++)
-                for (var x = 0; x < glyph.Value.Width; x++)
-                    bitmap.SetPixel(xOff + x, yOff + y, glyph.Value.Data[x, y] ? Color.Black : Color.Transparent);
+                    for (var x = 0; x < glyph.Value.Width; x++)
+                        bitmap.SetPixel(xOff + x, yOff + y, glyph.Value.Data[x, y] ? Color.Black : Color.Transparent);
 
                 xOff += glyph.Value.Width;
                 cIdx++;
@@ -103,8 +104,30 @@ namespace PixelWorld.Fonts
                     xOff = 0;
                 }
             }
-
-            return bitmap;
         }
+        public void DrawBitmap(Bitmap bitmap, int glphysPerRow, IReadOnlyDictionary<int, char> targetCharset, Color color)
+        {
+            var xOff = 0;
+            var yOff = 0;
+            var cIdx = 0;
+
+            foreach (var c in targetCharset.Values)
+            {
+                var glyph = Glyphs.ContainsKey(c) ? Glyphs[c] : Glyphs[' '];
+                for (var y = 0; y < Height; y++)
+                    for (var x = 0; x < glyph.Width; x++)
+                        if (glyph.Data[x, y])
+                            bitmap.SetPixel(xOff + x, yOff + y, color);
+
+                xOff += glyph.Width;
+                cIdx++;
+                if (cIdx % glphysPerRow == 0)
+                {
+                    yOff += Height;
+                    xOff = 0;
+                }
+            }
+        }
+
     }
 }

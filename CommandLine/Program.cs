@@ -37,6 +37,7 @@ namespace CommandLine
                 config.AddCommand<ConvertToCPCCommand>("zxtocpc");
                 config.AddCommand<ConvertToAtari8BitCommand>("zxtoa8");
                 config.AddCommand<ConvertToUfoCommand>("zxtoufo");
+                config.AddCommand<ConvertToGBStudioCommand>("zxtogbs");
             });
 
             app.Run(args);

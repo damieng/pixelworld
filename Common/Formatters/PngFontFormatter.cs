@@ -13,9 +13,20 @@ namespace PixelWorld.Formatters
         const int CharWidth = 8;
         const int CharHeight = 8;
 
+        public static readonly ImageCodecInfo DefaultEncoder = ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == ImageFormat.Png.Guid);
+
+        public static readonly EncoderParameters DefaultEncoderParameters = GetEncoderParameters(2);
+
+        public static EncoderParameters GetEncoderParameters(int depth)
+        {
+            var encoderParameters = new EncoderParameters(1);
+            encoderParameters.Param[0] = new EncoderParameter(Encoder.ColorDepth, depth);
+            return encoderParameters;
+        }
+
         public static void Read(Fonts.Font font, Stream source, IReadOnlyDictionary<int, char> charset)
         {
-            using Bitmap bitmap = (Bitmap)Bitmap.FromStream(source);
+            using Bitmap bitmap = (Bitmap)Image.FromStream(source);
             if (bitmap.Width % CharWidth != 0)
                 throw new InvalidDataException($"Image width must be multiple of {CharWidth}");
             if (bitmap.Height % CharHeight != 0)
@@ -39,15 +50,10 @@ namespace PixelWorld.Formatters
             }
         }
 
-
         public static void Write(Fonts.Font font, Stream output)
         {
-            var encoderParameters = new EncoderParameters(1);
-            encoderParameters.Param[0] = new EncoderParameter(Encoder.ColorDepth, 2);
-            var pngEncoder = ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == ImageFormat.Png.Guid);
-
             using var bitmap = font.CreateBitmap();
-            bitmap.Save(output, pngEncoder, encoderParameters);
+            bitmap.Save(output, DefaultEncoder, DefaultEncoderParameters);
         }
     }
 }

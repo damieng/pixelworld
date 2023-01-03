@@ -3,7 +3,9 @@ using PixelWorld.Formatters;
 using PixelWorld.Machines;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Text;
 
@@ -36,6 +38,40 @@ namespace PixelWorld.Tools
                 PngFontFormatter.Write(sourceFont, output);
             }
         }
+
+        public static void GBStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool darkLight)
+        {
+            foreach (var fileName in fileNames)
+            {
+                Out.Write($"Generating GBStudio files for {fileName}");
+                using var source = File.OpenRead(fileName);
+                using var reader = new BinaryReader(source);
+                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
+
+                var outputFilename = Utils.MakeFileName(Path.GetFileName(fileName), "png", outputFolder);
+                if (darkLight) outputFilename = outputFilename.Replace(".png", "-light.png");
+
+                {
+                    using var output = File.OpenWrite(outputFilename);
+                    using var bitmap = new Bitmap(128, 112);
+                    using var graphics = Graphics.FromImage(bitmap);
+                    graphics.Clear(Color.White);
+                    sourceFont.DrawBitmap(bitmap, 16, Gameboy.Studio, Color.Black);
+                    bitmap.Save(output, PngFontFormatter.DefaultEncoder, PngFontFormatter.DefaultEncoderParameters);
+                }
+
+                if (darkLight)
+                {
+                    using var output = File.OpenWrite(outputFilename.Replace("-light.png", "-dark.png"));
+                    using var bitmap = new Bitmap(128, 112);
+                    using var graphics = Graphics.FromImage(bitmap);
+                    graphics.Clear(Color.Black);
+                    sourceFont.DrawBitmap(bitmap, 16, Gameboy.Studio, Color.White);
+                    bitmap.Save(output, PngFontFormatter.DefaultEncoder, PngFontFormatter.DefaultEncoderParameters);
+                }
+            }
+        }
+
 
         public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {

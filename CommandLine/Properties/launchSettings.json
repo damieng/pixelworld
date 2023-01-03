@@ -2,8 +2,8 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "screenshot *.z80 --png --flashed",
-      "workingDirectory": "c:\\temp"
+      "commandLineArgs": "zxtogbs *.ch8 . --darklight",
+      "workingDirectory": "d:\\zxo\\_incomplete"
     }
   }
 }
