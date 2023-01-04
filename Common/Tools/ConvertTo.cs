@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Enumeration;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace PixelWorld.Tools
 {
@@ -39,6 +40,8 @@ namespace PixelWorld.Tools
             }
         }
 
+        record GBJson(string name) { public Object mapping = new { }; };
+
         public static void GBStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool darkLight)
         {
             foreach (var fileName in fileNames)
@@ -46,32 +49,34 @@ namespace PixelWorld.Tools
                 Out.Write($"Generating GBStudio files for {fileName}");
                 using var source = File.OpenRead(fileName);
                 using var reader = new BinaryReader(source);
-                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
+                var fontName = Path.GetFileNameWithoutExtension(fileName);
+                var font = ByteFontFormatter.Create(reader, fontName, 0, sourceCharset);
 
-                var outputFilename = Utils.MakeFileName(Path.GetFileName(fileName), "png", outputFolder);
-                if (darkLight) outputFilename = outputFilename.Replace(".png", "-light.png");
+                var outFileName = Path.Combine(outputFolder, fontName);
 
-                {
-                    using var output = File.OpenWrite(outputFilename);
-                    using var bitmap = new Bitmap(128, 112);
-                    using var graphics = Graphics.FromImage(bitmap);
-                    graphics.Clear(Color.White);
-                    sourceFont.DrawBitmap(bitmap, 16, Gameboy.Studio, Color.Black);
-                    bitmap.Save(output, PngFontFormatter.DefaultEncoder, PngFontFormatter.DefaultEncoderParameters);
-                }
+                GenerateBitmap(font, Path.ChangeExtension(outFileName, "png"), Color.White, Color.Black);
+                File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName), gbStudioJsonOptions));
 
                 if (darkLight)
                 {
-                    using var output = File.OpenWrite(outputFilename.Replace("-light.png", "-dark.png"));
-                    using var bitmap = new Bitmap(128, 112);
-                    using var graphics = Graphics.FromImage(bitmap);
-                    graphics.Clear(Color.Black);
-                    sourceFont.DrawBitmap(bitmap, 16, Gameboy.Studio, Color.White);
-                    bitmap.Save(output, PngFontFormatter.DefaultEncoder, PngFontFormatter.DefaultEncoderParameters);
+                    outFileName += "-dark";
+                    GenerateBitmap(font, Path.ChangeExtension(outFileName, "png"), Color.Black, Color.White);
+                    File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " dark"), gbStudioJsonOptions));
                 }
             }
         }
 
+        static JsonSerializerOptions gbStudioJsonOptions = new() { WriteIndented = true, IncludeFields = true };
+
+        private static void GenerateBitmap(Fonts.Font sourceFont, string outputFilename, Color background, Color foreground)
+        {
+            using var output = File.OpenWrite(outputFilename);
+            using var bitmap = new Bitmap(128, 112);
+            using var graphics = Graphics.FromImage(bitmap);
+            graphics.Clear(background);
+            sourceFont.DrawBitmap(bitmap, 16, Gameboy.Studio, foreground);
+            bitmap.Save(output, PngFontFormatter.DefaultEncoder, PngFontFormatter.DefaultEncoderParameters);
+        }
 
         public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
         {
