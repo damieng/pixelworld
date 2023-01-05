@@ -49,12 +49,13 @@ namespace PixelWorld.Tools
                 using var reader = new BinaryReader(source);
                 var fontName = Path.GetFileNameWithoutExtension(fileName);
                 var font = ByteFontFormatter.Create(reader, fontName, 0, sourceCharset);
+                var eightBitEncoder = PngFontFormatter.GetEncoderParameters(8);
 
                 var outFileName = Path.Combine(outputFolder, fontName);
                 {
                     using var bitmap = CreateFilledGBSBitmap(Gameboy.Palette[3]);
                     font.DrawBitmap(bitmap, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3]);
-                    bitmap.Save(Path.ChangeExtension(outFileName, "png"), PngFontFormatter.DefaultEncoder, PngFontFormatter.GetEncoderParameters(8));
+                    bitmap.Save(Path.ChangeExtension(outFileName, "png"), PngFontFormatter.DefaultEncoder, eightBitEncoder);
                     File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono"), gbStudioJsonOptions));
                 }
 
@@ -63,7 +64,7 @@ namespace PixelWorld.Tools
                     var darkFileName = outFileName + "-dark";
                     using var bitmap = CreateFilledGBSBitmap(Gameboy.Palette[0]);
                     font.DrawBitmap(bitmap, 16, Gameboy.Studio, Gameboy.Palette[3], Gameboy.Palette[0]);
-                    bitmap.Save(Path.ChangeExtension(darkFileName, "png"), PngFontFormatter.DefaultEncoder, PngFontFormatter.GetEncoderParameters(8));
+                    bitmap.Save(Path.ChangeExtension(darkFileName, "png"), PngFontFormatter.DefaultEncoder, eightBitEncoder);
                     File.WriteAllText(Path.ChangeExtension(darkFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono Dark"), gbStudioJsonOptions));
                 }
 
@@ -73,7 +74,7 @@ namespace PixelWorld.Tools
                     var varFont = FontSpacer.MakeProportional(font, 1, 1);
                     using var bitmap = CreateFilledGBSBitmap(Color.Magenta);
                     varFont.DrawBitmap(bitmap, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3], 8);
-                    bitmap.Save(Path.ChangeExtension(varFileName, "png"), PngFontFormatter.DefaultEncoder, PngFontFormatter.GetEncoderParameters(8));
+                    bitmap.Save(Path.ChangeExtension(varFileName, "png"), PngFontFormatter.DefaultEncoder, eightBitEncoder);
                     File.WriteAllText(Path.ChangeExtension(varFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Variable Width"), gbStudioJsonOptions));
                 }
             }

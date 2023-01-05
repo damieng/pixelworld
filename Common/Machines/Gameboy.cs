@@ -12,9 +12,14 @@ namespace PixelWorld.Machines
             "PQRSTUVWXYZ[\\]^_" +
             "`abcdefghijklmno" +
             "pqrstuvwxyz{|}~ " +
-            "€               " +
-            "                " +
-            "   £     ©      ").ToIndexedDictionary();
+            "€▒‚ƒ„…†‡ˆ‰Š‹Œ▒Ž▒" +
+            "▒‘’“”•–—˜™š›œ▒žŸ" +
+            "▒¡¢£¤¥¦§¨©ª«¬▒®¯" +
+            "°±²³´µ¶·¸¹º»¼½¾¿" +
+            "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ" +
+            "ÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß" +
+            "àáâãäåæçèéêëìíîï" +
+            "ðñòóôõö÷øùúûüýþÿ").ToIndexedDictionary();
 
         public static readonly Color[] Palette =
         {
