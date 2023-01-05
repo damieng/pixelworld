@@ -105,7 +105,7 @@ namespace PixelWorld.Fonts
                 }
             }
         }
-        public void DrawBitmap(Bitmap bitmap, int glphysPerRow, IReadOnlyDictionary<int, char> targetCharset, Color color)
+        public void DrawBitmap(Bitmap bitmap, int glphysPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
         {
             var xOff = 0;
             var yOff = 0;
@@ -116,10 +116,9 @@ namespace PixelWorld.Fonts
                 var glyph = Glyphs.ContainsKey(c) ? Glyphs[c] : Glyphs[' '];
                 for (var y = 0; y < Height; y++)
                     for (var x = 0; x < glyph.Width; x++)
-                        if (glyph.Data[x, y])
-                            bitmap.SetPixel(xOff + x, yOff + y, color);
+                        bitmap.SetPixel(xOff + x, yOff + y, glyph.Data[x, y] ? foreground : background);
 
-                xOff += glyph.Width;
+                xOff += (padWidth ?? glyph.Width);
                 cIdx++;
                 if (cIdx % glphysPerRow == 0)
                 {

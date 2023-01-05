@@ -13,7 +13,7 @@ namespace PixelWorld.Transformers
             foreach (var key in allKeys.Where(key => key != ' '))
                 target.Glyphs[key] = GlyphSpacer.Proportional(target.Glyphs[key], leftPad, rightPad);
 
-            var spaceWidth = target.Glyphs['{'].Width;
+            var spaceWidth = target.Glyphs['{'].Width - leftPad - rightPad;
             target.Glyphs[' '] = new Glyph(spaceWidth, source.Height, new bool[spaceWidth, source.Height]);
 
             return target;
