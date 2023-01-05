@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.IO.Enumeration;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -54,13 +53,13 @@ namespace PixelWorld.Tools
 
                 var outFileName = Path.Combine(outputFolder, fontName);
 
-                GenerateBitmap(font, Path.ChangeExtension(outFileName, "png"), Color.White, Color.Black);
+                GenerateBitmap(font, Path.ChangeExtension(outFileName, "png"), Gameboy.Palette[3], Gameboy.Palette[0]);
                 File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName), gbStudioJsonOptions));
 
                 if (darkLight)
                 {
                     outFileName += "-dark";
-                    GenerateBitmap(font, Path.ChangeExtension(outFileName, "png"), Color.Black, Color.White);
+                    GenerateBitmap(font, Path.ChangeExtension(outFileName, "png"), Gameboy.Palette[0], Gameboy.Palette[3]);
                     File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " dark"), gbStudioJsonOptions));
                 }
             }
@@ -75,7 +74,7 @@ namespace PixelWorld.Tools
             using var graphics = Graphics.FromImage(bitmap);
             graphics.Clear(background);
             sourceFont.DrawBitmap(bitmap, 16, Gameboy.Studio, foreground);
-            bitmap.Save(output, PngFontFormatter.DefaultEncoder, PngFontFormatter.DefaultEncoderParameters);
+            bitmap.Save(output, PngFontFormatter.DefaultEncoder, PngFontFormatter.GetEncoderParameters(8));
         }
 
         public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)

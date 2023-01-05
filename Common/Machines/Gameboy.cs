@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace PixelWorld.Machines
 {
@@ -14,5 +15,13 @@ namespace PixelWorld.Machines
             "€               " +
             "                " +
             "   £     ©      ").ToIndexedDictionary();
+
+        public static readonly Color[] Palette =
+        {
+            ColorTranslator.FromHtml("#071821"),
+            ColorTranslator.FromHtml("#306850"),
+            ColorTranslator.FromHtml("#86c06c"),
+            ColorTranslator.FromHtml("#e0f8cf"),
+        };
     }
 }

@@ -15,7 +15,7 @@ namespace PixelWorld.Formatters
 
         public static readonly ImageCodecInfo DefaultEncoder = ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == ImageFormat.Png.Guid);
 
-        public static readonly EncoderParameters DefaultEncoderParameters = GetEncoderParameters(2);
+        public static readonly EncoderParameters DefaultEncoderParameters = GetEncoderParameters(1);
 
         public static EncoderParameters GetEncoderParameters(int depth)
         {
