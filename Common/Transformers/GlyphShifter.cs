@@ -6,7 +6,10 @@ namespace PixelWorld.Transformers
     {
         public static Glyph Shift(Glyph source, int horizontal, int vertical, bool wrap, int? newWidth = null, int? newHeight = null)
         {
-            bool[,] data = new bool[source.Width, source.Height];
+            var width = newWidth ?? source.Width;
+            var height = newHeight ?? source.Height;
+
+            bool[,] data = new bool[width, height];
 
             for (var y = 0; y < source.Height; y++)
             {
@@ -17,16 +20,16 @@ namespace PixelWorld.Transformers
                     for (var x = 0; x < source.Width; x++)
                     {
                         var tx = x + horizontal;
-                        if (wrap || tx < source.Width && tx >= 0)
+                        if (wrap || tx < width && tx >= 0)
                         {
-                            tx %= source.Width;
+                            tx %= width;
                             data[tx, ty] = source.Data[x, y];
                         }
                     }
                 }
             }
 
-            return new Glyph(newWidth ?? source.Width, newHeight ?? source.Height, data);
+            return new Glyph(width, height, data);
         }
     }
 }

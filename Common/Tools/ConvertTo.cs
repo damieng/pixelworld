@@ -71,7 +71,7 @@ namespace PixelWorld.Tools
                 if (proportional)
                 {
                     var varFileName = outFileName + "-var";
-                    var varFont = FontSpacer.MakeProportional(font, 1, 1);
+                    var varFont = FontSpacer.MakeProportional(font, 0, 1);
                     using var bitmap = CreateFilledGBSBitmap(Color.Magenta);
                     varFont.DrawBitmap(bitmap, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3], 8);
                     bitmap.Save(Path.ChangeExtension(varFileName, "png"), PngFontFormatter.DefaultEncoder, eightBitEncoder);

@@ -9,7 +9,6 @@ namespace PixelWorld.Transformers
             var (right, left) = CountLeftAndRightBlankColumns(source);
             var actualWidth = source.Width - right - left;
             var newWidth = actualWidth + leftPad + rightPad;
-            if (newWidth > source.Width) return source; // Do not shift if too wide
 
             return GlyphShifter.Shift(source, 0 - right + leftPad, 0, false, newWidth);
         }

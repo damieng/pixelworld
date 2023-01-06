@@ -115,12 +115,13 @@ namespace PixelWorld.Fonts
 
             foreach (var c in targetCharset.Values)
             {
-                if (Glyphs.TryGetValue(c, out var glyph))
+                if (Glyphs.TryGetValue(c, out var glyph)) { 
                     for (var y = 0; y < Height; y++)
                         for (var x = 0; x < glyph.Width; x++)
                             bitmap.SetPixel(xOff + x, yOff + y, glyph.Data[x, y] ? foreground : background);
+                }
 
-                xOff += (padWidth ?? (glyph?.Width ?? spaceWidth));
+                xOff += padWidth ?? glyph?.Width ?? spaceWidth;
                 cIdx++;
                 if (cIdx % glphysPerRow == 0)
                 {

@@ -2,8 +2,8 @@
   "profiles": {
     "CommandLine": {
       "commandName": "Project",
-      "commandLineArgs": "zxtogbs *.ch8 . --darklight",
-      "workingDirectory": "d:\\zxo\\_incomplete"
+      "commandLineArgs": "zxtogbs *.ch8 . --dark --proportional",
+      "workingDirectory": "d:\\zxo\\Altered Chrome"
     }
   }
 }
