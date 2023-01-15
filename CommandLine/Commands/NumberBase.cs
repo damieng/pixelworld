@@ -25,7 +25,7 @@ namespace CommandLine.Commands
                 {"2", NumberBase.Binary}
             };
 
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
         {
             if (value is not string stringValue)
                 throw new NotSupportedException("Can't convert value to number base.");
