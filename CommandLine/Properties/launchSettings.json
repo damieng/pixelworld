@@ -3,7 +3,7 @@
     "CommandLine": {
       "commandName": "Project",
       "commandLineArgs": "zxtogbs *.ch8 . --dark --proportional",
-      "workingDirectory": "d:\\zxo\\Altered Chrome"
+      "workingDirectory": "d:\\zxo\\Envious"
     }
   }
 }

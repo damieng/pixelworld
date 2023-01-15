@@ -11,7 +11,7 @@ namespace PixelWorld.Formatters
         public static void Write(Font font, Stream output, bool makeProportional = false)
         {
             if (makeProportional)
-                font = FontSpacer.MakeProportional(font);
+                font = FontSpacer.MakeProportional(font, 0, 0, maxWidth: 16);
 
             using var writer = new BinaryWriter(output);
 

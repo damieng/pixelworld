@@ -4,11 +4,12 @@ namespace PixelWorld.Transformers
 {
     public static class GlyphSpacer
     {
-        public static Glyph Proportional(Glyph source, int leftPad = 0, int rightPad = 0)
+        public static Glyph Proportional(Glyph source, int leftPad = 0, int rightPad = 0, int maxWidth = 8)
         {
             var (right, left) = CountLeftAndRightBlankColumns(source);
             var actualWidth = source.Width - right - left;
             var newWidth = actualWidth + leftPad + rightPad;
+            if (newWidth > maxWidth) newWidth = maxWidth;
 
             return GlyphShifter.Shift(source, 0 - right + leftPad, 0, false, newWidth);
         }
