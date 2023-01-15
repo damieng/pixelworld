@@ -1,10 +1,10 @@
 ﻿using PixelWorld.Fonts;
-using System;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 
 namespace PixelWorld.Formatters
 {
@@ -13,36 +13,30 @@ namespace PixelWorld.Formatters
         const int CharWidth = 8;
         const int CharHeight = 8;
 
-        public static readonly ImageCodecInfo DefaultEncoder = ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == ImageFormat.Png.Guid);
-
-        public static readonly EncoderParameters DefaultEncoderParameters = GetEncoderParameters(1);
-
-        public static EncoderParameters GetEncoderParameters(int depth)
-        {
-            var encoderParameters = new EncoderParameters(1);
-            encoderParameters.Param[0] = new EncoderParameter(Encoder.ColorDepth, depth);
-            return encoderParameters;
-        }
+        public static readonly IImageEncoder DefaultEncoder = new PngEncoder() { ColorType = PngColorType.Rgb, BitDepth = PngBitDepth.Bit8 };
 
         public static void Read(Fonts.Font font, Stream source, IReadOnlyDictionary<int, char> charset)
         {
-            using Bitmap bitmap = (Bitmap)Image.FromStream(source);
-            if (bitmap.Width % CharWidth != 0)
+            using var image = Image.Load<Rgb24>(source);
+
+            if (image.Width % CharWidth != 0)
                 throw new InvalidDataException($"Image width must be multiple of {CharWidth}");
-            if (bitmap.Height % CharHeight != 0)
+            if (image.Height % CharHeight != 0)
                 throw new InvalidDataException($"Image height must be multiple of {CharHeight}");
 
-            var offColor = bitmap.GetPixel(0, 0);
+            Color off = image[0, 0];
+
+            var offColor = image[0, 0];
 
             int c = 0;
-            for (var charY = 0; charY < bitmap.Height; charY += CharHeight)
+            for (var charY = 0; charY < image.Height; charY += CharHeight)
             {
-                for (var charX = 0; charX < bitmap.Width; charX += CharWidth)
+                for (var charX = 0; charX < image.Width; charX += CharWidth)
                 {
                     var data = new bool[CharWidth, CharHeight];
                     for (var y = 0; y < CharHeight; y++)
                         for (var x = 0; x < CharHeight; x++)
-                            data[x, y] = bitmap.GetPixel(charX + x, charY + y) != offColor;
+                            data[x, y] = image[charX + x, charY + y] != offColor;
                     var glyph = new Glyph(CharWidth, CharHeight, data);
                     if (charset.TryGetValue(c++, out var mappedChar))
                         font.Glyphs.Add(mappedChar, glyph);
@@ -52,8 +46,8 @@ namespace PixelWorld.Formatters
 
         public static void Write(Fonts.Font font, Stream output)
         {
-            using var bitmap = font.CreateBitmap();
-            bitmap.Save(output, DefaultEncoder, DefaultEncoderParameters);
+            using var bitmap = font.CreateImage();
+            bitmap.Save(output, DefaultEncoder);
         }
     }
 }

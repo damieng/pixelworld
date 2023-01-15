@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SixLabors.ImageSharp.PixelFormats;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using SixLabors.ImageSharp;
 
 namespace PixelWorld.Display
 {
@@ -39,9 +40,9 @@ namespace PixelWorld.Display
             return buffer.Skip(offset).Take(768).All(b => b == 0);
         }
 
-        public static Bitmap GetBitmap(byte[] buffer, int offset, bool altFlashFrame = false)
+        public static Image<Rgb24> GetBitmap(byte[] buffer, int offset, bool altFlashFrame = false)
         {
-            var bitmap = new Bitmap(PixelWidth, PixelHeight);
+            var image = new Image<Rgb24>(PixelWidth, PixelHeight);
 
             for (var ay = 0; ay < AttributeHeight; ay++)
                 for (var ax = 0; ax < AttributeWidth; ax++)
@@ -60,12 +61,12 @@ namespace PixelWorld.Display
                         {
                             var a = 128 >> px;
                             var x = ax * 8 + px;
-                            bitmap.SetPixel(x, y, (pixels & a) != 0 ? foreColor : backColor);
+                            image[x, y] = (pixels & a) != 0 ? foreColor : backColor;
                         }
                     }
                 }
 
-            return bitmap;
+            return image;
         }
 
         public static byte[][] GetCandidates(byte[] buffer, int offset)

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using SixLabors.ImageSharp.PixelFormats;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
+using SixLabors.ImageSharp;
 
 namespace PixelWorld.Fonts
 {
@@ -73,28 +74,30 @@ namespace PixelWorld.Fonts
             return HashCode.Combine(Name, Height, Glyphs);
         }
 
-        public Bitmap CreateBitmap(int rows = 3)
+        public Image CreateImage(int rows = 3)
         {
             var fullWidth = Glyphs.Sum(g => g.Value.Width);
             var previewWidth = fullWidth / rows;
             var glyphsPerRow = Glyphs.Count / rows;
 
-            var bitmap = new Bitmap(previewWidth, Height * rows);
-            DrawBitmap(bitmap, glyphsPerRow);
-            return bitmap;
+
+            var image = new Image<Rgb24>(previewWidth, Height * rows);
+            DrawImage(image, glyphsPerRow);
+            return image;
         }
 
-        public void DrawBitmap(Bitmap bitmap, int glphysPerRow)
+        public void DrawImage(Image<Rgb24> image, int glphysPerRow)
         {
             var xOff = 0;
             var yOff = 0;
             var cIdx = 0;
 
+
             foreach (var glyph in Glyphs)
             {
                 for (var y = 0; y < Height; y++)
                     for (var x = 0; x < glyph.Value.Width; x++)
-                        bitmap.SetPixel(xOff + x, yOff + y, glyph.Value.Data[x, y] ? Color.Black : Color.Transparent);
+                        image[xOff + x, yOff + y] = glyph.Value.Data[x, y] ? Color.Black : Color.Transparent;
 
                 xOff += glyph.Value.Width;
                 cIdx++;
@@ -105,7 +108,7 @@ namespace PixelWorld.Fonts
                 }
             }
         }
-        public void DrawBitmap(Bitmap bitmap, int glphysPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
+        public void DrawImage(Image<Rgb24> image, int glphysPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
         {
             var xOff = 0;
             var yOff = 0;
@@ -115,10 +118,11 @@ namespace PixelWorld.Fonts
 
             foreach (var c in targetCharset.Values)
             {
-                if (Glyphs.TryGetValue(c, out var glyph)) { 
+                if (Glyphs.TryGetValue(c, out var glyph))
+                {
                     for (var y = 0; y < Height; y++)
                         for (var x = 0; x < glyph.Width; x++)
-                            bitmap.SetPixel(xOff + x, yOff + y, glyph.Data[x, y] ? foreground : background);
+                            image[xOff + x, yOff + y] = glyph.Data[x, y] ? foreground : background;
                 }
 
                 xOff += padWidth ?? glyph?.Width ?? spaceWidth;

@@ -1,13 +1,14 @@
-﻿using PixelWorld;
+﻿using CommandLine.Commands.Settings;
+using PixelWorld;
 using PixelWorld.Display;
 using PixelWorld.Tools;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using Spectre.Console.Cli;
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing.Imaging;
 using System.IO;
-using CommandLine.Commands.Settings;
 
 namespace CommandLine.Commands
 {
@@ -28,36 +29,43 @@ namespace CommandLine.Commands
             return 0;
         }
 
+        const int FlashDelay = 64;
+
         static bool WriteScreenToDisk(string fileName, ArraySegment<byte> memory, ScreenshotSettings settings)
         {
             var address = settings.Address ?? (memory.Count == 49152 ? 0 : 16384);
 
             if (settings.Png)
             {
-                var newFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "png"));
-                Out.Write($"  Dumping {fileName} @ {address} to {newFileName}");
-                using var bitmap = SpectrumDisplay.GetBitmap(memory.ToArray(), address, settings.Flashed);
-                bitmap.Save(newFileName, ImageFormat.Png);
+                var pngFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "png"));
+                Out.Write($"  Dumping {fileName} @ {address} to {pngFileName}");
+                using var image = SpectrumDisplay.GetBitmap(memory.ToArray(), address, settings.Flashed);
+                image.SaveAsPng(pngFileName);
             }
 
             if (settings.Gif)
             {
-                var newFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "gif"));
-                Out.Write($"  Dumping {fileName} @ {address} to {newFileName}");
-                using var animatedGif = AnimatedGif.AnimatedGif.Create(newFileName, 320); // 25 fps
-                using var frameOne = SpectrumDisplay.GetBitmap(memory.ToArray(), address, false);
-                animatedGif.AddFrame(frameOne, quality: AnimatedGif.GifQuality.Bit8);
-                using var frameTwo = SpectrumDisplay.GetBitmap(memory.ToArray(), address, true);
-                animatedGif.AddFrame(frameTwo, quality: AnimatedGif.GifQuality.Bit8);
+                var gifFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "gif"));
+                Out.Write($"  Dumping {fileName} @ {address} to {gifFileName}");
+
+                using var animated = SpectrumDisplay.GetBitmap(memory.ToArray(), address, false);
+                animated.Metadata.GetGifMetadata().RepeatCount = 0;
+                animated.Frames.RootFrame.Metadata.GetGifMetadata().FrameDelay = FlashDelay;
+
+                using var flashFrame = SpectrumDisplay.GetBitmap(memory.ToArray(), address, true).Frames.RootFrame;
+                flashFrame.Metadata.GetGifMetadata().FrameDelay = FlashDelay;
+                animated.Frames.AddFrame(flashFrame);
+
+                animated.SaveAsGif(gifFileName);
             }
 
             // Write SCR if specified OR if nothing specified (so it is the default)
-            if (settings.Scr |(!settings.Png && !settings.Gif))
+            if (settings.Scr | (!settings.Png && !settings.Gif))
             {
-                var newFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "scr"));
-                Out.Write($"  Dumping {fileName} @ {address} to {newFileName}");
+                var scrFileName = Path.Combine(settings.OutputFolder, Path.ChangeExtension(Path.GetFileName(fileName), "scr"));
+                Out.Write($"  Dumping {fileName} @ {address} to {scrFileName}");
                 var screenBuffer = memory.Array.AsSpan(address, 6912).ToArray();
-                File.WriteAllBytes(newFileName, screenBuffer);
+                File.WriteAllBytes(scrFileName, screenBuffer);
             }
 
             return true;

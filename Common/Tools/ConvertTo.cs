@@ -4,11 +4,14 @@ using PixelWorld.Machines;
 using PixelWorld.Transformers;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace PixelWorld.Tools
 {
@@ -40,6 +43,8 @@ namespace PixelWorld.Tools
             }
         }
 
+        private static readonly PngEncoder gbPngEncoder = new() { ColorType = PngColorType.Palette };
+
         public static void GBStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool dark, bool proportional)
         {
             foreach (var fileName in fileNames)
@@ -49,22 +54,21 @@ namespace PixelWorld.Tools
                 using var reader = new BinaryReader(source);
                 var fontName = Path.GetFileNameWithoutExtension(fileName);
                 var font = ByteFontFormatter.Create(reader, fontName, 0, sourceCharset);
-                var eightBitEncoder = PngFontFormatter.GetEncoderParameters(8);
 
                 var outFileName = Path.Combine(outputFolder, fontName);
                 {
-                    using var bitmap = CreateFilledGBSBitmap(Gameboy.Palette[3]);
-                    font.DrawBitmap(bitmap, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3]);
-                    bitmap.Save(Path.ChangeExtension(outFileName, "png"), PngFontFormatter.DefaultEncoder, eightBitEncoder);
+                    using var image = CreateFilledGBSBitmap(Gameboy.Palette[3]);
+                    font.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3]);
+                    image.SaveAsPng(Path.ChangeExtension(outFileName, "png"), gbPngEncoder);
                     File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono"), gbStudioJsonOptions));
                 }
 
                 if (dark)
                 {
                     var darkFileName = outFileName + "-dark";
-                    using var bitmap = CreateFilledGBSBitmap(Gameboy.Palette[0]);
-                    font.DrawBitmap(bitmap, 16, Gameboy.Studio, Gameboy.Palette[3], Gameboy.Palette[0]);
-                    bitmap.Save(Path.ChangeExtension(darkFileName, "png"), PngFontFormatter.DefaultEncoder, eightBitEncoder);
+                    using var image = CreateFilledGBSBitmap(Gameboy.Palette[0]);
+                    font.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[3], Gameboy.Palette[0]);
+                    image.SaveAsPng(Path.ChangeExtension(darkFileName, "png"), gbPngEncoder);
                     File.WriteAllText(Path.ChangeExtension(darkFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono Dark"), gbStudioJsonOptions));
                 }
 
@@ -72,23 +76,25 @@ namespace PixelWorld.Tools
                 {
                     var varFileName = outFileName + "-var";
                     var varFont = FontSpacer.MakeProportional(font, 0, 1, 8);
-                    using var bitmap = CreateFilledGBSBitmap(Color.Magenta);
-                    varFont.DrawBitmap(bitmap, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3], 8);
-                    bitmap.Save(Path.ChangeExtension(varFileName, "png"), PngFontFormatter.DefaultEncoder, eightBitEncoder);
+                    using var image = CreateFilledGBSBitmap(Color.Magenta);
+                    varFont.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3], 8);
+                    image.SaveAsPng(Path.ChangeExtension(varFileName, "png"), gbPngEncoder);
                     File.WriteAllText(Path.ChangeExtension(varFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Variable Width"), gbStudioJsonOptions));
                 }
             }
         }
 
         record GBJson(string name) { public Object mapping = new { }; };
+
         static readonly JsonSerializerOptions gbStudioJsonOptions = new() { WriteIndented = true, IncludeFields = true };
 
-        private static Bitmap CreateFilledGBSBitmap(Color fill)
+        private static Image<Rgb24> CreateFilledGBSBitmap(Color fill)
         {
-            var bitmap = new Bitmap(128, 112);
-            using var graphics = Graphics.FromImage(bitmap);
-            graphics.Clear(fill);
-            return bitmap;
+            var image = new Image<Rgb24>(128, 112);
+            for (var x = 0; x < 128; x++)
+                for (var y = 0; y < 112; y++)
+                    image[x, y] = fill;
+            return image;
         }
 
         public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)

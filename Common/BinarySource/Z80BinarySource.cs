@@ -53,7 +53,7 @@ namespace PixelWorld.BinarySource
 
         private static ArraySegment<byte> Setup48KMemory(Z80_SNAPSHOT snapshot)
         {
-            Out.Write("   Loading as ZX Spectrum 48K");
+            Out.Write("  Loading as ZX Spectrum 48K");
             var memory = new byte[(16 + 48) * 1024]; // Leave first 16KB ROM blank
             CopyBank(snapshot.RAM_BANK, 10, memory, 0x4000);
             CopyBank(snapshot.RAM_BANK, 04, memory, 0x8000);

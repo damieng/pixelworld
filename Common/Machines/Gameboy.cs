@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
+using SixLabors.ImageSharp;
 
 namespace PixelWorld.Machines
 {
@@ -23,10 +23,10 @@ namespace PixelWorld.Machines
 
         public static readonly Color[] Palette =
         {
-            ColorTranslator.FromHtml("#071821"),
-            ColorTranslator.FromHtml("#306850"),
-            ColorTranslator.FromHtml("#86c06c"),
-            ColorTranslator.FromHtml("#e0f8cf"),
+            Color.ParseHex("#071821"),
+            Color.ParseHex("#306850"),
+            Color.ParseHex("#86c06c"),
+            Color.ParseHex("#e0f8cf"),
         };
     }
 }
