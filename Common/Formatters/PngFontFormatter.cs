@@ -47,6 +47,7 @@ namespace PixelWorld.Formatters
         public static void Write(Fonts.Font font, Stream output)
         {
             using var bitmap = font.CreateImage();
+            font.DrawImage(bitmap, 32);
             bitmap.Save(output, DefaultEncoder);
         }
     }

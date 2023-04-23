@@ -74,7 +74,7 @@ namespace PixelWorld.Fonts
             return HashCode.Combine(Name, Height, Glyphs);
         }
 
-        public Image CreateImage(int rows = 3)
+        public Image<Rgb24> CreateImage(int rows = 3)
         {
             var fullWidth = Glyphs.Sum(g => g.Value.Width);
             var previewWidth = fullWidth / rows;
@@ -86,7 +86,7 @@ namespace PixelWorld.Fonts
             return image;
         }
 
-        public void DrawImage(Image<Rgb24> image, int glphysPerRow)
+        public void DrawImage(Image<Rgb24> image, int glyphsPerRow)
         {
             var xOff = 0;
             var yOff = 0;
@@ -97,18 +97,18 @@ namespace PixelWorld.Fonts
             {
                 for (var y = 0; y < Height; y++)
                     for (var x = 0; x < glyph.Value.Width; x++)
-                        image[xOff + x, yOff + y] = glyph.Value.Data[x, y] ? Color.Black : Color.Transparent;
+                        image[xOff + x, yOff + y] = glyph.Value.Data[x, y] ? Color.Black : Color.White;
 
                 xOff += glyph.Value.Width;
                 cIdx++;
-                if (cIdx % glphysPerRow == 0)
+                if (cIdx % glyphsPerRow == 0)
                 {
                     yOff += Height;
                     xOff = 0;
                 }
             }
         }
-        public void DrawImage(Image<Rgb24> image, int glphysPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
+        public void DrawImage(Image<Rgb24> image, int glyphsPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
         {
             var xOff = 0;
             var yOff = 0;
@@ -127,7 +127,7 @@ namespace PixelWorld.Fonts
 
                 xOff += padWidth ?? glyph?.Width ?? spaceWidth;
                 cIdx++;
-                if (cIdx % glphysPerRow == 0)
+                if (cIdx % glyphsPerRow == 0)
                 {
                     yOff += Height;
                     xOff = 0;
