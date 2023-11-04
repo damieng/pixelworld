@@ -20,7 +20,7 @@ public static class ConvertTo
     {
         foreach (var sourceFileName in fileNames)
         {
-            var targetFolderName = Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(sourceFileName), ".ufo"));
+            var targetFolderName = Utils.MakeFileName(sourceFileName, "ufo", outputFolder);
             Out.Write($"Converting file {sourceFileName} to {targetFolderName}");
             using var source = File.OpenRead(sourceFileName);
             using var reader = new BinaryReader(source);
@@ -44,7 +44,7 @@ public static class ConvertTo
 
     private static readonly PngEncoder gbPngEncoder = new() { ColorType = PngColorType.Palette };
 
-    public static void GBStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool dark, bool proportional)
+    public static void GbStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool dark, bool proportional)
     {
         foreach (var fileName in fileNames)
         {
@@ -56,7 +56,7 @@ public static class ConvertTo
 
             var outFileName = Path.Combine(outputFolder, fontName);
             {
-                using var image = CreateFilledGBSBitmap(Gameboy.Palette[3]);
+                using var image = CreateFilledGbsBitmap(Gameboy.Palette[3]);
                 font.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3]);
                 image.SaveAsPng(Path.ChangeExtension(outFileName, "png"), gbPngEncoder);
                 File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono"), gbStudioJsonOptions));
@@ -65,7 +65,7 @@ public static class ConvertTo
             if (dark)
             {
                 var darkFileName = outFileName + "-dark";
-                using var image = CreateFilledGBSBitmap(Gameboy.Palette[0]);
+                using var image = CreateFilledGbsBitmap(Gameboy.Palette[0]);
                 font.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[3], Gameboy.Palette[0]);
                 image.SaveAsPng(Path.ChangeExtension(darkFileName, "png"), gbPngEncoder);
                 File.WriteAllText(Path.ChangeExtension(darkFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono Dark"), gbStudioJsonOptions));
@@ -75,7 +75,7 @@ public static class ConvertTo
             {
                 var varFileName = outFileName + "-var";
                 var varFont = FontSpacer.MakeProportional(font, 0, 1, 8);
-                using var image = CreateFilledGBSBitmap(Color.Magenta);
+                using var image = CreateFilledGbsBitmap(Color.Magenta);
                 varFont.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3], 8);
                 image.SaveAsPng(Path.ChangeExtension(varFileName, "png"), gbPngEncoder);
                 File.WriteAllText(Path.ChangeExtension(varFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Variable Width"), gbStudioJsonOptions));
@@ -87,7 +87,7 @@ public static class ConvertTo
 
     static readonly JsonSerializerOptions gbStudioJsonOptions = new() { WriteIndented = true, IncludeFields = true };
 
-    private static Image<Rgb24> CreateFilledGBSBitmap(Color fill)
+    private static Image<Rgb24> CreateFilledGbsBitmap(Color fill)
     {
         var image = new Image<Rgb24>(128, 112);
         for (var x = 0; x < 128; x++)
@@ -114,7 +114,7 @@ public static class ConvertTo
         }
     }
 
-    public static void FZX(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional, string outputFolder)
+    public static void Fzx(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional, string outputFolder)
     {
         foreach (var fileName in fileNames)
         {
@@ -127,7 +127,7 @@ public static class ConvertTo
         }
     }
 
-    public static void AmstradCPC(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
+    public static void AmstradCpc(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
     {
         foreach (var sourceFileName in fileNames)
         {
@@ -136,8 +136,8 @@ public static class ConvertTo
             var line = startLine;
 
             Out.Write($"Converting file {sourceFileName} to {targetFileName}");
-            using (var source = File.OpenRead(sourceFileName))
-            using (var reader = new BinaryReader(source))
+            using var source = File.OpenRead(sourceFileName);
+            using var reader = new BinaryReader(source);
             {
                 var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
 

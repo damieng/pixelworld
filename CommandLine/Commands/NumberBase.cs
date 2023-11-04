@@ -26,7 +26,10 @@ public sealed class NumberBaseConverter : TypeConverter
         };
 
     public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
-    {     if (value is not string stringValue)     throw new NotSupportedException("Can't convert value to number base.");
-                 if (!lookup.TryGetValue(stringValue, out var numberBase))     throw new InvalidOperationException($"The value '{value}' is not a number base.");
-     return numberBase;     }
+    {
+        if (value is not string stringValue) throw new NotSupportedException("Can't convert value to number base.");
+        if (!lookup.TryGetValue(stringValue, out var numberBase))
+            throw new InvalidOperationException($"The value '{value}' is not a number base.");
+        return numberBase;
+    }
 }

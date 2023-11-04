@@ -8,13 +8,12 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert to FZX-format font")]
-public class ConvertToFzxCommand : Command<ProportionalSettings>
+[Description("Convert to Commodore Amiga binary font format")]
+public class ConvertToAmigaCommand : Command<ConvertSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] ProportionalSettings settings)
+    public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
-        ConvertTo.Fzx(files, Spectrum.UK, settings.Proportional, settings.OutputFolder);
         return 0;
     }
 }

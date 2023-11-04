@@ -12,5 +12,9 @@ namespace CommandLine.Commands;
 public class PreviewCommand : Command<RequiredSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
-    {     var files = Utils.MatchGlobWithFiles(settings.Glob);     ConvertTo.Png(files, Spectrum.UK, settings.OutputFolder);     return 0;     }
+    {
+        var files = Utils.MatchGlobWithFiles(settings.Glob);
+        ConvertTo.Png(files, Spectrum.UK, settings.OutputFolder);
+        return 0;
+    }
 }

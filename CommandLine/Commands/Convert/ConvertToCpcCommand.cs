@@ -14,7 +14,7 @@ public class ConvertToCpcCommand : Command<BasicOutputSettings>
     public override int Execute([NotNull] CommandContext context, [NotNull] BasicOutputSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
-        ConvertTo.AmstradCPC(files, Spectrum.UK, settings.OutputFolder, settings.Credit, settings.Line);
+        ConvertTo.AmstradCpc(files, Spectrum.UK, settings.OutputFolder, settings.Credit, settings.Line);
         return 0;
     }
 }

@@ -16,12 +16,15 @@ public class Generate68000AssemblyCommand : Command<AssemblySettings>
         switch (settings.Base)
         {
             case NumberBase.Decimal:
-                AssemblyFontFormatter.CreateAssemblyDefines("68000", "DC.B ", "${0:x2}", files, settings.OutputFolder, settings.Credit);
+                AssemblyFontFormatter.CreateDefines("68000", "DC.B ", "${0:x2}", files, settings.OutputFolder,
+                    settings.Credit);
                 break;
             default:
-                AssemblyFontFormatter.CreateAssemblyDefines("68000", "DC.B ", "{0}", files, settings.OutputFolder, settings.Credit);
+                AssemblyFontFormatter.CreateDefines("68000", "DC.B ", "{0}", files, settings.OutputFolder,
+                    settings.Credit);
                 break;
         }
+
         return 0;
     }
 }

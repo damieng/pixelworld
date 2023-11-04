@@ -16,12 +16,15 @@ public class Generate8086AssemblyCommand : Command<AssemblySettings>
         switch (settings.Base)
         {
             case NumberBase.Decimal:
-                AssemblyFontFormatter.CreateAssemblyDefines("x86", "db\t", "0x{0:x2}", files, settings.OutputFolder, settings.Credit);
+                AssemblyFontFormatter.CreateDefines("x86", "db\t", "0x{0:x2}", files, settings.OutputFolder,
+                    settings.Credit);
                 break;
             default:
-                AssemblyFontFormatter.CreateAssemblyDefines("x86", "db\t", "{0}", files, settings.OutputFolder, settings.Credit);
+                AssemblyFontFormatter.CreateDefines("x86", "db\t", "{0}", files, settings.OutputFolder,
+                    settings.Credit);
                 break;
         }
+
         return 0;
     }
 }

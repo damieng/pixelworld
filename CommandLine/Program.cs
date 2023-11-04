@@ -45,7 +45,7 @@ static class Program
         config.AddCommand<ConvertToMsxCommand>("zxtomsx");
         config.AddCommand<ConvertToCpcCommand>("zxtocpc");
         config.AddCommand<ConvertToAtari8BitCommand>("zxtoa8");
-        config.AddCommand<ConvertToUFOCommand>("zxtoufo");
+        config.AddCommand<ConvertToUfoCommand>("zxtoufo");
         config.AddCommand<ConvertToGbStudioCommand>("zxtogbs");
     }
 }

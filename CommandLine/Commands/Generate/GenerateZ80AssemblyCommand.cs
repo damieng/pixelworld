@@ -19,12 +19,15 @@ public class GenerateZ80AssemblyCommand : Command<AssemblySettings>
                 AssemblyFontFormatter.GenZ80AsmBinary(files, settings.OutputFolder, settings.Credit);
                 break;
             case NumberBase.Decimal:
-                AssemblyFontFormatter.CreateAssemblyDefines("z80", "defb ", "{0}", files, settings.OutputFolder, settings.Credit);
+                AssemblyFontFormatter.CreateDefines("z80", "defb ", "{0}", files, settings.OutputFolder,
+                    settings.Credit);
                 break;
             default:
-                AssemblyFontFormatter.CreateAssemblyDefines("z80", "defb ", "&{0:x2}", files, settings.OutputFolder, settings.Credit);
+                AssemblyFontFormatter.CreateDefines("z80", "defb ", "&{0:x2}", files, settings.OutputFolder,
+                    settings.Credit);
                 break;
         }
+
         return 0;
     }
 }

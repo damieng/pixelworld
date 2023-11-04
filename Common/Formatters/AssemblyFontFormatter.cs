@@ -8,7 +8,7 @@ namespace PixelWorld.Formatters;
 
 public static class AssemblyFontFormatter
 {
-    public static void CreateAssemblyDefines(string language, string defineByteInstruction, string format, List<string> fileNames, string outputFolder, string credit)
+    public static void CreateDefines(string language, string defineByteInstruction, string format, List<string> fileNames, string outputFolder, string credit)
     {
         foreach (var fileName in fileNames)
         {

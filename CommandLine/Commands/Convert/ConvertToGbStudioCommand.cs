@@ -14,7 +14,7 @@ public class ConvertToGbStudioCommand : Command<GbStudioSettings>
     public override int Execute([NotNull] CommandContext context, [NotNull] GbStudioSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
-        ConvertTo.GBStudio(files, Spectrum.UK, settings.OutputFolder, settings.Dark, settings.Proportional);
+        ConvertTo.GbStudio(files, Spectrum.UK, settings.OutputFolder, settings.Dark, settings.Proportional);
         return 0;
     }
 }

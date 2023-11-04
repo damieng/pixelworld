@@ -9,7 +9,7 @@ using Spectre.Console.Cli;
 namespace CommandLine.Commands.Convert;
 
 [Description("Convert to UFO font file")]
-public class ConvertToUFOCommand : Command<ConvertSettings>
+public class ConvertToUfoCommand : Command<ConvertSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
     {

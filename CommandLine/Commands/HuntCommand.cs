@@ -11,5 +11,9 @@ namespace CommandLine.Commands;
 public class HuntCommand : Command<RequiredSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
-    {     var files = Utils.MatchGlobWithFiles(settings.Glob);     FontHunter.Hunt(files, settings.OutputFolder);     return 0;     }
+    {
+        var files = Utils.MatchGlobWithFiles(settings.Glob);
+        FontHunter.Hunt(files, settings.OutputFolder);
+        return 0;
+    }
 }
