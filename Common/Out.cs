@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PixelWorld
+namespace PixelWorld;
+
+public static class Out
 {
-    public static class Out
-    {
-        private static readonly List<Action<string>> logTargets = new();
+    private static readonly List<Action<string>> logTargets = new();
 
-        public static void Write(string output) {
-            foreach (var logTarget in logTargets)
-                logTarget(output);
-        }
+    public static void Write(string output) {
+        foreach (var logTarget in logTargets)
+            logTarget(output);
+    }
 
-        public static void Attach(Action<string> logTarget) {
-            logTargets.Add(logTarget);
-        }
+    public static void Attach(Action<string> logTarget) {
+        logTargets.Add(logTarget);
     }
 }

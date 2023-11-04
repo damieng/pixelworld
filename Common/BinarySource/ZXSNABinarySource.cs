@@ -4,7 +4,7 @@ using System.IO;
 
 namespace PixelWorld.BinarySource
 {
-    public class ZXSNABinarySource : ZXSpectrumBinarySource, IBinarySource
+    public class ZXSNABinarySource : SpectrumBinarySource, IBinarySource
     {
         public static IBinarySource Instance { get; } = new ZXSNABinarySource();
 

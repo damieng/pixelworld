@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 
-namespace PixelWorld.BinarySource
+namespace PixelWorld.BinarySource;
+
+public interface IBinarySource
 {
-    public interface IBinarySource
-    {
-        ArraySegment<byte> GetMemory(Stream source);
-    }
+    ArraySegment<byte> GetMemory(Stream source);
 }

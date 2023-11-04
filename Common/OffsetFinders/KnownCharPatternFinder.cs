@@ -1,41 +1,40 @@
 ﻿using PixelWorld.Machines;
 using System.Collections.Generic;
 
-namespace PixelWorld.OffsetFinders
+namespace PixelWorld.OffsetFinders;
+
+public class KnownCharPattern
 {
-    public class KnownCharPattern
-    {
-        public readonly int CharCode;
-        public readonly byte[] Pattern;
+    public readonly int CharCode;
+    public readonly byte[] Pattern;
 
-        public KnownCharPattern(int charCode, byte[] pattern)
-        {
-            CharCode = charCode;
-            Pattern = pattern;
-        }
+    public KnownCharPattern(int charCode, byte[] pattern)
+    {
+        CharCode = charCode;
+        Pattern = pattern;
     }
+}
 
-    public static class KnownCharPatternFinder
+public static class KnownCharPatternFinder
+{
+    public static List<int> FindOffsets(byte[] buffer, KnownCharPattern[] knownFont)
     {
-        public static List<int> FindOffsets(byte[] buffer, KnownCharPattern[] knownFont)
+        var offsets = new HashSet<int>();
+
+        var end = buffer.Length - Spectrum.FontSize;
+
+        for (var i = 0; i < end; i++)
         {
-            var offsets = new HashSet<int>();
-
-            var end = buffer.Length - Spectrum.FontSize;
-
-            for (var i = 0; i < end; i++)
+            foreach (var known in knownFont)
             {
-                foreach (var known in knownFont)
+                if (buffer.IsSame(i, known.Pattern))
                 {
-                    if (buffer.IsSame(i, known.Pattern))
-                    {
-                        offsets.Add(i - known.CharCode * 8);
-                        break;
-                    }
+                    offsets.Add(i - known.CharCode * 8);
+                    break;
                 }
             }
-
-            return new List<int>(offsets);
         }
+
+        return new List<int>(offsets);
     }
 }

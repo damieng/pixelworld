@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
 
-namespace PixelWorld.BinarySource
+namespace PixelWorld.BinarySource;
+
+public class RawBinarySource : IBinarySource
 {
-    public class RawBinarySource : IBinarySource
+    public ArraySegment<byte> GetMemory(Stream input)
     {
-        public ArraySegment<byte> GetMemory(Stream input)
-        {
-            return new ArraySegment<byte>(input.ReadAllBytes());
-        }
+        return new ArraySegment<byte>(input.ReadAllBytes());
     }
 }

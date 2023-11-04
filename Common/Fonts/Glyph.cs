@@ -3,77 +3,76 @@ using System.Collections;
 using System.Diagnostics;
 using System.Text;
 
-namespace PixelWorld.Fonts
+namespace PixelWorld.Fonts;
+
+[DebuggerDisplay("{Print(),nq}")]
+public class Glyph : IEquatable<Glyph>
 {
-    [DebuggerDisplay("{Print(),nq}")]
-    public class Glyph : IEquatable<Glyph>
+    public int Height { get; }
+    public int Width { get; }
+    public bool[,] Data { get; }
+
+    public Glyph(int width, int height, bool[,] data)
     {
-        public int Height { get; }
-        public int Width { get; }
-        public bool[,] Data { get; }
+        Width = width;
+        Height = height;
+        Data = data;
+    }
 
-        public Glyph(int width, int height, bool[,] data)
-        {
-            Width = width;
-            Height = height;
-            Data = data;
-        }
+    public bool Equals(Glyph? other)
+    {
+        return other is not null
+               && (ReferenceEquals(this, other) || Height == other.Height
+                   && Width == other.Width
+                   && ((IStructuralEquatable)Data).Equals(other.Data, StructuralComparisons.StructuralEqualityComparer));
+    }
 
-        public bool Equals(Glyph? other)
-        {
-            return other is not null
-                && (ReferenceEquals(this, other) || Height == other.Height
-                && Width == other.Width
-                && ((IStructuralEquatable)Data).Equals(other.Data, StructuralComparisons.StructuralEqualityComparer));
-        }
+    public override bool Equals(object? obj)
+    {
+        return obj is not null
+               && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Glyph)obj));
+    }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is not null
-                   && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Glyph)obj));
-        }
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Height, Width);
+    }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Height, Width);
-        }
-
-        public string Print()
-        {
-            var sb = new StringBuilder();
-            for (var y = 0; y < Height; y++)
-            {
-                for (var x = 0; x < Width; x++)
-                    sb.Append(Data[x, y] ? "*" : ".");
-                sb.Append(" \n");
-            }
-
-            return sb.ToString();
-        }
-
-        public bool IsBlank()
-        {
-            for (var y = 0; y < Height; y++)
-                for (var x = 0; x < Width; x++)
-                    if (Data[y,x])
-                        return false;
-            return true;
-        }
-
-        public bool IsRowBlank(int row)
+    public string Print()
+    {
+        var sb = new StringBuilder();
+        for (var y = 0; y < Height; y++)
         {
             for (var x = 0; x < Width; x++)
-                if (Data[x, row])
-                    return false;
-            return true;
+                sb.Append(Data[x, y] ? "*" : ".");
+            sb.Append(" \n");
         }
 
-        public bool IsColumnBlank(int column)
-        {
-            for (var y = 0; y < Height; y++)
-                if (Data[column, y])
-                    return false;
-            return true;
-        }
+        return sb.ToString();
+    }
+
+    public bool IsBlank()
+    {
+        for (var y = 0; y < Height; y++)
+        for (var x = 0; x < Width; x++)
+            if (Data[y,x])
+                return false;
+        return true;
+    }
+
+    public bool IsRowBlank(int row)
+    {
+        for (var x = 0; x < Width; x++)
+            if (Data[x, row])
+                return false;
+        return true;
+    }
+
+    public bool IsColumnBlank(int column)
+    {
+        for (var y = 0; y < Height; y++)
+            if (Data[column, y])
+                return false;
+        return true;
     }
 }
