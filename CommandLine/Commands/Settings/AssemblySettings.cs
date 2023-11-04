@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace CommandLine.Commands.Settings
+namespace CommandLine.Commands.Settings;
+
+public class AssemblySettings : TextOutputSettings
 {
-    public class AssemblySettings : TextOutputSettings
-    {
-        [CommandOption("--base <BASE>")]
-        [Description("What base to use for font glyph data.")]
-        [TypeConverter(typeof(NumberBaseConverter))]
-        [DefaultValue("hex")]
-        public NumberBase Base { get; set; }
-    }
+    [CommandOption("--base <BASE>")]
+    [Description("What base to use for font glyph data.")]
+    [TypeConverter(typeof(NumberBaseConverter))]
+    [DefaultValue("hex")]
+    public NumberBase Base { get; set; }
 }

@@ -5,16 +5,15 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using CommandLine.Commands.Settings;
 
-namespace CommandLine.Commands
+namespace CommandLine.Commands;
+
+[Description("Produce raw memory dumps from snapshots")]
+public class DumpCommand : Command<RequiredSettings>
 {
-    [Description("Produce raw memory dumps from snapshots")]
-    public class DumpCommand : Command<RequiredSettings>
+    public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
     {
-        public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
-        {
-            var files = Utils.MatchGlobWithFiles(settings.Glob);
-            Dumper.Dump(files, settings.OutputFolder);
-            return 0;
-        }
+        var files = Utils.MatchGlobWithFiles(settings.Glob);
+        Dumper.Dump(files, settings.OutputFolder);
+        return 0;
     }
 }
