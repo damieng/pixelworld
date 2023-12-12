@@ -123,7 +123,7 @@ public static class ConvertTo
             using var reader = new BinaryReader(source);
             var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, charset);
             using var target = File.Create(Utils.MakeFileName(fileName, "fzx", outputFolder));
-            FZXFontFormatter.Write(font, target, makeProportional);
+            FzxFontFormatter.Write(font, target, makeProportional);
         }
     }
 
@@ -188,7 +188,7 @@ public static class ConvertTo
         }
     }
 
-    public static void MSX(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+    public static void Msx(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
     {
         var templateFilename = Path.Combine(templatePath, "msx.fnt");
         Out.Write($"Using template {templateFilename}");

@@ -6,7 +6,7 @@ using System.IO;
 
 namespace PixelWorld.Formatters;
 
-public static class FZXFontFormatter
+public static class FzxFontFormatter
 {
     public static void Write(Font font, Stream output, bool makeProportional = false)
     {

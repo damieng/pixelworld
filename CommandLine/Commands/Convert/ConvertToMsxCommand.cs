@@ -14,7 +14,7 @@ public class ConvertToMsxCommand : Command<ConvertSettings>
     public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
-        ConvertTo.MSX(files, Spectrum.UK, settings.OutputFolder, settings.TemplatePath);
+        ConvertTo.Msx(files, Spectrum.UK, settings.OutputFolder, settings.TemplatePath);
         return 0;
     }
 }
