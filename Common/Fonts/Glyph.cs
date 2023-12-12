@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace PixelWorld.Fonts;
@@ -24,8 +25,12 @@ public class Glyph : IEquatable<Glyph>
         return other is not null
                && (ReferenceEquals(this, other) || Height == other.Height
                    && Width == other.Width
-                   && ((IStructuralEquatable)Data).Equals(other.Data, StructuralComparisons.StructuralEqualityComparer));
+                   && SequenceEquals(Data, other.Data));
     }
+
+    public static bool SequenceEquals<T>(T[,] a, T[,] b) => a.Rank == b.Rank
+         && Enumerable.Range(0, a.Rank).All(d=> a.GetLength(d) == b.GetLength(d))
+         && a.Cast<T>().SequenceEqual(b.Cast<T>());
 
     public override bool Equals(object? obj)
     {

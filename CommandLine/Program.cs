@@ -33,6 +33,7 @@ static class Program
         config.AddCommand<PreviewCommand>("preview");
         config.AddCommand<ConvertFromPngCommand>("pngtoch8");
         config.AddCommand<ConvertFromC64Command>("c64toch8");
+        config.AddCommand<FindMatchingGlyphsCommand>("findmatches");
 
         config.AddCommand<GenerateZ80AssemblyCommand>("z80asm");
         config.AddCommand<Generate6502AssemblyCommand>("6502asm");
