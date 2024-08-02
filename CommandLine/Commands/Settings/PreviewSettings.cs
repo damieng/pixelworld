@@ -12,4 +12,9 @@ public class PreviewSettings : RequiredSettings
     [CommandOption("--webp")]
     [Description("Write a .webp version of the screenshot.")]
     public bool Webp { get; set; }
+
+    [CommandOption("--transparent")]
+    [DefaultValue(true)]
+    [Description("Write images with transparent backgrounds.")]
+    public bool Transparent { get; set; }
 }

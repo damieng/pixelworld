@@ -77,9 +77,9 @@ public static class ConvertTo
 
     static readonly JsonSerializerOptions gbStudioJsonOptions = new() {WriteIndented = true, IncludeFields = true};
 
-    private static Image<Rgb24> CreateFilledGbsBitmap(Color fill)
+    private static Image<Rgba32> CreateFilledGbsBitmap(Color fill)
     {
-        var image = new Image<Rgb24>(128, 112);
+        var image = new Image<Rgba32>(128, 112);
         for (var x = 0; x < 128; x++)
         for (var y = 0; y < 112; y++)
             image[x, y] = fill;

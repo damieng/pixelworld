@@ -15,7 +15,7 @@ public class PreviewCommand : Command<PreviewSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] PreviewSettings settings)
     {
-        foreach (var fileName in  Utils.MatchGlobWithFiles(settings.Glob))
+        foreach (var fileName in Utils.MatchGlobWithFiles(settings.Glob))
         {
             Out.Write($"Generating preview files for {fileName}");
             using var source = File.OpenRead(fileName);
@@ -27,7 +27,7 @@ public class PreviewCommand : Command<PreviewSettings>
                 var targetName = Utils.MakeFileName(fileName, "webp", settings.OutputFolder);
                 Out.Write($"  Previewing {fileName} to {targetName}");
                 using var output = File.OpenWrite(targetName);
-                ImageFontFormatter.Write(sourceFont, output, ImageFontFormatter.WebpEncoder);
+                ImageFontFormatter.Write(sourceFont, output, ImageFontFormatter.WebpEncoder, settings.Transparent);
             }
 
             if (settings.Png || !settings.Webp)
@@ -35,7 +35,7 @@ public class PreviewCommand : Command<PreviewSettings>
                 var targetName = Utils.MakeFileName(fileName, "png", settings.OutputFolder);
                 Out.Write($"  Previewing {fileName} to {targetName}");
                 using var output = File.OpenWrite(targetName);
-                ImageFontFormatter.Write(sourceFont, output, ImageFontFormatter.PngEncoder);
+                ImageFontFormatter.Write(sourceFont, output, ImageFontFormatter.PngEncoder, settings.Transparent);
             }
         }
 

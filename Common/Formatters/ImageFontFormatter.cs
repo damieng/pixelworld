@@ -55,10 +55,9 @@ public static class ImageFontFormatter
         }
     }
 
-    public static void Write(Font font, Stream output, IImageEncoder imageEncoder)
+    public static void Write(Font font, Stream output, IImageEncoder imageEncoder, bool transparent)
     {
-        using var bitmap = font.CreateImage();
-        font.DrawImage(bitmap, 32);
+        using var bitmap = font.CreateImage(3, transparent);
         bitmap.Save(output, imageEncoder);
     }
 }

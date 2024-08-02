@@ -73,30 +73,30 @@ public class Font : IEquatable<Font>
         return HashCode.Combine(Name, Height, Glyphs);
     }
 
-    public Image<Rgb24> CreateImage(int rows = 3)
+    public Image<Rgba32> CreateImage(int rows, bool transparent)
     {
         var fullWidth = Glyphs.Sum(g => g.Value.Width);
         var previewWidth = fullWidth / rows;
         var glyphsPerRow = Glyphs.Count / rows;
 
-
-        var image = new Image<Rgb24>(previewWidth, Height * rows);
-        DrawImage(image, glyphsPerRow);
+        var image = new Image<Rgba32>(previewWidth, Height * rows);
+        DrawImage(image, glyphsPerRow, transparent);
         return image;
     }
 
-    public void DrawImage(Image<Rgb24> image, int glyphsPerRow)
+    public void DrawImage(Image<Rgba32> image, int glyphsPerRow, bool transparent)
     {
         var xOff = 0;
         var yOff = 0;
         var cIdx = 0;
-
+        Color foreground = Color.Black;
+        Color background = transparent ? Color.Transparent : Color.White;
 
         foreach (var glyph in Glyphs)
         {
             for (var y = 0; y < Height; y++)
             for (var x = 0; x < glyph.Value.Width; x++)
-                image[xOff + x, yOff + y] = glyph.Value.Data[x, y] ? Color.Black : Color.White;
+                image[xOff + x, yOff + y] = glyph.Value.Data[x, y] ? foreground : background;
 
             xOff += glyph.Value.Width;
             cIdx++;
@@ -107,7 +107,8 @@ public class Font : IEquatable<Font>
             }
         }
     }
-    public void DrawImage(Image<Rgb24> image, int glyphsPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
+
+    public void DrawImage(Image<Rgba32> image, int glyphsPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
     {
         var xOff = 0;
         var yOff = 0;
