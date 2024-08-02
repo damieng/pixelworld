@@ -5,15 +5,28 @@ using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Collections.Generic;
 using System.IO;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace PixelWorld.Formatters;
 
-public static class PngFontFormatter
+public static class ImageFontFormatter
 {
     const int CharWidth = 8;
     const int CharHeight = 8;
 
-    public static readonly IImageEncoder DefaultEncoder = new PngEncoder { ColorType = PngColorType.Rgb, BitDepth = PngBitDepth.Bit8 };
+    public static readonly IImageEncoder PngEncoder = new PngEncoder
+    {
+        CompressionLevel = PngCompressionLevel.BestCompression,
+        ColorType = PngColorType.Palette,
+        BitDepth = PngBitDepth.Bit1
+    };
+
+    public static readonly IImageEncoder WebpEncoder = new WebpEncoder
+    {
+        Method = WebpEncodingMethod.BestQuality,
+        Quality = 100,
+        TransparentColorMode = WebpTransparentColorMode.Preserve
+    };
 
     public static void Read(Font font, Stream source, IReadOnlyDictionary<int, char> charset)
     {
@@ -42,10 +55,10 @@ public static class PngFontFormatter
         }
     }
 
-    public static void Write(Font font, Stream output)
+    public static void Write(Font font, Stream output, IImageEncoder imageEncoder)
     {
         using var bitmap = font.CreateImage();
         font.DrawImage(bitmap, 32);
-        bitmap.Save(output, DefaultEncoder);
+        bitmap.Save(output, imageEncoder);
     }
 }

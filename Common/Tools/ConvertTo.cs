@@ -29,20 +29,7 @@ public static class ConvertTo
         }
     }
 
-    public static void Png(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder)
-    {
-        foreach (var fileName in fileNames)
-        {
-            Out.Write($"Generating preview file for {fileName}");
-            using var source = File.OpenRead(fileName);
-            using var reader = new BinaryReader(source);
-            var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, sourceCharset);
-            using var output = File.OpenWrite(Utils.MakeFileName(fileName, "png", outputFolder));
-            PngFontFormatter.Write(sourceFont, output);
-        }
-    }
-
-    private static readonly PngEncoder gbPngEncoder = new() { ColorType = PngColorType.Palette };
+    private static readonly PngEncoder gbPngEncoder = new() {ColorType = PngColorType.Palette};
 
     public static void GbStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool dark, bool proportional)
     {
@@ -83,9 +70,12 @@ public static class ConvertTo
         }
     }
 
-    record GBJson(string name) { public Object mapping = new { }; };
+    record GBJson(string name)
+    {
+        public Object mapping = new { };
+    };
 
-    static readonly JsonSerializerOptions gbStudioJsonOptions = new() { WriteIndented = true, IncludeFields = true };
+    static readonly JsonSerializerOptions gbStudioJsonOptions = new() {WriteIndented = true, IncludeFields = true};
 
     private static Image<Rgb24> CreateFilledGbsBitmap(Color fill)
     {
@@ -182,8 +172,10 @@ public static class ConvertTo
                     if (data[x, y])
                         b |= (byte)(1 << 8 - 1 - x);
                 }
+
                 results[y] = b;
             }
+
             return results;
         }
     }
@@ -214,7 +206,9 @@ public static class ConvertTo
         var upperCaseTemplate = Path.Combine(templatePath, "c64-upper.ch8");
         Out.Write($"Using templates {bothCaseTemplate} and {upperCaseTemplate}");
 
-        var cases = new[] { (
+        var cases = new[]
+        {
+            (
                 template: File.ReadAllBytes(bothCaseTemplate),
                 charset: Machines.Commodore64.BothUK,
                 suffix: "both"
@@ -243,7 +237,7 @@ public static class ConvertTo
                 ByteFontFormatter.Write(sourceFont, memoryStream, charset, 128, i => new ArraySegment<byte>(template, i, 8));
 
                 using var targetFile = File.Create(targetFileName);
-                targetFile.Write(new byte[] { 0x00, 0x38 }); // 64C header
+                targetFile.Write(new byte[] {0x00, 0x38}); // 64C header
                 memoryStream.WriteTo(targetFile);
                 memoryStream.WriteTo(characterRom);
 

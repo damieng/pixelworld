@@ -17,7 +17,7 @@ static class Program
         app.Configure(config =>
         {
             config.SetApplicationName("pw.exe");
-            config.SetApplicationVersion("0.9");
+            config.SetApplicationVersion("0.10");
             AddCommands(config);
         });
 

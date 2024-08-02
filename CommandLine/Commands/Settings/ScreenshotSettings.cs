@@ -13,6 +13,10 @@ public class ScreenshotSettings : RequiredSettings
     [Description("Write a .png version of the screenshot.")]
     public bool Png { get; set; }
 
+    [CommandOption("--webp")]
+    [Description("Write a .webp version of the screenshot.")]
+    public bool Webp { get; set; }
+
     [CommandOption("--scr")]
     [Description("Write a .scr version of the screenshot (default).")]
     public bool Scr { get; set; }
