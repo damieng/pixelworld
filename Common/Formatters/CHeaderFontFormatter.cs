@@ -14,12 +14,20 @@ public static class CHeaderFontFormatter
         {
             var fontName = Path.GetFileNameWithoutExtension(fileName);
             Out.Write($"Generating C header file for {fileName}");
+            var cFontName = fontName.ToUpperInvariant().Replace(" ", "_").Replace("-", "_");
+
             using var source = File.OpenRead(fileName);
             using var reader = new BinaryReader(source);
             var font = ByteFontFormatter.Create(reader, fontName, 0, Spectrum.UK);
             var output = new StringBuilder();
             output.AppendLine($"// {fontName} font {credit}");
-            var cFontName = fontName.ToUpperInvariant().Replace(" ", "_").Replace("-", "_");
+
+            output.AppendLine($"#ifndef {cFontName}_H_");
+            output.AppendLine($"#define {cFontName}_H_");
+
+            output.AppendLine();
+            output.AppendLine("#include <stdint.h>");
+            output.AppendLine();
             output.AppendLine($"static const {byteType} FONT_{cFontName}_BITMAP[] = {{");
             foreach (var glyph in font.Glyphs)
             {
@@ -36,9 +44,11 @@ public static class CHeaderFontFormatter
                     if (y > 0) output.Append(", ");
                     output.AppendFormat("0x{0:x2}", b);
                 }
-                output.AppendFormat(", // {0}\n", glyph.Key);
+                output.AppendFormat(", // {0} \n", glyph.Key == '\\' ? @"\ (backslash)" : glyph.Key);
             }
-            output.Append("};");
+            output.AppendLine("};");
+            output.AppendLine();
+            output.AppendLine("#endif");
 
             File.WriteAllText(Utils.MakeFileName(fileName, ".h", outputFolder), output.ToString());
         }
