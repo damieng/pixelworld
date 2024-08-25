@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Generate;
 
-[Description("Generate Rust header def files")]
+[Description("Generate Rust header")]
 public class GenerateRustHeaderCommand : Command<TextOutputSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] TextOutputSettings settings)

@@ -8,7 +8,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert to Atari 8-bit binary font file")]
+[Description("Create Atari 8-bit font from ZX font")]
 public class ConvertToAtari8BitCommand : Command<ConvertSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)

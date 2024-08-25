@@ -10,7 +10,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert from preview PNG file")]
+[Description("Create ZX font from PNG preview")]
 public class ConvertFromPngCommand : Command<RequiredSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)

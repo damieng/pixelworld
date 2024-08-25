@@ -8,7 +8,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert to FZX-format font")]
+[Description("Create FZX font from ZX font")]
 public class ConvertToFzxCommand : Command<ProportionalSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ProportionalSettings settings)

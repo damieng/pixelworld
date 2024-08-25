@@ -8,7 +8,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert to MSX binary font file")]
+[Description("Create MSX font from ZX font")]
 public class ConvertToMsxCommand : Command<ConvertSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)

@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Generate;
 
-[Description("Generate Intel 8086 assembly def files")]
+[Description("Generate Intel 8086 assembly")]
 public class Generate8086AssemblyCommand : Command<AssemblySettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)

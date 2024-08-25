@@ -8,7 +8,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert to Commodore 64 binary font formats")]
+[Description("Create Commodore 64 fonts from ZX font")]
 public class ConvertToC64Command : Command<ConvertSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)

@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Generate;
 
-[Description("Generate 6502 assembly def files")]
+[Description("Generate MOS 6502 assembly")]
 public class Generate6502AssemblyCommand : Command<AssemblySettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)

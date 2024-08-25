@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Generate;
 
-[Description("Generate Motorola 68000 assembly def files")]
+[Description("Generate Motorola 68000 assembly")]
 public class Generate68000AssemblyCommand : Command<AssemblySettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)

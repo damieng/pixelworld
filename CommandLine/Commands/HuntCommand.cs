@@ -7,7 +7,7 @@ using CommandLine.Commands.Settings;
 
 namespace CommandLine.Commands;
 
-[Description("Hunt memory dumps for possible fonts")]
+[Description("Hunt memory dumps for possible ZX fonts")]
 public class HuntCommand : Command<RequiredSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)

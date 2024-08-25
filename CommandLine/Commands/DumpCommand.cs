@@ -7,7 +7,7 @@ using CommandLine.Commands.Settings;
 
 namespace CommandLine.Commands;
 
-[Description("Produce memory dumps from emulator snapshots")]
+[Description("Dump memory from emulator snapshot")]
 public class DumpCommand : Command<RequiredSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)

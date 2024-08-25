@@ -8,7 +8,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert to GB Studio PNG font")]
+[Description("Create GB Studio PNG font from ZX font")]
 public class ConvertToGbStudioCommand : Command<GbStudioSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] GbStudioSettings settings)

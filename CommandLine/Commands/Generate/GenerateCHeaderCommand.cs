@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Generate;
 
-[Description("Generate C header def files")]
+[Description("Generate C header")]
 public class GenerateCHeaderCommand : Command<COutputSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] COutputSettings settings)

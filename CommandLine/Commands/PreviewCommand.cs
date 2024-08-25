@@ -10,7 +10,7 @@ using PixelWorld.Machines;
 
 namespace CommandLine.Commands;
 
-[Description("Generate image previews of fonts")]
+[Description("Create preview images from ZX font")]
 public class PreviewCommand : Command<PreviewSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] PreviewSettings settings)

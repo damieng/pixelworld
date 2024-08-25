@@ -31,8 +31,8 @@ static class Program
 
         config.AddCommand<ScreenshotCommand>("screenshot");
         config.AddCommand<PreviewCommand>("preview");
-        config.AddCommand<ConvertFromPngCommand>("pngtoch8");
-        config.AddCommand<ConvertFromC64Command>("c64toch8");
+        config.AddCommand<ConvertFromPngCommand>("pngtozx");
+        config.AddCommand<ConvertFromC64Command>("c64tozx");
         config.AddCommand<FindMatchingGlyphsCommand>("findmatches");
 
         config.AddCommand<GenerateZ80AssemblyCommand>("z80asm");

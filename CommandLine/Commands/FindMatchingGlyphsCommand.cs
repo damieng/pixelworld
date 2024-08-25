@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands;
 
-[Description("Find glyphs from a source font against a many possible target fonts")]
+[Description("Identify fonts that use glyphs from a source font")]
 public class FindMatchingGlyphsCommand :Command<FindMatchingGlyphsSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] FindMatchingGlyphsSettings settings)

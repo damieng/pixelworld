@@ -8,7 +8,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Convert;
 
-[Description("Convert to Amstrad CPC BASIC file")]
+[Description("Create Amstrad CPC BASIC font from ZX font")]
 public class ConvertToCpcCommand : Command<BasicOutputSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] BasicOutputSettings settings)

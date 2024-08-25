@@ -7,7 +7,7 @@ using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Generate;
 
-[Description("Generate Z80 assembly def files")]
+[Description("Generate Zilog Z80 assembly")]
 public class GenerateZ80AssemblyCommand : Command<AssemblySettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)
