@@ -6,15 +6,15 @@ using System.Text;
 
 namespace PixelWorld.Formatters;
 
-public static class CHeaderFontFormatter
+public static class RustHeaderFontFormatter
 {
-    public static void CreateFontHeaderConst(string byteType, List<string> fileNames, string outputFolder, string credit)
+    public static void CreateFontHeaderConst(List<string> fileNames, string outputFolder, string credit)
     {
         foreach (var fileName in fileNames)
         {
             var fontName = Path.GetFileNameWithoutExtension(fileName);
-            Out.Write($"Generating C header file for {fileName}");
-            var cFontName = fontName.ToUpperInvariant().Replace(" ", "_").Replace("-", "_");
+            Out.Write($"Generating Rust header file for {fileName}");
+            var rustFontName = fontName.ToUpperInvariant().Replace(" ", "_").Replace("-", "_");
 
             using var source = File.OpenRead(fileName);
             using var reader = new BinaryReader(source);
@@ -22,13 +22,7 @@ public static class CHeaderFontFormatter
             var output = new StringBuilder();
             output.AppendLine($"// {fontName} font {credit}");
 
-            output.AppendLine($"#ifndef {cFontName}_H_");
-            output.AppendLine($"#define {cFontName}_H_");
-
-            output.AppendLine();
-            output.AppendLine("#include <stdint.h>");
-            output.AppendLine();
-            output.AppendLine($"static const {byteType} FONT_{cFontName}_BITMAP[] = {{");
+            output.AppendLine($"pub const FONT_{rustFontName}_BITMAP: &[u8] = &[");
             foreach (var glyph in font.Glyphs)
             {
                 output.Append('\t');
@@ -45,13 +39,11 @@ public static class CHeaderFontFormatter
                     output.Append($"0x{b:x2}");
                 }
 
-                output.Append($", // {(glyph.Key == '\\' ? @"\ (backslash)" : glyph.Key)} \n");
+                output.Append($", // {glyph.Key}\n");
             }
-            output.AppendLine("};");
-            output.AppendLine();
-            output.AppendLine("#endif");
+            output.AppendLine("];");
 
-            File.WriteAllText(Utils.MakeFileName(fileName, ".h", outputFolder), output.ToString());
+            File.WriteAllText(Utils.MakeFileName(fileName, ".rs", outputFolder), output.ToString());
         }
     }
 }

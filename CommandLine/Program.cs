@@ -40,6 +40,7 @@ static class Program
         config.AddCommand<Generate68000AssemblyCommand>("68000asm");
         config.AddCommand<Generate8086AssemblyCommand>("x86asm");
         config.AddCommand<GenerateCHeaderCommand>("chead");
+        config.AddCommand<GenerateRustHeaderCommand>("rusthead");
 
         config.AddCommand<ConvertToFzxCommand>("zxtofzx");
         config.AddCommand<ConvertToC64Command>("zxtoc64");
