@@ -18,9 +18,11 @@ The code is in need of clean-up in various places, please bear with me.
 
 ### Conversions
 
-The following commands work against the ZX Spectrum RAW 768 byte/.ch8 files:
+The following commands work with ZX Spectrum RAW 768 byte/.ch8 files:
 
 - `preview` to create a `.png` preview file
+- `pngtoch8` to convert a `.png` back to a `.ch8`
+- `c64toch8` to create a `.ch8` file from a C64 binary file
 
 Any of the following assembly generating commands can use the `--base hex|decimal` flags. The z80 one can also use `--base binary`.
 
@@ -29,9 +31,10 @@ Any of the following assembly generating commands can use the `--base hex|decima
 - `6502asm` to create MOS 6502 assembler source with `.byte` hex
 - `68000asm` to create Motorola 68000 assembler source with `DB.B` hex
 
-And the C-generating command:
+And the header-generating commands:
 
 - `chead` to generate C-compatible header files
+- `rusthead` to generate Rust-compatible header files
 
 You can also generate directly-usable files (all binary except the CPC)
 
@@ -40,6 +43,10 @@ You can also generate directly-usable files (all binary except the CPC)
 - `zxtocbm` to create `.c64` and `.bin` binary ROM versions for the Commodore 64
 - `zxtoa8` to create a `.fnt` binary version for the Atari 8-bit series
 - `zxtocpc` to create a `.bas` BASIC file for use with the Amstrad CPC range
+
+### Comparisons
+
+- `findmatches` to find glyphs from a source font in as many possible target .ch8 files
 
 Any command can be further detailed using the `--help` option which will detail the additional flags and options available.
 
