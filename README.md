@@ -6,8 +6,6 @@ This is a tool I have been using for a number of years to convert my own fonts i
 
 It also contains bulk-ripping `dump` and `hunt` commands for obtaining ZX Spectrum RAW 768 byte/.ch8 files from memory dumps and snapshots.
 
-The code is in need of clean-up in various places, please bear with me.
-
 ## Commands
 
 ### Ripping
