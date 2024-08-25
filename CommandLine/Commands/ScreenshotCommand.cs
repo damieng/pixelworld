@@ -12,7 +12,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace CommandLine.Commands;
 
-[Description("Create screenshots from memory or snapshots")]
+[Description("Create screenshots from memory dumps or emulator snapshots")]
 public class ScreenshotCommand : Command<ScreenshotSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ScreenshotSettings settings)
