@@ -17,11 +17,11 @@ public class SpectrumDisplay
     static readonly UInt16[] lookupY = new UInt16[PixelHeight];
 
     static readonly Color[] palette =
-    {
+    [
         Color.Black, Color.DarkBlue, Color.DarkRed, Color.DarkMagenta, Color.Green, Color.DarkCyan, Color.Olive,
         Color.Gray,
         Color.Black, Color.Blue, Color.Red, Color.Magenta, Color.LimeGreen, Color.Cyan, Color.Yellow, Color.White
-    };
+    ];
 
     static SpectrumDisplay()
     {
@@ -93,6 +93,6 @@ public class SpectrumDisplay
         return uniques.ToArray();
     }
 
-    private static readonly byte[] emptyChar = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    private static readonly byte[] fullChar = { 255, 255, 255, 255, 255, 255, 255, 255 };
+    private static readonly byte[] emptyChar = [0, 0, 0, 0, 0, 0, 0, 0];
+    private static readonly byte[] fullChar = [255, 255, 255, 255, 255, 255, 255, 255];
 }

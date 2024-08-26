@@ -3,16 +3,10 @@ using System.Collections.Generic;
 
 namespace PixelWorld.OffsetFinders;
 
-public class KnownCharPattern
+public class KnownCharPattern(int charCode, byte[] pattern)
 {
-    public readonly int CharCode;
-    public readonly byte[] Pattern;
-
-    public KnownCharPattern(int charCode, byte[] pattern)
-    {
-        CharCode = charCode;
-        Pattern = pattern;
-    }
+    public readonly int CharCode = charCode;
+    public readonly byte[] Pattern = pattern;
 }
 
 public static class KnownCharPatternFinder
@@ -35,6 +29,6 @@ public static class KnownCharPatternFinder
             }
         }
 
-        return new List<int>(offsets);
+        return [..offsets];
     }
 }

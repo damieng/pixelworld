@@ -1,5 +1,4 @@
 ﻿using PixelWorld.Machines;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -100,7 +99,7 @@ public static class GeneralHeuristicFinder
                 }
             }
 
-            var likely = new Func<byte[], int, bool>[]
+            var likely = new[]
             {
                 HasLikelyLowerDensities, HasLikelyUpperDensities, HasLikelyNumericDensities,
                 HasLikelySymbolDensities

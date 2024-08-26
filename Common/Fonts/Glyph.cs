@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -7,18 +6,11 @@ using System.Text;
 namespace PixelWorld.Fonts;
 
 [DebuggerDisplay("{Print(),nq}")]
-public class Glyph : IEquatable<Glyph>
+public class Glyph(int width, int height, bool[,] data) : IEquatable<Glyph>
 {
-    public int Height { get; }
-    public int Width { get; }
-    public bool[,] Data { get; }
-
-    public Glyph(int width, int height, bool[,] data)
-    {
-        Width = width;
-        Height = height;
-        Data = data;
-    }
+    public int Height { get; } = height;
+    public int Width { get; } = width;
+    public bool[,] Data { get; } = data;
 
     public bool Equals(Glyph? other)
     {

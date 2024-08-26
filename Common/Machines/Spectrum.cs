@@ -8,5 +8,5 @@ public static class Spectrum
         " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_£abcdefghijklmnopqrstuvwxyz{|}~©"
             .ToIndexedDictionary();
 
-    public static int FontSize { get; } = 768;
+    public static int FontSize => 768;
 }

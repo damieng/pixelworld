@@ -9,10 +9,10 @@ using SixLabors.ImageSharp;
 namespace PixelWorld.Fonts;
 
 [DebuggerDisplay("Print(),nq")]
-public class Font : IEquatable<Font>
+public class Font(string name, int height = 8) : IEquatable<Font>
 {
-    public readonly string Name;
-    public readonly int Height;
+    public readonly string Name = name;
+    public readonly int Height = height;
     public Dictionary<char, Glyph> Glyphs { get; } = new();
 
     public Font Copy()
@@ -21,12 +21,6 @@ public class Font : IEquatable<Font>
         foreach (var glyph in Glyphs)
             copied.Glyphs.Add(glyph.Key, glyph.Value);
         return copied;
-    }
-
-    public Font(string name, int height = 8)
-    {
-        Name = name;
-        Height = height;
     }
 
     public string Print(string input)

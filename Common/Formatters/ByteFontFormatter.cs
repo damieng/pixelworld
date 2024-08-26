@@ -10,7 +10,7 @@ public static class ByteFontFormatter
     const int CharWidth = 8;
     const int CharHeight = 8;
     static readonly ArraySegment<byte> blankChar = new(new byte[8], 0, 8);
-    static readonly Func<int, ArraySegment<byte>> blankWriter = (_) => blankChar;
+    static readonly Func<int, ArraySegment<byte>> blankWriter = _ => blankChar;
 
     public static Font Create(BinaryReader reader, string name, int offset, IReadOnlyDictionary<int, char> charset)
     {

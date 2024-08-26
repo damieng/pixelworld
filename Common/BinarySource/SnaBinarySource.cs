@@ -22,6 +22,6 @@ public class SnaBinarySource : IBinarySource
         }
 
         source.Seek(0, SeekOrigin.Begin);
-        return ZXSNABinarySource.Instance.GetMemory(source);
+        return ZXSnaBinarySource.Instance.GetMemory(source);
     }
 }

@@ -13,16 +13,10 @@ public static class CandidatesInWindowFinder
 {
     const int MinUniqueInWindow = 36;
 
-    class CandidateLocation
+    class CandidateLocation(int offset, int candidate)
     {
-        public readonly int Offset;
-        public readonly int Candidate;
-
-        public CandidateLocation(int offset, int candidate)
-        {
-            Offset = offset;
-            Candidate = candidate;
-        }
+        public readonly int Offset = offset;
+        public readonly int Candidate = candidate;
     }
 
     public static List<int> FindOffsets(byte[] buffer, byte[][] candidates)

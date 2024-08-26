@@ -117,20 +117,6 @@ public static class UfoFontFormatter
 
         var doc = new XmlDocument();
 
-        XmlAttribute CreateAttribute(string name, string value)
-        {
-            var attr = doc.CreateAttribute(name);
-            attr.Value = value;
-            return attr;
-        }
-
-        XmlElement CreatePixelComponent()
-        {
-            var pixelComponent = doc.CreateElement("component");
-            pixelComponent.Attributes.Append(CreateAttribute("base", "pixel"));
-            return pixelComponent;
-        }
-
         var glyphElement = doc.CreateElement("glyph");
         doc.AppendChild(glyphElement);
         var nameAttribute = doc.CreateAttribute("name", "");
@@ -147,23 +133,13 @@ public static class UfoFontFormatter
         var outlineElement = doc.CreateElement("outline");
         glyphElement.AppendChild(outlineElement);
 
-        void WriteDoc(string glyphName)
+        foreach (var (key, glyphData) in font.Glyphs)
         {
-            if (glyphName.Length == 1 && char.IsUpper(glyphName[0]))
-                glyphName += "_";
-
-            using var writer = XmlWriter.Create(Path.Join(basePath, glyphName + ".glif"), xmlWriterSettings);
-            doc.WriteTo(writer);
-        }
-
-        foreach (var pair in font.Glyphs)
-        {
-            string name = charToName[pair.Key];
+            string name = charToName[key];
             nameAttribute.Value = name;
-            hexAttribute.Value = ((int)pair.Key).ToString("X4");
+            hexAttribute.Value = ((int)key).ToString("X4");
             outlineElement.RemoveAll();
 
-            var glyphData = pair.Value;
             for (var y = 0; y < glyphData.Height; y++)
             for (var x = 0; x < glyphData.Width; x++)
                 if (glyphData.Data[x, glyphData.Height - y - 1])
@@ -176,6 +152,31 @@ public static class UfoFontFormatter
                 }
 
             WriteDoc(name);
+        }
+
+        return;
+
+        void WriteDoc(string glyphName)
+        {
+            if (glyphName.Length == 1 && char.IsUpper(glyphName[0]))
+                glyphName += "_";
+
+            using var writer = XmlWriter.Create(Path.Join(basePath, glyphName + ".glif"), xmlWriterSettings);
+            doc.WriteTo(writer);
+        }
+
+        XmlElement CreatePixelComponent()
+        {
+            var pixelComponent = doc.CreateElement("component");
+            pixelComponent.Attributes.Append(CreateAttribute("base", "pixel"));
+            return pixelComponent;
+        }
+
+        XmlAttribute CreateAttribute(string name, string value)
+        {
+            var attr = doc.CreateAttribute(name);
+            attr.Value = value;
+            return attr;
         }
     }
 }

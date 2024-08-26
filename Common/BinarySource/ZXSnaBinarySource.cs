@@ -4,9 +4,9 @@ using System.IO;
 
 namespace PixelWorld.BinarySource
 {
-    public class ZXSNABinarySource : SpectrumBinarySource, IBinarySource
+    public class ZXSnaBinarySource : SpectrumBinarySource, IBinarySource
     {
-        public static IBinarySource Instance { get; } = new ZXSNABinarySource();
+        public static IBinarySource Instance { get; } = new ZXSnaBinarySource();
 
         public ArraySegment<Byte> GetMemory(Stream source)
         {

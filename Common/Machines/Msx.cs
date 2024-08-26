@@ -14,7 +14,7 @@ public static class Msx
         "αßΓπΣσµτΦΘΩδ∞⌀∈∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
     ).ToIndexedDictionary();
 
-    public static int FontSize { get; } = 2048;
+    public static int FontSize => 2048;
 
-    public static string Extension { get; } = "fnt";
+    public static string Extension => "fnt";
 }

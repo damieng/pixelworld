@@ -29,63 +29,6 @@ public static class ConvertTo
         }
     }
 
-    private static readonly PngEncoder gbPngEncoder = new() {ColorType = PngColorType.Palette};
-
-    public static void GbStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool dark, bool proportional)
-    {
-        foreach (var fileName in fileNames)
-        {
-            Out.Write($"Generating GBStudio files for {fileName}");
-            using var source = File.OpenRead(fileName);
-            using var reader = new BinaryReader(source);
-            var fontName = Path.GetFileNameWithoutExtension(fileName);
-            var font = ByteFontFormatter.Create(reader, fontName, 0, sourceCharset);
-
-            var outFileName = Path.Combine(outputFolder, fontName);
-            {
-                using var image = CreateFilledGbsBitmap(Gameboy.Palette[3]);
-                font.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3]);
-                image.SaveAsPng(Path.ChangeExtension(outFileName, "png"), gbPngEncoder);
-                File.WriteAllText(Path.ChangeExtension(outFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono"), gbStudioJsonOptions));
-            }
-
-            if (dark)
-            {
-                var darkFileName = outFileName + "-dark";
-                using var image = CreateFilledGbsBitmap(Gameboy.Palette[0]);
-                font.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[3], Gameboy.Palette[0]);
-                image.SaveAsPng(Path.ChangeExtension(darkFileName, "png"), gbPngEncoder);
-                File.WriteAllText(Path.ChangeExtension(darkFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Mono Dark"), gbStudioJsonOptions));
-            }
-
-            if (proportional)
-            {
-                var varFileName = outFileName + "-var";
-                var varFont = FontSpacer.MakeProportional(font, 0, 1, 8);
-                using var image = CreateFilledGbsBitmap(Color.Magenta);
-                varFont.DrawImage(image, 16, Gameboy.Studio, Gameboy.Palette[0], Gameboy.Palette[3], 8);
-                image.SaveAsPng(Path.ChangeExtension(varFileName, "png"), gbPngEncoder);
-                File.WriteAllText(Path.ChangeExtension(varFileName, "json"), JsonSerializer.Serialize(new GBJson(fontName + " Variable Width"), gbStudioJsonOptions));
-            }
-        }
-    }
-
-    record GBJson(string name)
-    {
-        public Object mapping = new { };
-    };
-
-    static readonly JsonSerializerOptions gbStudioJsonOptions = new() {WriteIndented = true, IncludeFields = true};
-
-    private static Image<Rgba32> CreateFilledGbsBitmap(Color fill)
-    {
-        var image = new Image<Rgba32>(128, 112);
-        for (var x = 0; x < 128; x++)
-        for (var y = 0; y < 112; y++)
-            image[x, y] = fill;
-        return image;
-    }
-
     public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
     {
         var templateFilename = Path.Combine(templatePath, "atari8.fnt");
@@ -133,11 +76,11 @@ public static class ConvertTo
 
                 var output = new StringBuilder();
 
-                output.AppendFormat("{0} REM {1} font\r\n", line, Path.GetFileNameWithoutExtension(sourceFileName));
-                if (!String.IsNullOrEmpty(credit)) output.AppendFormat("{0} REM {1}\r\n", line += 10, credit);
+                output.Append($"{line} REM {Path.GetFileNameWithoutExtension(sourceFileName)} font\r\n");
+                if (!String.IsNullOrEmpty(credit)) output.Append($"{line += 10} REM {credit}\r\n");
 
                 var spaceIsBlank = sourceFont.Glyphs[' '].IsBlank();
-                output.AppendFormat("{0} SYMBOL AFTER {1}\r\n", line += 10, spaceIsBlank ? 33 : 32);
+                output.Append($"{line += 10} SYMBOL AFTER {(spaceIsBlank ? 33 : 32)}\r\n");
 
                 foreach (var (key, value) in sourceFont.Glyphs.Where(g => !g.Value.IsBlank()).OrderBy(g => g.Key))
                 {
@@ -157,7 +100,7 @@ public static class ConvertTo
 
             void WriteSymbolLine(StringBuilder output, int charIdx, Glyph glyph)
             {
-                output.AppendFormat("{0} SYMBOL {1},{2}\r\n", line += 10, charIdx, String.Join(',', MakeList(glyph.Data)));
+                output.Append($"{line += 10} SYMBOL {charIdx},{String.Join(',', MakeList(glyph.Data))}\r\n");
             }
         }
 

@@ -76,9 +76,8 @@ public static class SpectrumDumpScanner
     }
 
     private static readonly KnownCharPattern[] rarelyChangedRomChars =
-    {
-        new(3, new byte[] // #
-        {
+    [
+        new(3, [
             0b00000000,
             0b00100100,
             0b01111110,
@@ -87,9 +86,8 @@ public static class SpectrumDumpScanner
             0b01111110,
             0b00100100,
             0b00000000
-        }),
-        new(4, new byte[] // $
-        {
+        ]),
+        new(4, [
             0b00000000,
             0b00001000,
             0b00111110,
@@ -98,9 +96,8 @@ public static class SpectrumDumpScanner
             0b00001010,
             0b00111110,
             0b00001000
-        }),
-        new(6, new byte[] // &
-        {
+        ]),
+        new(6, [
             0b00000000,
             0b00010000,
             0b00101000,
@@ -109,9 +106,8 @@ public static class SpectrumDumpScanner
             0b01000100,
             0b00111010,
             0b00000000
-        }),
-        new(32, new byte[] // @
-        {
+        ]),
+        new(32, [
             0b00000000,
             0b00111100,
             0b01001010,
@@ -120,9 +116,8 @@ public static class SpectrumDumpScanner
             0b01000000,
             0b00111100,
             0b00000000
-        }),
-        new(64, new byte[] // £
-        {
+        ]),
+        new(64, [
             0b00000000,
             0b00011100,
             0b00100010,
@@ -131,9 +126,8 @@ public static class SpectrumDumpScanner
             0b00100000,
             0b01111110,
             0b00000000
-        }),
-        new(95, new byte[] // ©
-        {
+        ]),
+        new(95, [
             0b00111100,
             0b01000010,
             0b10011001,
@@ -142,6 +136,6 @@ public static class SpectrumDumpScanner
             0b10011001,
             0b01000010,
             0b00111100
-        })
-    };
+        ])
+    ];
 }

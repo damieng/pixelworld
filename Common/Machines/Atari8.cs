@@ -11,7 +11,7 @@ public static class Atari8
         "\0abcdefghijklmnopqrstuvwxyz"
     ).ToIndexedDictionary();
 
-    public static int FontSize { get; }  = 1024;
+    public static int FontSize => 1024;
 
-    public static string Extension { get; } = "fnt";
+    public static string Extension => "fnt";
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace CommandLine.Commands;
+namespace CommandLine;
 
 public enum NumberBase
 {

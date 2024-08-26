@@ -4,7 +4,7 @@ namespace PixelWorld.BinarySource;
 
 public abstract class SpectrumBinarySource
 {
-    private static readonly int[] mappablePages = { 0, 2, 6, 8, 12, 14 };
+    private static readonly int[] mappablePages = [0, 2, 6, 8, 12, 14];
 
     protected static ArraySegment<byte> Setup128KMemory(byte[][] ramBanks, byte port7ffd)
     {

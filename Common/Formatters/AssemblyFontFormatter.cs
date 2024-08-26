@@ -17,7 +17,7 @@ public static class AssemblyFontFormatter
             using var reader = new BinaryReader(source);
             var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
             var output = new StringBuilder();
-            output.AppendFormat("\t; {0} font {1}\n", Path.GetFileNameWithoutExtension(fileName), credit);
+            output.Append($"\t; {Path.GetFileNameWithoutExtension(fileName)} font {credit}\n");
             foreach (var glyph in font.Glyphs)
             {
                 output.Append("\t" + defineByteInstruction);
@@ -34,7 +34,8 @@ public static class AssemblyFontFormatter
                         output.Append(',');
                     output.AppendFormat(format, b);
                 }
-                output.AppendFormat(" ; {0}\n", glyph.Key);
+
+                output.Append($" ; {glyph.Key}\n");
             }
 
             File.WriteAllText(Utils.MakeFileName(fileName, language + ".asm", outputFolder), output.ToString());
@@ -50,10 +51,10 @@ public static class AssemblyFontFormatter
             using var reader = new BinaryReader(source);
             var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
             var output = new StringBuilder();
-            output.AppendFormat("\t; {0} font {1}\n", Path.GetFileNameWithoutExtension(fileName), credit);
+            output.Append($"\t; {Path.GetFileNameWithoutExtension(fileName)} font {credit}\n");
             foreach (var glyph in font.Glyphs)
             {
-                output.AppendFormat("\t; {0}\n", glyph.Key);
+                output.Append($"\t; {glyph.Key}\n");
 
                 for (var y = 0; y < font.Height; y++)
                 {
@@ -65,7 +66,7 @@ public static class AssemblyFontFormatter
                             b |= (byte)(1 << charWidth - 1 - x);
                     }
                     string binary = "00000000" + Convert.ToString(b, 2);
-                    output.AppendFormat("\tdefb %{0}\n", binary.Substring(binary.Length - 8, 8));
+                    output.Append($"\tdefb %{binary.Substring(binary.Length - 8, 8)}\n");
                 }
             }
 

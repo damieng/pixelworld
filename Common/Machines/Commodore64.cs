@@ -12,5 +12,5 @@ public static class Commodore64
         "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[£]\0\0 !\"#$%&'()*+,-./0123456789:;<=>?"
             .ToIndexedDictionary();
 
-    public static int Length { get; } = 1024;
+    public static int Length => 1024;
 }
