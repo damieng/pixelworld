@@ -47,7 +47,7 @@ public static class FontHunter
         var fontIndex = 0;
         foreach (var font in SpectrumDumpScanner.Read(reader, Path.GetFileNameWithoutExtension(fileName)))
         {
-            var newFileName = Utils.MakeFileName(font.Name, "ch8", outputFolder);
+            var newFileName = Path.Combine(outputFolder, font.Name + ".ch8");
             fontIndex++;
             Out.Write($"  Creating byte font {newFileName}");
             ByteFontFormatter.Write(font, File.Create(newFileName), Spectrum.UK, 96);
