@@ -20,8 +20,8 @@ It also contains bulk-ripping `dump` and `hunt` commands for obtaining ZX Spectr
 The following commands work with ZX Spectrum RAW 768 byte/.ch8 files:
 
 - `preview` to create a `.png` preview file
-- `pngtoch8` to convert a `.png` back to a `.ch8`
-- `c64toch8` to create a `.ch8` file from a C64 binary file
+- `pngtozx` to convert a `.png` back to a ZX Spectrum `.ch8`
+- `c64tozx` to create a ZX Spectrum `.ch8` file from a C64 binary file
 
 Any of the following assembly generating commands can use the `--base hex|decimal` flags. The z80 one can also use `--base binary`.
 
