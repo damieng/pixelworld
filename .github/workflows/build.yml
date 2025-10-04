@@ -1,0 +1,63 @@
+name: Build PixelWorld binaries
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runtime: linux-x64
+            artifact-name: pixelworld-linux-x64
+          - os: ubuntu-latest
+            runtime: linux-arm64
+            artifact-name: pixelworld-linux-arm64
+          - os: windows-latest
+            runtime: win-x64
+            artifact-name: pixelworld-win-x64
+          - os: windows-latest
+            runtime: win-arm64
+            artifact-name: pixelworld-win-arm64
+          - os: macos-latest
+            runtime: osx-x64
+            artifact-name: pixelworld-osx-x64
+          - os: macos-latest
+            runtime: osx-arm64
+            artifact-name: pixelworld-osx-arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --configuration Release --no-build --verbosity normal
+
+    - name: Publish
+      run: |
+        dotnet publish --configuration Release --runtime ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./publish/${{ matrix.artifact-name }}
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact-name }}
+        path: ./publish/${{ matrix.artifact-name }}
+        retention-days: 90
