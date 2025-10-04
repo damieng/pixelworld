@@ -8,15 +8,15 @@ namespace PixelWorld.Display;
 
 public class SpectrumDisplay
 {
-    const int AttributeWidth = 32;
-    const int AttributeHeight = 24;
-    const int PixelWidth = 8 * AttributeWidth;
-    const int PixelHeight = 8 * AttributeHeight;
-    const int AttributeOffset = PixelWidth * AttributeHeight;
+    private const int AttributeWidth = 32;
+    private const int AttributeHeight = 24;
+    private const int PixelWidth = 8 * AttributeWidth;
+    private const int PixelHeight = 8 * AttributeHeight;
+    private const int AttributeOffset = PixelWidth * AttributeHeight;
 
-    static readonly UInt16[] lookupY = new UInt16[PixelHeight];
+    private static readonly UInt16[] lookupY = new UInt16[PixelHeight];
 
-    static readonly Color[] palette =
+    private static readonly Color[] palette =
     [
         Color.Black, Color.DarkBlue, Color.DarkRed, Color.DarkMagenta, Color.Green, Color.DarkCyan, Color.Olive,
         Color.Gray,
@@ -87,12 +87,12 @@ public class SpectrumDisplay
         }
 
         // Empty and full blocks match too many things and slow things down
-        uniques.Remove(emptyChar);
-        uniques.Remove(fullChar);
+        uniques.Remove(EmptyChar);
+        uniques.Remove(FullChar);
 
         return uniques.ToArray();
     }
 
-    private static readonly byte[] emptyChar = [0, 0, 0, 0, 0, 0, 0, 0];
-    private static readonly byte[] fullChar = [255, 255, 255, 255, 255, 255, 255, 255];
+    private static readonly byte[] EmptyChar = [0, 0, 0, 0, 0, 0, 0, 0];
+    private static readonly byte[] FullChar = [255, 255, 255, 255, 255, 255, 255, 255];
 }

@@ -2,38 +2,37 @@
 using System;
 using System.IO;
 
-namespace PixelWorld.BinarySource
+namespace PixelWorld.BinarySource;
+
+public class ZXSnaBinarySource : SpectrumBinarySource, IBinarySource
 {
-    public class ZXSnaBinarySource : SpectrumBinarySource, IBinarySource
+    public static IBinarySource Instance { get; } = new ZXSnaBinarySource();
+
+    public ArraySegment<Byte> GetMemory(Stream source)
     {
-        public static IBinarySource Instance { get; } = new ZXSnaBinarySource();
-
-        public ArraySegment<Byte> GetMemory(Stream source)
+        // Use Ziggy SNA loader to decode the file
+        try
         {
-            // Use Ziggy SNA loader to decode the file
-            try
-            {
-                var snapshot = SNAFile.LoadSNA(source);
+            var snapshot = SNAFile.LoadSNA(source);
 
-                return snapshot switch
-                {
-                    SNA_48K sna48K => Setup48KMemory(sna48K),
-                    SNA_128K sna128K => Setup128KMemory(sna128K.RAM_BANK, sna128K.PORT_7FFD),
-                    null => throw new NotSupportedException("Could not decode as ZX Spectrum SNA format file"),
-                    _ => throw new NotSupportedException($"Unknown SNA MemoryModel {snapshot.GetType()}")
-                };
-            }
-            catch (Exception e)
+            return snapshot switch
             {
-                Out.Write($"  Unable to process {e.Message}");
-                return new ArraySegment<byte>();
-            }
+                SNA_48K sna48K => Setup48KMemory(sna48K),
+                SNA_128K sna128K => Setup128KMemory(sna128K.RAM_BANK, sna128K.PORT_7FFD),
+                null => throw new NotSupportedException("Could not decode as ZX Spectrum SNA format file"),
+                _ => throw new NotSupportedException($"Unknown SNA MemoryModel {snapshot.GetType()}")
+            };
         }
-
-        private static ArraySegment<byte> Setup48KMemory(SNA_48K snapshot)
+        catch (Exception e)
         {
-            Out.Write("  Loading as ZX Spectrum 48K");
-            return new ArraySegment<byte>(snapshot.RAM);
+            Out.Write($"  Unable to process {e.Message}");
+            return new ArraySegment<byte>();
         }
+    }
+
+    private static ArraySegment<byte> Setup48KMemory(SNA_48K snapshot)
+    {
+        Out.Write("  Loading as ZX Spectrum 48K");
+        return new ArraySegment<byte>(snapshot.RAM);
     }
 }

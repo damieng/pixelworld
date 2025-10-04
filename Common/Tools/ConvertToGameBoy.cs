@@ -54,12 +54,12 @@ public static class ConvertToGameBoy
         }
     }
 
-    record GBJson(string name)
+    private record GBJson(string name)
     {
         public Object mapping = new { };
     };
 
-    static readonly JsonSerializerOptions gbStudioJsonOptions = new() {WriteIndented = true, IncludeFields = true};
+    private static readonly JsonSerializerOptions gbStudioJsonOptions = new() {WriteIndented = true, IncludeFields = true};
 
     private static Image<Rgba32> CreateFilledGbsBitmap(Color fill)
     {

@@ -7,9 +7,9 @@ using CommandLine.Commands.Generate;
 
 namespace CommandLine;
 
-static class Program
+internal static class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         Out.Attach(Console.WriteLine);
 
