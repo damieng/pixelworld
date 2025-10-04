@@ -28,6 +28,7 @@ static class Program
     {
         config.AddCommand<DumpCommand>("dump");
         config.AddCommand<HuntCommand>("hunt");
+        config.AddCommand<ExtractScreenTilesCommand>("extracttiles");
 
         config.AddCommand<ScreenshotCommand>("screenshot");
         config.AddCommand<PreviewCommand>("preview");
