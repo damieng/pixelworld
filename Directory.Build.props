@@ -1,0 +1,9 @@
+﻿<Project>
+  <PropertyGroup>
+    <!-- Centralized version for all projects in this repository -->
+    <Version>0.5.0</Version>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+  </PropertyGroup>
+</Project>

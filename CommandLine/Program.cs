@@ -17,7 +17,7 @@ internal static class Program
         app.Configure(config =>
         {
             config.SetApplicationName("pw.exe");
-            config.SetApplicationVersion("0.10");
+            config.SetApplicationVersion(typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "Unknown");
             AddCommands(config);
         });
 
