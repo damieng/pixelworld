@@ -53,7 +53,8 @@ jobs:
 
     - name: Publish
       run: |
-        dotnet publish ./CommandLine/CommandLine.csproj --configuration Release --runtime ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./publish/${{ matrix.artifact-name }}
+        dotnet publish ./CommandLine/CommandLine.csproj --configuration Release --runtime ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false --output ./publish/${{ matrix.artifact-name }}
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
