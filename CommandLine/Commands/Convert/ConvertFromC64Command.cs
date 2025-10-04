@@ -25,7 +25,6 @@ public class ConvertFromC64Command : Command<RequiredSettings>
         Out.Write($"Generating ch8 file from {fileName}");
 
         using var source = File.OpenRead(fileName);
-
         using var reader = new BinaryReader(source);
         source.Seek(2, SeekOrigin.Current); // Skip header
 

@@ -22,14 +22,13 @@ public static class ConvertTo
         {
             var targetFolderName = Utils.MakeFileName(sourceFileName, "ufo", outputFolder);
             Out.Write($"Converting file {sourceFileName} to {targetFolderName}");
-            using var source = File.OpenRead(sourceFileName);
-            using var reader = new BinaryReader(source);
-            var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+            var sourceFont = ByteFontFormatter.Load(sourceFileName, sourceCharset);
             UfoFontFormatter.Write(sourceFont, targetFolderName);
         }
     }
 
-    public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+    public static void Atari8(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder,
+        string templatePath)
     {
         var templateFilename = Path.Combine(templatePath, "atari8.fnt");
         Out.Write($"Using template {templateFilename}");
@@ -39,28 +38,26 @@ public static class ConvertTo
         {
             var targetFileName = Utils.MakeFileName(sourceFileName, Machines.Atari8.Extension, outputFolder);
             Out.Write($"Converting file {sourceFileName} to {targetFileName}");
-            using var source = File.OpenRead(sourceFileName);
-            using var reader = new BinaryReader(source);
-            var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+            var sourceFont = ByteFontFormatter.Load(sourceFileName, sourceCharset);
             using var target = File.Create(targetFileName);
             ByteFontFormatter.Write(sourceFont, target, Machines.Atari8.US, 128, i => new ArraySegment<byte>(template, i, 8));
         }
     }
 
-    public static void Fzx(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional, string outputFolder)
+    public static void Fzx(List<string> fileNames, IReadOnlyDictionary<int, char> charset, bool makeProportional,
+        string outputFolder)
     {
         foreach (var fileName in fileNames)
         {
             Out.Write($"Generating FZX file for {fileName}");
-            using var source = File.OpenRead(fileName);
-            using var reader = new BinaryReader(source);
-            var font = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, charset);
+            var font = ByteFontFormatter.Load(fileName, charset);
             using var target = File.Create(Utils.MakeFileName(fileName, "fzx", outputFolder));
             FzxFontFormatter.Write(font, target, makeProportional);
         }
     }
 
-    public static void AmstradCpc(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string credit, int startLine)
+    public static void AmstradCpc(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder,
+        string credit, int startLine)
     {
         foreach (var sourceFileName in fileNames)
         {
@@ -69,34 +66,30 @@ public static class ConvertTo
             var line = startLine;
 
             Out.Write($"Converting file {sourceFileName} to {targetFileName}");
-            using var source = File.OpenRead(sourceFileName);
-            using var reader = new BinaryReader(source);
+
+            var sourceFont = ByteFontFormatter.Load(sourceFileName, sourceCharset);
+            var output = new StringBuilder();
+
+            output.Append($"{line} REM {Path.GetFileNameWithoutExtension(sourceFileName)} font\r\n");
+            if (!String.IsNullOrEmpty(credit)) output.Append($"{line += 10} REM {credit}\r\n");
+
+            var spaceIsBlank = sourceFont.Glyphs[' '].IsBlank();
+            output.Append($"{line += 10} SYMBOL AFTER {(spaceIsBlank ? 33 : 32)}\r\n");
+
+            foreach (var (key, value) in sourceFont.Glyphs.Where(g => !g.Value.IsBlank()).OrderBy(g => g.Key))
             {
-                var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
-
-                var output = new StringBuilder();
-
-                output.Append($"{line} REM {Path.GetFileNameWithoutExtension(sourceFileName)} font\r\n");
-                if (!String.IsNullOrEmpty(credit)) output.Append($"{line += 10} REM {credit}\r\n");
-
-                var spaceIsBlank = sourceFont.Glyphs[' '].IsBlank();
-                output.Append($"{line += 10} SYMBOL AFTER {(spaceIsBlank ? 33 : 32)}\r\n");
-
-                foreach (var (key, value) in sourceFont.Glyphs.Where(g => !g.Value.IsBlank()).OrderBy(g => g.Key))
+                switch (key)
                 {
-                    switch (key)
-                    {
-                        case '©':
-                            WriteSymbolLine(output, 164, value);
-                            break;
-                        default:
-                            WriteSymbolLine(output, key, value);
-                            break;
-                    }
+                    case '©':
+                        WriteSymbolLine(output, 164, value);
+                        break;
+                    default:
+                        WriteSymbolLine(output, key, value);
+                        break;
                 }
-
-                File.WriteAllText(targetFileName, output.ToString());
             }
+
+            File.WriteAllText(targetFileName, output.ToString());
 
             void WriteSymbolLine(StringBuilder output, int charIdx, Glyph glyph)
             {
@@ -123,7 +116,8 @@ public static class ConvertTo
         }
     }
 
-    public static void Msx(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+    public static void Msx(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder,
+        string templatePath)
     {
         var templateFilename = Path.Combine(templatePath, "msx.fnt");
         Out.Write($"Using template {templateFilename}");
@@ -133,17 +127,17 @@ public static class ConvertTo
         {
             var targetFileName = Utils.MakeFileName(sourceFileName, Machines.Msx.Extension, outputFolder);
             Out.Write($"Converting file {sourceFileName} to {targetFileName}");
-            using var source = File.OpenRead(sourceFileName);
-            using var reader = new BinaryReader(source);
-            var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+            var sourceFont = ByteFontFormatter.Load(sourceFileName, sourceCharset);
             // TODO: Center font to left-most 5 pixels?
             using var target = File.Create(targetFileName);
             target.Write(template, 0, 32 * 8); // Low-ASCII
-            ByteFontFormatter.Write(sourceFont, target, Machines.Msx.International, 224, i => new ArraySegment<byte>(template, i, 8));
+            ByteFontFormatter.Write(sourceFont, target, Machines.Msx.International, 224,
+                i => new ArraySegment<byte>(template, i, 8));
         }
     }
 
-    public static void Commodore64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, string templatePath)
+    public static void Commodore64(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder,
+        string templatePath)
     {
         var bothCaseTemplate = Path.Combine(templatePath, "c64-both.ch8");
         var upperCaseTemplate = Path.Combine(templatePath, "c64-upper.ch8");
@@ -165,9 +159,7 @@ public static class ConvertTo
 
         foreach (var sourceFileName in fileNames)
         {
-            using var source = File.OpenRead(sourceFileName);
-            using var reader = new BinaryReader(source);
-            var sourceFont = ByteFontFormatter.Create(reader, Path.GetFileNameWithoutExtension(sourceFileName), 0, sourceCharset);
+            var sourceFont = ByteFontFormatter.Load(sourceFileName, sourceCharset);
             using var characterRom = File.Create(Utils.MakeFileName(sourceFileName, "bin", outputFolder));
 
             foreach (var (template, charset, suffix) in cases)
@@ -180,7 +172,7 @@ public static class ConvertTo
                 ByteFontFormatter.Write(sourceFont, memoryStream, charset, 128, i => new ArraySegment<byte>(template, i, 8));
 
                 using var targetFile = File.Create(targetFileName);
-                targetFile.Write(new byte[] {0x00, 0x38}); // 64C header
+                targetFile.Write(new byte[] { 0x00, 0x38 }); // 64C header
                 memoryStream.WriteTo(targetFile);
                 memoryStream.WriteTo(characterRom);
 

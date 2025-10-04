@@ -83,8 +83,8 @@ public class Font(string name, int height = 8) : IEquatable<Font>
         var xOff = 0;
         var yOff = 0;
         var cIdx = 0;
-        Color foreground = Color.Black;
-        Color background = transparent ? Color.Transparent : Color.White;
+        var foreground = Color.Black;
+        var background = transparent ? Color.Transparent : Color.White;
 
         foreach (var glyph in Glyphs)
         {

@@ -7,11 +7,18 @@ namespace PixelWorld.Formatters;
 
 public static class ByteFontFormatter
 {
-    const int CharWidth = 8;
-    const int CharHeight = 8;
-    static readonly ArraySegment<byte> blankChar = new(new byte[8], 0, 8);
-    static readonly Func<int, ArraySegment<byte>> blankWriter = _ => blankChar;
+    private const int CharWidth = 8;
+    private const int CharHeight = 8;
+    private static readonly ArraySegment<byte> BlankChar = new(new byte[8], 0, 8);
+    private static readonly Func<int, ArraySegment<byte>> BlankWriter = _ => BlankChar;
 
+    public static Font Load(string fileName, IReadOnlyDictionary<int, char> charset)
+    {
+        using var source = File.OpenRead(fileName);
+        using var reader = new BinaryReader(source);
+        return Create(reader, Path.GetFileNameWithoutExtension(fileName), 0, charset);
+    }
+    
     public static Font Create(BinaryReader reader, string name, int offset, IReadOnlyDictionary<int, char> charset)
     {
         var font = new Font(name);
@@ -44,7 +51,7 @@ public static class ByteFontFormatter
 
     public static void Write(Font font, Stream output, IReadOnlyDictionary<int, char> charset, int length, Func<int, ArraySegment<byte>>? fallback = null)
     {
-        fallback ??= blankWriter;
+        fallback ??= BlankWriter;
 
         var writer = new BinaryWriter(output); // Do not dispose as it will close underlying stream
         for (var i = 0; i < length; i++)

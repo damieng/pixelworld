@@ -6,7 +6,7 @@ namespace PixelWorld.OffsetFinders;
 
 public static class GeneralHeuristicFinder
 {
-    static bool HasLikelySymbolDensities(byte[] buffer, int offset)
+    private static bool HasLikelySymbolDensities(byte[] buffer, int offset)
     {
         return
             buffer.PixelCount(offset, '.') < buffer.PixelCount(offset, ':') &&
@@ -14,14 +14,14 @@ public static class GeneralHeuristicFinder
             buffer.PixelCount(offset, '-') < buffer.PixelCount(offset, '+');
     }
 
-    static bool HasLikelyUpperDensities(byte[] buffer, int offset)
+    private static bool HasLikelyUpperDensities(byte[] buffer, int offset)
     {
         return
             buffer.PixelCount(offset, 'D') < buffer.PixelCount(offset, 'B') &&
             buffer.PixelCount(offset, 'C') < buffer.PixelCount(offset, 'O');
     }
 
-    static bool HasLikelyLowerDensities(byte[] buffer, int offset)
+    private static bool HasLikelyLowerDensities(byte[] buffer, int offset)
     {
         return
             buffer.PixelCount(offset, 'o') < buffer.PixelCount(offset, 'g') &&
@@ -29,7 +29,7 @@ public static class GeneralHeuristicFinder
             buffer.PixelCount(offset, 'j') < buffer.PixelCount(offset, 'u');
     }
 
-    static bool HasLikelyNumericDensities(byte[] buffer, int offset)
+    private static bool HasLikelyNumericDensities(byte[] buffer, int offset)
     {
         return
             buffer.PixelCount(offset, '1') < buffer.PixelCount(offset, '2') &&

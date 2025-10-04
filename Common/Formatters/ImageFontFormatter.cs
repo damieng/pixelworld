@@ -11,8 +11,8 @@ namespace PixelWorld.Formatters;
 
 public static class ImageFontFormatter
 {
-    const int CharWidth = 8;
-    const int CharHeight = 8;
+    private const int CharWidth = 8;
+    private const int CharHeight = 8;
 
     public static readonly IImageEncoder PngEncoder = new PngEncoder
     {
@@ -39,7 +39,7 @@ public static class ImageFontFormatter
 
         var offColor = image[0, 0];
 
-        int c = 0;
+        var c = 0;
         for (var charY = 0; charY < image.Height; charY += CharHeight)
         {
             for (var charX = 0; charX < image.Width; charX += CharWidth)

@@ -12,9 +12,11 @@ public static class EnvironmentGuidedFinder
         var spectrumSysChars = buffer[CharsEnvVar] + buffer[CharsEnvVar + 1] * 256 + 256;
 
         var results = new List<int>();
-        if (spectrumSysChars > 16384) // Was not pointing to the ROM
-            if (spectrumSysChars + Spectrum.FontSize < buffer.Length && buffer.IsEmpty(spectrumSysChars))
-                results.Add(spectrumSysChars);
+        if (spectrumSysChars <= 16384) return results; // Was not pointing to the ROM
+        
+        if (spectrumSysChars + Spectrum.FontSize < buffer.Length && buffer.IsEmpty(spectrumSysChars))
+            results.Add(spectrumSysChars);
+        
         return results;
     }
 }

@@ -11,9 +11,9 @@ namespace PixelWorld.OffsetFinders;
 /// </summary>
 public static class CandidatesInWindowFinder
 {
-    const int MinUniqueInWindow = 36;
+    private const int MinUniqueInWindow = 36;
 
-    class CandidateLocation(int offset, int candidate)
+    private class CandidateLocation(int offset, int candidate)
     {
         public readonly int Offset = offset;
         public readonly int Candidate = candidate;

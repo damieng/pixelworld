@@ -22,7 +22,7 @@ public static class Dumper
 
     public static void ProcessStream(string fileName, Stream stream, Func<string, ArraySegment<byte>, bool> processor, bool processUnknown = false)
     {
-        string extension = Path.GetExtension(fileName).ToLower();
+        var extension = Path.GetExtension(fileName).ToLower();
         switch (extension)
         {
             case ".zip":

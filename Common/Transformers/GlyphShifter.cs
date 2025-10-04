@@ -9,7 +9,7 @@ public static class GlyphShifter
         var width = newWidth ?? source.Width;
         var height = newHeight ?? source.Height;
 
-        bool[,] data = new bool[width, height];
+        var data = new bool[width, height];
 
         for (var y = 0; y < source.Height; y++)
         {

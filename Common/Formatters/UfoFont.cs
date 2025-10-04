@@ -7,7 +7,7 @@ namespace PixelWorld.Formatters;
 
 public static class UfoFontFormatter
 {
-    private static readonly Dictionary<char, string> charToName = new()
+    private static readonly Dictionary<char, string> CharToName = new()
     {
         { ' ', "space" },
         { '!', "exclam" },
@@ -105,10 +105,10 @@ public static class UfoFontFormatter
         { '}', "braceright" },
         { '~', "asciitilde" },
         { '£', "sterling" },
-        { '©', "copyright" },
+        { '©', "copyright" }
     };
 
-    private static readonly XmlWriterSettings xmlWriterSettings = new() { Indent = true, NewLineChars = "\n" };
+    private static readonly XmlWriterSettings XmlWriterSettings = new() { Indent = true, NewLineChars = "\n" };
 
     public static void Write(Font font, string path)
     {
@@ -135,7 +135,7 @@ public static class UfoFontFormatter
 
         foreach (var (key, glyphData) in font.Glyphs)
         {
-            string name = charToName[key];
+            var name = CharToName[key];
             nameAttribute.Value = name;
             hexAttribute.Value = ((int)key).ToString("X4");
             outlineElement.RemoveAll();
@@ -161,7 +161,7 @@ public static class UfoFontFormatter
             if (glyphName.Length == 1 && char.IsUpper(glyphName[0]))
                 glyphName += "_";
 
-            using var writer = XmlWriter.Create(Path.Join(basePath, glyphName + ".glif"), xmlWriterSettings);
+            using var writer = XmlWriter.Create(Path.Join(basePath, glyphName + ".glif"), XmlWriterSettings);
             doc.WriteTo(writer);
         }
 

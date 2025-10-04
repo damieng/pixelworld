@@ -28,9 +28,9 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
         return 0;
     }
 
-    const int FlashDelay = 64;
+    private const int FlashDelay = 64;
 
-    static bool WriteScreenToDisk(string fileName, ArraySegment<byte> memory, ScreenshotSettings settings)
+    private static bool WriteScreenToDisk(string fileName, ArraySegment<byte> memory, ScreenshotSettings settings)
     {
         var address = settings.Address ?? (memory.Count == 49152 ? 0 : 16384);
         if (settings.Png || settings.Webp)

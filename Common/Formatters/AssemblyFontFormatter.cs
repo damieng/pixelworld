@@ -65,7 +65,7 @@ public static class AssemblyFontFormatter
                         if (glyph.Value.Data[x, y])
                             b |= (byte)(1 << charWidth - 1 - x);
                     }
-                    string binary = "00000000" + Convert.ToString(b, 2);
+                    var binary = "00000000" + Convert.ToString(b, 2);
                     output.Append($"\tdefb %{binary.Substring(binary.Length - 8, 8)}\n");
                 }
             }

@@ -22,7 +22,7 @@ public static class Matcher
             using var candidateReader = new BinaryReader(File.OpenRead(fileName));
             var candidateFont = ByteFontFormatter.Create(candidateReader, Path.GetFileNameWithoutExtension(fileName), 0, Spectrum.UK);
 
-            int candidateMatches = 0;
+            var candidateMatches = 0;
             foreach (var glyph in matchGlyphs)
             {
                 if (matchFont.Glyphs.TryGetValue(glyph, out var matchGlyph) && candidateFont.Glyphs.TryGetValue(glyph, out var targetGlyph) && matchGlyph.Equals(targetGlyph))

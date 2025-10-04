@@ -32,7 +32,7 @@ public static class FontHunter
         Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
     }
 
-    static int ExtractFontFromDumpFile(string fileName, string outputFolder)
+    private static int ExtractFontFromDumpFile(string fileName, string outputFolder)
     {
         using var source = File.OpenRead(fileName);
         return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()), outputFolder);
