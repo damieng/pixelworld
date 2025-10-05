@@ -1,0 +1,170 @@
+name: Release Build
+
+on:
+  release:
+    types: [created]
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: get_version
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Generate release notes
+        id: release_notes
+        shell: bash
+        run: |
+          CURRENT_TAG=${GITHUB_REF#refs/tags/}
+          
+          # Get all tags and sort them by version number
+          PREVIOUS_TAG=$(git tag -l "v*.*.*" | sed 's/v//' | sort -V | sed 's/^/v/' | grep -B1 "^$CURRENT_TAG$" | head -n1)
+          
+          # If PREVIOUS_TAG equals CURRENT_TAG, there is no previous tag
+          if [ "$PREVIOUS_TAG" == "$CURRENT_TAG" ]; then
+            PREVIOUS_TAG=""
+          fi
+          
+          echo "## Changes in $CURRENT_TAG" > release_notes.md
+          echo "" >> release_notes.md
+          
+          if [ -n "$PREVIOUS_TAG" ]; then
+            echo "Changes since $PREVIOUS_TAG:" >> release_notes.md
+            echo "" >> release_notes.md
+            git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges >> release_notes.md
+          else
+            echo "Initial release" >> release_notes.md
+            echo "" >> release_notes.md
+            git log --pretty=format:"- %s (%h)" --no-merges >> release_notes.md
+          fi
+          
+          cat release_notes.md
+
+      - name: Create or Update Draft Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          body_path: release_notes.md
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-and-upload:
+    needs: create-release
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runtime: linux-x64
+            artifact-name: pixelworld-linux-x64
+            archive-ext: tar.gz
+          - os: ubuntu-latest
+            runtime: linux-arm64
+            artifact-name: pixelworld-linux-arm64
+            archive-ext: tar.gz
+          - os: windows-latest
+            runtime: win-x64
+            artifact-name: pixelworld-win-x64
+            archive-ext: zip
+          - os: windows-latest
+            runtime: win-arm64
+            artifact-name: pixelworld-win-arm64
+            archive-ext: zip
+          - os: macos-latest
+            runtime: osx-x64
+            artifact-name: pixelworld-osx-x64
+            archive-ext: tar.gz
+          - os: macos-latest
+            runtime: osx-arm64
+            artifact-name: pixelworld-osx-arm64
+            archive-ext: tar.gz
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: get_version
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Update Directory.Build.props
+        shell: bash
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          if [ -f "Directory.Build.props" ]; then
+            # Update version in Directory.Build.props using a cross-platform approach
+            sed "s|<Version>.*</Version>|<Version>$VERSION</Version>|g" Directory.Build.props > Directory.Build.props.tmp
+            sed "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>$VERSION</AssemblyVersion>|g" Directory.Build.props.tmp > Directory.Build.props.tmp2
+            sed "s|<FileVersion>.*</FileVersion>|<FileVersion>$VERSION</FileVersion>|g" Directory.Build.props.tmp2 > Directory.Build.props
+            rm Directory.Build.props.tmp Directory.Build.props.tmp2
+            echo "Updated Directory.Build.props:"
+            cat Directory.Build.props
+          else
+            echo "Warning: Directory.Build.props not found"
+          fi
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --verbosity normal
+        continue-on-error: true
+
+      - name: Publish
+        run: |
+          dotnet publish ./CommandLine/CommandLine.csproj --configuration Release --runtime ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false --output ./publish/${{ matrix.artifact-name }}
+
+      - name: Create release archive (Windows)
+        if: matrix.archive-ext == 'zip'
+        shell: bash
+        run: |
+          cd ./publish/${{ matrix.artifact-name }}
+          7z a ../../${{ matrix.artifact-name }}.zip *
+          cd ../..
+
+      - name: Create release archive (Linux/macOS)
+        if: matrix.archive-ext == 'tar.gz'
+        shell: bash
+        run: |
+          cd ./publish/${{ matrix.artifact-name }}
+          tar -czf ../../${{ matrix.artifact-name }}.tar.gz *
+          cd ../..
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.artifact-name }}.${{ matrix.archive-ext }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
