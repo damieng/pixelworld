@@ -4,9 +4,9 @@ namespace PixelWorld;
 
 public static class ByteArrayExtensions
 {
-    public static string ToHex(this byte[] input)
+    public static String ToHex(this Byte[] input)
     {
-        var output = new char[input.Length * 2];
+        var output = new Char[input.Length * 2];
         for (var i = 0; i < input.Length; i++)
         {
             var r = i * 2;
@@ -17,13 +17,13 @@ public static class ByteArrayExtensions
         return new String(output);
     }
 
-    public static void InvertBuffer(this byte[] buffer)
+    public static void InvertBuffer(this Byte[] buffer)
     {
         for (var i = 0; i < buffer.Length; i++)
-            buffer[i] = (byte)~buffer[i];
+            buffer[i] = (Byte)~buffer[i];
     }
 
-    public static bool IsEmpty(this byte[] buffer, int index, int rows = 8)
+    public static Boolean IsEmpty(this Byte[] buffer, Int32 index, Int32 rows = 8)
     {
         for (var e = 0; e < rows; e++)
             if (buffer[index + e] != 0)
@@ -32,7 +32,7 @@ public static class ByteArrayExtensions
         return true;
     }
 
-    public static bool IsFull(this byte[] buffer, int index, int rows = 8)
+    public static Boolean IsFull(this Byte[] buffer, Int32 index, Int32 rows = 8)
     {
         for (var e = 0; e < rows; e++)
             if (buffer[index + e] != 255)
@@ -41,7 +41,7 @@ public static class ByteArrayExtensions
         return true;
     }
 
-    public static int CountBlankGlyphs(this byte[] buffer, int index, int length, int height)
+    public static Int32 CountBlankGlyphs(this Byte[] buffer, Int32 index, Int32 length, Int32 height)
     {
         var count = 0;
         for (var i = index; i < index + length; i += height)
@@ -52,7 +52,7 @@ public static class ByteArrayExtensions
         return count;
     }
 
-    public static bool IsSame(this byte[] buffer, int firstIndex, int secondIndex)
+    public static Boolean IsSame(this Byte[] buffer, Int32 firstIndex, Int32 secondIndex)
     {
         for (var e = 0; e < 8; e++)
             if (buffer[firstIndex + e] != buffer[secondIndex + e])
@@ -61,7 +61,7 @@ public static class ByteArrayExtensions
         return true;
     }
 
-    public static bool IsSame(this byte[] buffer, int firstIndex, byte[] character)
+    public static Boolean IsSame(this Byte[] buffer, Int32 firstIndex, Byte[] character)
     {
         for (var e = 0; e < 8; e++)
             if (buffer[firstIndex + e] != character[e])
@@ -70,12 +70,12 @@ public static class ByteArrayExtensions
         return true;
     }
 
-    public static int PixelCount(this byte[] buffer, int offset, char c)
+    public static Int32 PixelCount(this Byte[] buffer, Int32 offset, Char c)
     {
         var count = 0;
         for (var y = 0; y < 8; y++)
         {
-            int g = buffer[offset + c - 32 + y];
+            Int32 g = buffer[offset + c - 32 + y];
             for (var x = 0; x < 8; x++)
             {
                 var f = 1 << x;

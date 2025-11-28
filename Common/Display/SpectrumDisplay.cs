@@ -8,11 +8,11 @@ namespace PixelWorld.Display;
 
 public class SpectrumDisplay
 {
-    private const int AttributeWidth = 32;
-    private const int AttributeHeight = 24;
-    private const int PixelWidth = 8 * AttributeWidth;
-    private const int PixelHeight = 8 * AttributeHeight;
-    private const int AttributeOffset = PixelWidth * AttributeHeight;
+    private const Int32 AttributeWidth = 32;
+    private const Int32 AttributeHeight = 24;
+    private const Int32 PixelWidth = 8 * AttributeWidth;
+    private const Int32 PixelHeight = 8 * AttributeHeight;
+    private const Int32 AttributeOffset = PixelWidth * AttributeHeight;
 
     private static readonly UInt16[] lookupY = new UInt16[PixelHeight];
 
@@ -35,12 +35,12 @@ public class SpectrumDisplay
         }
     }
 
-    public static bool IsBlank(byte[] buffer, int offset)
+    public static Boolean IsBlank(Byte[] buffer, Int32 offset)
     {
         return buffer.Skip(offset).Take(768).All(b => b == 0);
     }
 
-    public static Image<Rgb24> GetBitmap(byte[] buffer, int offset, bool altFlashFrame = false)
+    public static Image<Rgb24> GetBitmap(Byte[] buffer, Int32 offset, Boolean altFlashFrame = false)
     {
         var image = new Image<Rgb24>(PixelWidth, PixelHeight);
 
@@ -69,14 +69,14 @@ public class SpectrumDisplay
         return image;
     }
 
-    public static byte[][] GetCandidates(byte[] buffer, int offset)
+    public static Byte[][] GetCandidates(Byte[] buffer, Int32 offset)
     {
-        var uniques = new HashSet<byte[]>(new ByteArrayEqualityComparer());
+        var uniques = new HashSet<Byte[]>(new ByteArrayEqualityComparer());
 
         for (var ay = 0; ay < AttributeHeight; ay++)
         for (var ax = 0; ax < AttributeWidth; ax++)
         {
-            var block = new byte[8];
+            var block = new Byte[8];
             for (var py = 0; py < 8; py++)
             {
                 var y = ay * 8 + py;
@@ -93,6 +93,6 @@ public class SpectrumDisplay
         return uniques.ToArray();
     }
 
-    private static readonly byte[] EmptyChar = [0, 0, 0, 0, 0, 0, 0, 0];
-    private static readonly byte[] FullChar = [255, 255, 255, 255, 255, 255, 255, 255];
+    private static readonly Byte[] EmptyChar = [0, 0, 0, 0, 0, 0, 0, 0];
+    private static readonly Byte[] FullChar = [255, 255, 255, 255, 255, 255, 255, 255];
 }

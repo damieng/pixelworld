@@ -1,4 +1,5 @@
-﻿using PixelWorld.Fonts;
+﻿using System;
+using PixelWorld.Fonts;
 
 namespace PixelWorld.Transformers;
 
@@ -9,9 +10,9 @@ public static class GlyphInverter
         return new Glyph(source.Width, source.Height, Invert(source.Data));
     }
 
-    public static bool[,] Invert(bool[,] source)
+    public static Boolean[,] Invert(Boolean[,] source)
     {
-        var target = new bool[source.Length, source.GetUpperBound(1)];
+        var target = new Boolean[source.Length, source.GetUpperBound(1)];
 
         for (var x = 0; x < source.Length; x++)
         for (var y = 0; y < source.GetUpperBound(1); y++)

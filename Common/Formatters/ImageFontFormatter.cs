@@ -1,4 +1,5 @@
-﻿using PixelWorld.Fonts;
+﻿using System;
+using PixelWorld.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Png;
@@ -11,8 +12,8 @@ namespace PixelWorld.Formatters;
 
 public static class ImageFontFormatter
 {
-    private const int CharWidth = 8;
-    private const int CharHeight = 8;
+    private const Int32 CharWidth = 8;
+    private const Int32 CharHeight = 8;
 
     public static readonly IImageEncoder PngEncoder = new PngEncoder
     {
@@ -28,7 +29,7 @@ public static class ImageFontFormatter
         TransparentColorMode = WebpTransparentColorMode.Preserve
     };
 
-    public static void Read(Font font, Stream source, IReadOnlyDictionary<int, char> charset)
+    public static void Read(Font font, Stream source, IReadOnlyDictionary<Int32, Char> charset)
     {
         using var image = Image.Load<Rgb24>(source);
 
@@ -44,7 +45,7 @@ public static class ImageFontFormatter
         {
             for (var charX = 0; charX < image.Width; charX += CharWidth)
             {
-                var data = new bool[CharWidth, CharHeight];
+                var data = new Boolean[CharWidth, CharHeight];
                 for (var y = 0; y < CharHeight; y++)
                 for (var x = 0; x < CharHeight; x++)
                     data[x, y] = image[charX + x, charY + y] != offColor;
@@ -55,7 +56,7 @@ public static class ImageFontFormatter
         }
     }
 
-    public static void Write(Font font, Stream output, IImageEncoder imageEncoder, bool transparent)
+    public static void Write(Font font, Stream output, IImageEncoder imageEncoder, Boolean transparent)
     {
         using var bitmap = font.CreateImage(3, transparent);
         bitmap.Save(output, imageEncoder);

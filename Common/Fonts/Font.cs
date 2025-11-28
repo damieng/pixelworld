@@ -9,11 +9,11 @@ using SixLabors.ImageSharp;
 namespace PixelWorld.Fonts;
 
 [DebuggerDisplay("Print(),nq")]
-public class Font(string name, int height = 8) : IEquatable<Font>
+public class Font(String name, Int32 height = 8) : IEquatable<Font>
 {
-    public readonly string Name = name;
-    public readonly int Height = height;
-    public Dictionary<char, Glyph> Glyphs { get; } = new();
+    public readonly String Name = name;
+    public readonly Int32 Height = height;
+    public Dictionary<Char, Glyph> Glyphs { get; } = new();
 
     public Font Copy()
     {
@@ -23,7 +23,7 @@ public class Font(string name, int height = 8) : IEquatable<Font>
         return copied;
     }
 
-    public string Print(string input)
+    public String Print(String input)
     {
         var s = "";
 
@@ -46,7 +46,7 @@ public class Font(string name, int height = 8) : IEquatable<Font>
         return s;
     }
 
-    public bool Equals(Font? other)
+    public Boolean Equals(Font? other)
     {
         return other is not null
                && (ReferenceEquals(this, other) || string.Equals(Name, other.Name)
@@ -56,18 +56,18 @@ public class Font(string name, int height = 8) : IEquatable<Font>
                        StructuralComparisons.StructuralEqualityComparer));
     }
 
-    public override bool Equals(object? obj)
+    public override Boolean Equals(Object? obj)
     {
         return obj is not null
                && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Font)obj));
     }
 
-    public override int GetHashCode()
+    public override Int32 GetHashCode()
     {
         return HashCode.Combine(Name, Height, Glyphs);
     }
 
-    public Image<Rgba32> CreateImage(int rows, bool transparent)
+    public Image<Rgba32> CreateImage(Int32 rows, Boolean transparent)
     {
         var fullWidth = Glyphs.Sum(g => g.Value.Width);
         var previewWidth = fullWidth / rows;
@@ -78,7 +78,7 @@ public class Font(string name, int height = 8) : IEquatable<Font>
         return image;
     }
 
-    public void DrawImage(Image<Rgba32> image, int glyphsPerRow, bool transparent)
+    public void DrawImage(Image<Rgba32> image, Int32 glyphsPerRow, Boolean transparent)
     {
         var xOff = 0;
         var yOff = 0;
@@ -102,7 +102,7 @@ public class Font(string name, int height = 8) : IEquatable<Font>
         }
     }
 
-    public void DrawImage(Image<Rgba32> image, int glyphsPerRow, IReadOnlyDictionary<int, char> targetCharset, Color foreground, Color background, int? padWidth = null)
+    public void DrawImage(Image<Rgba32> image, Int32 glyphsPerRow, IReadOnlyDictionary<Int32, Char> targetCharset, Color foreground, Color background, Int32? padWidth = null)
     {
         var xOff = 0;
         var yOff = 0;

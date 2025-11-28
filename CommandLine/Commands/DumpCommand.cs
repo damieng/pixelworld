@@ -1,4 +1,5 @@
-﻿using PixelWorld;
+﻿using System;
+using PixelWorld;
 using PixelWorld.Tools;
 using Spectre.Console.Cli;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ namespace CommandLine.Commands;
 [Description("Dump memory from emulator snapshot")]
 public class DumpCommand : Command<RequiredSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
+    public override Int32 Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         Dumper.Dump(files, settings.OutputFolder);

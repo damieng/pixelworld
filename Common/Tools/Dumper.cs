@@ -8,7 +8,7 @@ namespace PixelWorld.Tools;
 
 public static class Dumper
 {
-    public static void Dump(List<string> fileNames, string outputFolder)
+    public static void Dump(List<String> fileNames, String outputFolder)
     {
         Out.Write($"\nDumping {fileNames.Count} files");
 
@@ -20,7 +20,7 @@ public static class Dumper
         }
     }
 
-    public static void ProcessStream(string fileName, Stream stream, Func<string, ArraySegment<byte>, bool> processor, bool processUnknown = false)
+    public static void ProcessStream(String fileName, Stream stream, Func<String, ArraySegment<Byte>, Boolean> processor, Boolean processUnknown = false)
     {
         var extension = Path.GetExtension(fileName).ToLower();
         switch (extension)
@@ -59,7 +59,7 @@ public static class Dumper
         }
     }
 
-    public static bool WriteDumpToDisk(string fileName, ArraySegment<byte> dump, string outputFolder)
+    public static Boolean WriteDumpToDisk(String fileName, ArraySegment<Byte> dump, String outputFolder)
     {
         if (dump.Array is null) throw new ArgumentOutOfRangeException(nameof(dump), "Array is null");
 

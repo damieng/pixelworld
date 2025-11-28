@@ -9,32 +9,32 @@ namespace PixelWorld.BinarySource.Decoders
     #nullable disable // Leave 3rd party code as-is.
     public class Z80_SNAPSHOT
     {
-        public int TYPE;                //0 = 48k, 1 = 128k, 2 = +3, 3 = Pentagon 128k
-        public byte I;                  //I Register
-        public int HL_, DE_, BC_, AF_;  //Alternate registers
-        public int HL, DE, BC, IX, IY;  //16 bit main registers
-        public byte R;                  //R Register
-        public int AF, SP;              //AF and SP register
-        public byte IM;                 //Interupt Mode
-        public byte BORDER;             //Border colour
-        public int PC;                  //PC Register
-        public byte PORT_7FFD;          //Current state of port 7ffd
-        public byte PORT_FFFD;          //Current state of soundchip AY
-        public byte PORT_1FFD;          //Last out to port 1ffd (for +3)
-        public byte[] AY_REGS;          //Contents of AY registers
-        public bool IFF1;               //Are interrupts enabled?
-        public bool IFF2;
-        public bool ISSUE2;             //Issue 2 Keyboard?
-        public bool AY_FOR_48K;
-        public int TSTATES;
-        public int Byte34; // Extended to detect machine type
-        public int FileVersion;
-        public byte[][] RAM_BANK = new byte[16][];       //Contents of the 8192*16 ram banks
+        public Int32 TYPE;                //0 = 48k, 1 = 128k, 2 = +3, 3 = Pentagon 128k
+        public Byte I;                  //I Register
+        public Int32 HL_, DE_, BC_, AF_;  //Alternate registers
+        public Int32 HL, DE, BC, IX, IY;  //16 bit main registers
+        public Byte R;                  //R Register
+        public Int32 AF, SP;              //AF and SP register
+        public Byte IM;                 //Interupt Mode
+        public Byte BORDER;             //Border colour
+        public Int32 PC;                  //PC Register
+        public Byte PORT_7FFD;          //Current state of port 7ffd
+        public Byte PORT_FFFD;          //Current state of soundchip AY
+        public Byte PORT_1FFD;          //Last out to port 1ffd (for +3)
+        public Byte[] AY_REGS;          //Contents of AY registers
+        public Boolean IFF1;               //Are interrupts enabled?
+        public Boolean IFF2;
+        public Boolean ISSUE2;             //Issue 2 Keyboard?
+        public Boolean AY_FOR_48K;
+        public Int32 TSTATES;
+        public Int32 Byte34; // Extended to detect machine type
+        public Int32 FileVersion;
+        public Byte[][] RAM_BANK = new Byte[16][];       //Contents of the 8192*16 ram banks
     }
 
     public class Z80File
     {
-        private static void GetPage(byte[] buffer, int counter, byte[] bank, int dataLength)
+        private static void GetPage(Byte[] buffer, Int32 counter, Byte[] bank, Int32 dataLength)
         {
             if (dataLength == 0xffff)
             {
@@ -50,11 +50,11 @@ namespace PixelWorld.BinarySource.Decoders
 
                     if (bite == 0xED && counter - dataBlockOffset < dataLength)
                     {
-                        int bite2 = buffer[counter];
+                        Int32 bite2 = buffer[counter];
                         if (bite2 == 0xED)
                         {
                             counter++;
-                            int dataSize = buffer[counter++];
+                            Int32 dataSize = buffer[counter++];
                             var data = buffer[counter++];
 
                             //compressed data
@@ -96,8 +96,8 @@ namespace PixelWorld.BinarySource.Decoders
                 if (byte12 == 255)
                     byte12 = 1;
 
-                snapshot.R |= (byte)((byte12 & 0x01) << 7);
-                snapshot.BORDER = (byte)((byte12 >> 1) & 0x07);
+                snapshot.R |= (Byte)((byte12 & 0x01) << 7);
+                snapshot.BORDER = (Byte)((byte12 >> 1) & 0x07);
 
                 snapshot.DE = buffer[13] | (buffer[14] << 8);
                 snapshot.BC_ = buffer[15] | (buffer[16] << 8);
@@ -113,18 +113,18 @@ namespace PixelWorld.BinarySource.Decoders
 
                 var byte29 = buffer[29];
 
-                snapshot.IM = (byte)(byte29 & 0x3);
+                snapshot.IM = (Byte)(byte29 & 0x3);
                 snapshot.ISSUE2 = (byte29 & 0x08) != 0;
 
                 for (var f = 0; f < 16; f++)
                 {
-                    snapshot.RAM_BANK[f] = new byte[8192];
+                    snapshot.RAM_BANK[f] = new Byte[8192];
                 }
 
                 //Version 2 or 3
                 if (snapshot.PC == 0)
                 {
-                    int headerLength = buffer[30];
+                    Int32 headerLength = buffer[30];
                     snapshot.FileVersion = headerLength == 23 ? 2 : 3;
                     snapshot.PC = buffer[32] | (buffer[33] << 8);
                     snapshot.Byte34 = buffer[34];
@@ -174,7 +174,7 @@ namespace PixelWorld.BinarySource.Decoders
                         snapshot.PORT_7FFD = buffer[35];
                         snapshot.AY_FOR_48K = (buffer[37] & 0x4) != 0;
                         snapshot.PORT_FFFD = buffer[38];
-                        snapshot.AY_REGS = new byte[16];
+                        snapshot.AY_REGS = new Byte[16];
                         for (var f = 0; f < 16; f++)
                             snapshot.AY_REGS[f] = buffer[39 + f];
                     }
@@ -187,7 +187,7 @@ namespace PixelWorld.BinarySource.Decoders
                             snapshot.PORT_1FFD = buffer[86];
                     }
 
-                    var _bank = new byte[16384];
+                    var _bank = new Byte[16384];
 
                     //Load rest of the data
                     while (counter < buffer.Length - 1)
@@ -196,7 +196,7 @@ namespace PixelWorld.BinarySource.Decoders
                         var dataLength = buffer[counter] | (buffer[counter + 1] << 8);
                         counter += 2;
                         if (counter >= buffer.Length) break; // Some 128K .z80 files have a trailing zero or two
-                        int page = buffer[counter++];
+                        Int32 page = buffer[counter++];
 
                         //copies page data to temporary RAM array
                         GetPage(buffer, counter, _bank, dataLength);
@@ -278,7 +278,7 @@ namespace PixelWorld.BinarySource.Decoders
                     snapshot.FileVersion = 1;
                     snapshot.TYPE = 0;
                     //int screenAddr = GetPageAddress(10);
-                    var RAM_48K = new byte[49152];
+                    var RAM_48K = new Byte[49152];
 
                     var isCompressed = (byte12 & 0x20) != 0;
                     if (!isCompressed)
@@ -320,7 +320,7 @@ namespace PixelWorld.BinarySource.Decoders
                                 if (bite2 == 0xED)
                                 {
                                     byteCounter++;
-                                    int dataLength = buffer[byteCounter++];
+                                    Int32 dataLength = buffer[byteCounter++];
                                     var data = buffer[byteCounter++];
 
                                     //compressed data

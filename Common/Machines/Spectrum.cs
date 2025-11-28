@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PixelWorld.Machines;
 
 public static class Spectrum
 {
-    public static IReadOnlyDictionary<int, char> UK { get; } =
+    public static IReadOnlyDictionary<Int32, Char> UK { get; } =
         " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_£abcdefghijklmnopqrstuvwxyz{|}~©"
             .ToIndexedDictionary();
 
-    public static int FontSize => 768;
+    public static Int32 FontSize => 768;
 }

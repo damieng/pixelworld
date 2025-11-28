@@ -5,8 +5,8 @@ namespace PixelWorld.BinarySource;
 
 public class RawBinarySource : IBinarySource
 {
-    public ArraySegment<byte> GetMemory(Stream input)
+    public ArraySegment<Byte> GetMemory(Stream input)
     {
-        return new ArraySegment<byte>(input.ReadAllBytes());
+        return new ArraySegment<Byte>(input.ReadAllBytes());
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using CommandLine.Commands.Settings;
 using PixelWorld;
@@ -10,7 +11,7 @@ namespace CommandLine.Commands.Generate;
 [Description("Generate C header")]
 public class GenerateCHeaderCommand : Command<COutputSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] COutputSettings settings)
+    public override Int32 Execute([NotNull] CommandContext context, [NotNull] COutputSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         CHeaderFontFormatter.CreateFontHeaderConst(settings.ByteType, files, settings.OutputFolder, settings.Credit);

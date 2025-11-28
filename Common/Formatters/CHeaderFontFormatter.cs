@@ -8,7 +8,7 @@ namespace PixelWorld.Formatters;
 
 public static class CHeaderFontFormatter
 {
-    public static void CreateFontHeaderConst(string byteType, List<string> fileNames, string outputFolder, string credit)
+    public static void CreateFontHeaderConst(String byteType, List<String> fileNames, String outputFolder, String credit)
     {
         foreach (var fileName in fileNames)
         {
@@ -39,7 +39,7 @@ public static class CHeaderFontFormatter
                     for (var x = 0; x < charWidth; x++)
                     {
                         if (glyph.Value.Data[x, y])
-                            b |= (byte)(1 << charWidth - 1 - x);
+                            b |= (Byte)(1 << charWidth - 1 - x);
                     }
                     if (y > 0) output.Append(", ");
                     output.Append($"0x{b:x2}");

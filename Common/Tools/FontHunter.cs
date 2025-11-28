@@ -9,7 +9,7 @@ namespace PixelWorld.Tools;
 
 public static class FontHunter
 {
-    public static void Hunt(List<string> fileNames, string outputFolder)
+    public static void Hunt(List<String> fileNames, String outputFolder)
     {
         var inputsWithOutputsCount = 0;
         var outputCount = 0;
@@ -29,16 +29,16 @@ public static class FontHunter
         }
 
         Out.Write($"{inputsWithOutputsCount} files yielded {outputCount} results");
-        Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
+        Out.Write($"{Math.Floor((Double)inputsWithOutputsCount / inputCount * 100)}% success rate");
     }
 
-    private static int ExtractFontFromDumpFile(string fileName, string outputFolder)
+    private static Int32 ExtractFontFromDumpFile(String fileName, String outputFolder)
     {
         using var source = File.OpenRead(fileName);
-        return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<byte>(source.ReadAllBytes()), outputFolder);
+        return ExtractFontFromMemoryBuffer(fileName, new ArraySegment<Byte>(source.ReadAllBytes()), outputFolder);
     }
 
-    private static int ExtractFontFromMemoryBuffer(string fileName, ArraySegment<byte> dump, string outputFolder)
+    private static Int32 ExtractFontFromMemoryBuffer(String fileName, ArraySegment<Byte> dump, String outputFolder)
     {
         if (dump.Array is null) throw new ArgumentOutOfRangeException(nameof(dump), "Array is null");
 

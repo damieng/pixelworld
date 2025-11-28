@@ -1,12 +1,13 @@
-﻿using Spectre.Console.Cli;
+﻿using System;
+using Spectre.Console.Cli;
 
 namespace CommandLine.Commands.Settings;
 
 public class RequiredSettings : CommandSettings
 {
     [CommandArgument(0, "[FileGlob]")]
-    public string Glob { get; set; } = "";
+    public String Glob { get; set; } = "";
 
     [CommandArgument(1, "[OutputFolder]")]
-    public string OutputFolder { get; set; } = ".";
+    public String OutputFolder { get; set; } = ".";
 }

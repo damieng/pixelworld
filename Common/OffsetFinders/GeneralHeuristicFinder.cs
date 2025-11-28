@@ -1,4 +1,5 @@
-﻿using PixelWorld.Machines;
+﻿using System;
+using PixelWorld.Machines;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace PixelWorld.OffsetFinders;
 
 public static class GeneralHeuristicFinder
 {
-    private static bool HasLikelySymbolDensities(byte[] buffer, int offset)
+    private static Boolean HasLikelySymbolDensities(Byte[] buffer, Int32 offset)
     {
         return
             buffer.PixelCount(offset, '.') < buffer.PixelCount(offset, ':') &&
@@ -14,14 +15,14 @@ public static class GeneralHeuristicFinder
             buffer.PixelCount(offset, '-') < buffer.PixelCount(offset, '+');
     }
 
-    private static bool HasLikelyUpperDensities(byte[] buffer, int offset)
+    private static Boolean HasLikelyUpperDensities(Byte[] buffer, Int32 offset)
     {
         return
             buffer.PixelCount(offset, 'D') < buffer.PixelCount(offset, 'B') &&
             buffer.PixelCount(offset, 'C') < buffer.PixelCount(offset, 'O');
     }
 
-    private static bool HasLikelyLowerDensities(byte[] buffer, int offset)
+    private static Boolean HasLikelyLowerDensities(Byte[] buffer, Int32 offset)
     {
         return
             buffer.PixelCount(offset, 'o') < buffer.PixelCount(offset, 'g') &&
@@ -29,16 +30,16 @@ public static class GeneralHeuristicFinder
             buffer.PixelCount(offset, 'j') < buffer.PixelCount(offset, 'u');
     }
 
-    private static bool HasLikelyNumericDensities(byte[] buffer, int offset)
+    private static Boolean HasLikelyNumericDensities(Byte[] buffer, Int32 offset)
     {
         return
             buffer.PixelCount(offset, '1') < buffer.PixelCount(offset, '2') &&
             buffer.PixelCount(offset, '3') < buffer.PixelCount(offset, '8');
     }
 
-    public static List<int> FindOffsets(byte[] buffer)
+    public static List<Int32> FindOffsets(Byte[] buffer)
     {
-        var offsets = new List<int>();
+        var offsets = new List<Int32>();
 
         var end = buffer.Length - Spectrum.FontSize;
 
@@ -51,17 +52,17 @@ public static class GeneralHeuristicFinder
         return offsets;
     }
 
-    private static bool IsUnderscore(byte[] buffer, int i)
+    private static Boolean IsUnderscore(Byte[] buffer, Int32 i)
     {
         return buffer.IsEmpty(i, 5) && !buffer.IsEmpty(i + 5, 3);
     }
 
-    private static bool IsMinus(byte[] buffer, int i)
+    private static Boolean IsMinus(Byte[] buffer, Int32 i)
     {
         return buffer.IsEmpty(i, 2) && !buffer.IsEmpty(i + 2, 4) && buffer.IsEmpty(i + 6, 2);
     }
 
-    private static bool IsLikelyFont(byte[] buffer, int i)
+    private static Boolean IsLikelyFont(Byte[] buffer, Int32 i)
     {
         if (buffer.IsEmpty(i)) // Start with a space
         {
@@ -121,7 +122,7 @@ public static class GeneralHeuristicFinder
         return false;
     }
 
-    private static int SkewChecks(byte[] buffer, int offset)
+    private static Int32 SkewChecks(Byte[] buffer, Int32 offset)
     {
         var looksUnskewed = 0;
         if (buffer[offset + 94 * 8 + 7] == 0)

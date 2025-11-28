@@ -10,7 +10,7 @@ public class SnaBinarySource : IBinarySource
 
     public ArraySegment<Byte> GetMemory(Stream source)
     {
-        var signatureBuffer = new byte[8];
+        var signatureBuffer = new Byte[8];
         source.Read(signatureBuffer, 0, signatureBuffer.Length);
 
         if (Encoding.ASCII.GetString(signatureBuffer, 0, signatureBuffer.Length) == "MV - SNA")

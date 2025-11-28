@@ -37,11 +37,11 @@ public class Z80BinarySource : SpectrumBinarySource, IBinarySource
         catch (Exception e)
         {
             Out.Write($"  Unable to process {e.Message}");
-            return new ArraySegment<byte>();
+            return new ArraySegment<Byte>();
         }
     }
 
-    private static ArraySegment<byte> SetupPlus3Memory(Z80_SNAPSHOT snapshot)
+    private static ArraySegment<Byte> SetupPlus3Memory(Z80_SNAPSHOT snapshot)
     {
         Out.Write("  Loading as ZX Spectrum 128K +3");
 
@@ -51,14 +51,14 @@ public class Z80BinarySource : SpectrumBinarySource, IBinarySource
         throw new NotSupportedException("Need to implement +3 ROM bank paging");
     }
 
-    private static ArraySegment<byte> Setup48KMemory(Z80_SNAPSHOT snapshot)
+    private static ArraySegment<Byte> Setup48KMemory(Z80_SNAPSHOT snapshot)
     {
         Out.Write("  Loading as ZX Spectrum 48K");
-        var memory = new byte[(16 + 48) * 1024]; // Leave first 16KB ROM blank
+        var memory = new Byte[(16 + 48) * 1024]; // Leave first 16KB ROM blank
         CopyBank(snapshot.RAM_BANK, 10, memory, 0x4000);
         CopyBank(snapshot.RAM_BANK, 04, memory, 0x8000);
         CopyBank(snapshot.RAM_BANK, 00, memory, 0xC000);
-        return new ArraySegment<byte>(memory);
+        return new ArraySegment<Byte>(memory);
     }
 
     private static MemoryModel GetMemoryModel(Z80_SNAPSHOT snapshot)

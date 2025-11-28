@@ -9,7 +9,7 @@ namespace PixelWorld;
 
 public static class Utils
 {
-    public static List<string> MatchGlobWithFiles(string inputPattern)
+    public static List<String> MatchGlobWithFiles(String inputPattern)
     {
         var splitPoint = GetGlobSplitPoint(inputPattern);
         var pattern = inputPattern[splitPoint..];
@@ -23,25 +23,25 @@ public static class Utils
         return matchResults.Files.Select(f => Path.Combine(directory, f.Path)).ToList();
     }
 
-    public static byte[] ReadAllBytes(this Stream stream)
+    public static Byte[] ReadAllBytes(this Stream stream)
     {
         var memory = new MemoryStream();
         stream.CopyTo(memory);
         return memory.GetBuffer();
     }
 
-    public static string MakeFileName(string fileName, string extension, string folder)
+    public static String MakeFileName(String fileName, String extension, String folder)
     {
         return Path.Combine(folder, Path.ChangeExtension(Path.GetFileName(fileName), extension));
     }
 
-    public static int GetGlobSplitPoint(string pathGlob)
+    public static Int32 GetGlobSplitPoint(String pathGlob)
     {
         var doubleStar = pathGlob.IndexOf("**", StringComparison.Ordinal);
         return doubleStar > -1 ? doubleStar : pathGlob.LastIndexOf('\\') + 1;
     }
 
-    public static Dictionary<int, char> ToIndexedDictionary(this string sequence)
+    public static Dictionary<Int32, Char> ToIndexedDictionary(this String sequence)
     {
         return sequence
             .Select((c, i) => Tuple.Create(c, i))

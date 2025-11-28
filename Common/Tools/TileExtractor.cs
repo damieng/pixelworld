@@ -7,7 +7,7 @@ namespace PixelWorld.Tools;
 
 public class TileExtractor
 {
-    public static void Extract(List<string> fileNames, string outputFolder, int minTiles, int maxTiles)
+    public static void Extract(List<String> fileNames, String outputFolder, Int32 minTiles, Int32 maxTiles)
     {
         var inputsWithOutputsCount = 0;
         var outputCount = 0;
@@ -43,6 +43,6 @@ public class TileExtractor
         }
 
         Out.Write($"{inputsWithOutputsCount} files yielded {outputCount} tiles");
-        Out.Write($"{Math.Floor((double)inputsWithOutputsCount / inputCount * 100)}% success rate");
+        Out.Write($"{Math.Floor((Double)inputsWithOutputsCount / inputCount * 100)}% success rate");
     }
 }
