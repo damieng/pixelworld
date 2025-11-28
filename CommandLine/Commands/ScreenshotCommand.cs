@@ -15,7 +15,7 @@ namespace CommandLine.Commands;
 [Description("Create screenshots from memory dump or emulator snapshot")]
 public class ScreenshotCommand : Command<ScreenshotSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] ScreenshotSettings settings)
+    public override Int32 Execute(CommandContext context, ScreenshotSettings settings)
     {
         var fileNames = Utils.MatchGlobWithFiles(settings.Glob);
         foreach (var fileName in fileNames)

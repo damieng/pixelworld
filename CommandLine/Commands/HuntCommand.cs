@@ -11,7 +11,7 @@ namespace CommandLine.Commands;
 [Description("Hunt memory dumps for possible ZX fonts")]
 public class HuntCommand : Command<RequiredSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
+    public override Int32 Execute(CommandContext context, RequiredSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         FontHunter.Hunt(files, settings.OutputFolder);

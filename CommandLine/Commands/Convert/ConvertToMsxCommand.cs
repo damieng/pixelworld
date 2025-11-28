@@ -12,7 +12,7 @@ namespace CommandLine.Commands.Convert;
 [Description("Create MSX font from ZX font")]
 public class ConvertToMsxCommand : Command<ConvertSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
+    public override Int32 Execute(CommandContext context, ConvertSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         ConvertTo.Msx(files, Spectrum.UK, settings.OutputFolder, settings.TemplatePath);

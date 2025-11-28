@@ -11,7 +11,7 @@ namespace CommandLine.Commands;
 [Description("Identify fonts that use glyphs from a source font")]
 public class FindMatchingGlyphsCommand :Command<FindMatchingGlyphsSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] FindMatchingGlyphsSettings settings)
+    public override Int32 Execute(CommandContext context, FindMatchingGlyphsSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         Matcher.Match(files, settings.SourceFontFile, settings.MatchGlyphs);

@@ -12,7 +12,7 @@ namespace CommandLine.Commands.Convert;
 [Description("Create Commodore 64 fonts from ZX font")]
 public class ConvertToC64Command : Command<ConvertSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] ConvertSettings settings)
+    public override Int32 Execute(CommandContext context, ConvertSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         ConvertTo.Commodore64(files, Spectrum.UK, settings.OutputFolder, settings.TemplatePath);

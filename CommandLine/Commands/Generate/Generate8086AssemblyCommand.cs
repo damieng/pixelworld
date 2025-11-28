@@ -11,7 +11,7 @@ namespace CommandLine.Commands.Generate;
 [Description("Generate Intel 8086 assembly")]
 public class Generate8086AssemblyCommand : Command<AssemblySettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)
+    public override Int32 Execute(CommandContext context, AssemblySettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         switch (settings.Base)

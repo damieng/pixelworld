@@ -11,7 +11,7 @@ namespace CommandLine.Commands.Generate;
 [Description("Generate Rust header")]
 public class GenerateRustHeaderCommand : Command<TextOutputSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] TextOutputSettings settings)
+    public override Int32 Execute(CommandContext context, TextOutputSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         RustHeaderFontFormatter.CreateFontHeaderConst(files, settings.OutputFolder, settings.Credit);

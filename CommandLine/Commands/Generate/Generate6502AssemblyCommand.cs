@@ -11,7 +11,7 @@ namespace CommandLine.Commands.Generate;
 [Description("Generate MOS 6502 assembly")]
 public class Generate6502AssemblyCommand : Command<AssemblySettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)
+    public override Int32 Execute(CommandContext context, AssemblySettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         switch (settings.Base)

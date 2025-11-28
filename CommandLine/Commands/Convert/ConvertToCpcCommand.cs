@@ -12,7 +12,7 @@ namespace CommandLine.Commands.Convert;
 [Description("Create Amstrad CPC BASIC font from ZX font")]
 public class ConvertToCpcCommand : Command<BasicOutputSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] BasicOutputSettings settings)
+    public override Int32 Execute(CommandContext context, BasicOutputSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         ConvertTo.AmstradCpc(files, Spectrum.UK, settings.OutputFolder, settings.Credit, settings.Line);

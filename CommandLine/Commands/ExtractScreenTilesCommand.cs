@@ -11,7 +11,7 @@ namespace CommandLine.Commands;
 [Description("Dump memory from emulator snapshot")]
 public class ExtractScreenTilesCommand : Command<ExtractTilesSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] ExtractTilesSettings settings)
+    public override Int32 Execute(CommandContext context, ExtractTilesSettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         TileExtractor.Extract(files, settings.OutputFolder, settings.MinTiles, settings.MaxTiles);

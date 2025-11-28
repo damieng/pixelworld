@@ -13,7 +13,7 @@ namespace CommandLine.Commands;
 [Description("Create preview images from ZX font")]
 public class PreviewCommand : Command<PreviewSettings>
 {
-    public override Int32 Execute([NotNull] CommandContext context, [NotNull] PreviewSettings settings)
+    public override Int32 Execute(CommandContext context, PreviewSettings settings)
     {
         foreach (var fileName in Utils.MatchGlobWithFiles(settings.Glob))
         {
