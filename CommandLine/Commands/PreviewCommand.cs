@@ -2,7 +2,6 @@
 using PixelWorld;
 using Spectre.Console.Cli;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using CommandLine.Commands.Settings;
 using PixelWorld.Formatters;

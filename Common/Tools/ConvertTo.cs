@@ -1,16 +1,10 @@
 ﻿using PixelWorld.Fonts;
 using PixelWorld.Formatters;
-using PixelWorld.Machines;
-using PixelWorld.Transformers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Formats.Png;
 
 namespace PixelWorld.Tools;
 

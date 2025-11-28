@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using CommandLine.Commands.Settings;
 using PixelWorld;
 using PixelWorld.Formatters;

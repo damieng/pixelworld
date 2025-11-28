@@ -6,7 +6,6 @@ using SixLabors.ImageSharp;
 using Spectre.Console.Cli;
 using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using SixLabors.ImageSharp.PixelFormats;
 
