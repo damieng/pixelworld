@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.ComponentModel;
 using CommandLine.Commands.Settings;
 using PixelWorld;
 using PixelWorld.Formatters;
@@ -10,21 +10,20 @@ namespace CommandLine.Commands.Generate;
 [Description("Generate Zilog Z80 assembly")]
 public class GenerateZ80AssemblyCommand : Command<AssemblySettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] AssemblySettings settings)
+    public override Int32 Execute(CommandContext context, AssemblySettings settings)
     {
         var files = Utils.MatchGlobWithFiles(settings.Glob);
         switch (settings.Base)
         {
             case NumberBase.Binary:
-                AssemblyFontFormatter.GenZ80AsmBinary(files, settings.OutputFolder, settings.Credit);
+                AssemblyFontFormatter.CreateDefines("z80", "defb ", "%{0:b8}", files, settings.OutputFolder, settings.Credit);
                 break;
+            
             case NumberBase.Decimal:
-                AssemblyFontFormatter.CreateDefines("z80", "defb ", "{0}", files, settings.OutputFolder,
-                    settings.Credit);
+                AssemblyFontFormatter.CreateDefines("z80", "defb ", "{0}", files, settings.OutputFolder, settings.Credit);
                 break;
             default:
-                AssemblyFontFormatter.CreateDefines("z80", "defb ", "&{0:x2}", files, settings.OutputFolder,
-                    settings.Credit);
+                AssemblyFontFormatter.CreateDefines("z80", "defb ", "&{0:x2}", files, settings.OutputFolder, settings.Credit);
                 break;
         }
 

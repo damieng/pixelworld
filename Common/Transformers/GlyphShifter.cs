@@ -1,15 +1,16 @@
-﻿using PixelWorld.Fonts;
+﻿using System;
+using PixelWorld.Fonts;
 
 namespace PixelWorld.Transformers;
 
 public static class GlyphShifter
 {
-    public static Glyph Shift(Glyph source, int horizontal, int vertical, bool wrap, int? newWidth = null, int? newHeight = null)
+    public static Glyph Shift(Glyph source, Int32 horizontal, Int32 vertical, Boolean wrap, Int32? newWidth = null, Int32? newHeight = null)
     {
         var width = newWidth ?? source.Width;
         var height = newHeight ?? source.Height;
 
-        var data = new bool[width, height];
+        var data = new Boolean[width, height];
 
         for (var y = 0; y < source.Height; y++)
         {

@@ -11,21 +11,21 @@ namespace PixelWorld.OffsetFinders;
 /// </summary>
 public static class CandidatesInWindowFinder
 {
-    private const int MinUniqueInWindow = 36;
+    private const Int32 MinUniqueInWindow = 36;
 
-    private class CandidateLocation(int offset, int candidate)
+    private class CandidateLocation(Int32 offset, Int32 candidate)
     {
-        public readonly int Offset = offset;
-        public readonly int Candidate = candidate;
+        public readonly Int32 Offset = offset;
+        public readonly Int32 Candidate = candidate;
     }
 
-    public static List<int> FindOffsets(byte[] buffer, byte[][] candidates)
+    public static List<Int32> FindOffsets(Byte[] buffer, Byte[][] candidates)
     {
         // We don't have enough candidates to even look
-        if (candidates.Length < MinUniqueInWindow) return new List<int>();
+        if (candidates.Length < MinUniqueInWindow) return new List<Int32>();
 
         var end = buffer.Length - Spectrum.FontSize;
-        var ranges = new Dictionary<int, int>();
+        var ranges = new Dictionary<Int32, Int32>();
 
         // This is our rolling window of candidates - we have one for each 'skew' as a matched glyph is
         // only valid on the 8 byte boundary
@@ -85,7 +85,7 @@ public static class CandidatesInWindowFinder
         }
 
         // Okay, we now have a list of ranges and a count of the uniques they contain
-        var offsets = new List<int>();
+        var offsets = new List<Int32>();
         if (ranges.Count < 25)
             offsets.AddRange(ranges.Keys);
         return offsets.ToList();

@@ -9,7 +9,7 @@ namespace CommandLine;
 
 internal static class Program
 {
-    private static void Main(string[] args)
+    private static void Main(String[] args)
     {
         Out.Attach(Console.WriteLine);
 
@@ -29,26 +29,27 @@ internal static class Program
         config.AddCommand<DumpCommand>("dump");
         config.AddCommand<HuntCommand>("hunt");
         config.AddCommand<ExtractScreenTilesCommand>("extracttiles");
+        config.AddCommand<FindMatchingGlyphsCommand>("findmatches");
 
         config.AddCommand<ScreenshotCommand>("screenshot");
         config.AddCommand<PreviewCommand>("preview");
         config.AddCommand<ConvertFromPngCommand>("pngtozx");
         config.AddCommand<ConvertFromC64Command>("c64tozx");
-        config.AddCommand<FindMatchingGlyphsCommand>("findmatches");
 
-        config.AddCommand<GenerateZ80AssemblyCommand>("z80asm");
+        config.AddCommand<ConvertToAtari8BitCommand>("zxtoa8");
+        config.AddCommand<ConvertToC64Command>("zxtoc64");
+        config.AddCommand<ConvertToCoVgaCommand>("zxtoccv");
+        config.AddCommand<ConvertToCpcCommand>("zxtocpc");
+        config.AddCommand<ConvertToFzxCommand>("zxtofzx");
+        config.AddCommand<ConvertToGbStudioCommand>("zxtogbs");
+        config.AddCommand<ConvertToMsxCommand>("zxtomsx");
+        config.AddCommand<ConvertToUfoCommand>("zxtoufo");
+
         config.AddCommand<Generate6502AssemblyCommand>("6502asm");
         config.AddCommand<Generate68000AssemblyCommand>("68000asm");
-        config.AddCommand<Generate8086AssemblyCommand>("x86asm");
         config.AddCommand<GenerateCHeaderCommand>("chead");
         config.AddCommand<GenerateRustHeaderCommand>("rusthead");
-
-        config.AddCommand<ConvertToFzxCommand>("zxtofzx");
-        config.AddCommand<ConvertToC64Command>("zxtoc64");
-        config.AddCommand<ConvertToMsxCommand>("zxtomsx");
-        config.AddCommand<ConvertToCpcCommand>("zxtocpc");
-        config.AddCommand<ConvertToAtari8BitCommand>("zxtoa8");
-        config.AddCommand<ConvertToUfoCommand>("zxtoufo");
-        config.AddCommand<ConvertToGbStudioCommand>("zxtogbs");
+        config.AddCommand<Generate8086AssemblyCommand>("x86asm");
+        config.AddCommand<GenerateZ80AssemblyCommand>("z80asm");
     }
 }

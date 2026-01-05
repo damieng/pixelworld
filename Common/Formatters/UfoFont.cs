@@ -1,4 +1,5 @@
-﻿using PixelWorld.Fonts;
+﻿using System;
+using PixelWorld.Fonts;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -7,7 +8,7 @@ namespace PixelWorld.Formatters;
 
 public static class UfoFontFormatter
 {
-    private static readonly Dictionary<char, string> CharToName = new()
+    private static readonly Dictionary<Char, String> CharToName = new()
     {
         { ' ', "space" },
         { '!', "exclam" },
@@ -110,7 +111,7 @@ public static class UfoFontFormatter
 
     private static readonly XmlWriterSettings XmlWriterSettings = new() { Indent = true, NewLineChars = "\n" };
 
-    public static void Write(Font font, string path)
+    public static void Write(Font font, String path)
     {
         var basePath = Path.Join(path, "glyphs");
         Directory.CreateDirectory(basePath);
@@ -137,7 +138,7 @@ public static class UfoFontFormatter
         {
             var name = CharToName[key];
             nameAttribute.Value = name;
-            hexAttribute.Value = ((int)key).ToString("X4");
+            hexAttribute.Value = ((Int32)key).ToString("X4");
             outlineElement.RemoveAll();
 
             for (var y = 0; y < glyphData.Height; y++)
@@ -156,7 +157,7 @@ public static class UfoFontFormatter
 
         return;
 
-        void WriteDoc(string glyphName)
+        void WriteDoc(String glyphName)
         {
             if (glyphName.Length == 1 && char.IsUpper(glyphName[0]))
                 glyphName += "_";
@@ -172,7 +173,7 @@ public static class UfoFontFormatter
             return pixelComponent;
         }
 
-        XmlAttribute CreateAttribute(string name, string value)
+        XmlAttribute CreateAttribute(String name, String value)
         {
             var attr = doc.CreateAttribute(name);
             attr.Value = value;

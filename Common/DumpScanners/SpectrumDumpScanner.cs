@@ -1,4 +1,5 @@
-﻿using PixelWorld.Display;
+﻿using System;
+using PixelWorld.Display;
 using PixelWorld.Formatters;
 using PixelWorld.Machines;
 using PixelWorld.OffsetFinders;
@@ -12,7 +13,7 @@ namespace PixelWorld.DumpScanners;
 
 public static class SpectrumDumpScanner
 {
-    public static List<Font> Read(BinaryReader reader, string name)
+    public static List<Font> Read(BinaryReader reader, String name)
     {
         var buffer = reader.ReadBytes(1024 * 2048); // 2MB is enough for any Speccy
 
@@ -26,7 +27,7 @@ public static class SpectrumDumpScanner
         return fonts;
     }
 
-    private static IEnumerable<int> GetOffsets(byte[] buffer)
+    private static IEnumerable<Int32> GetOffsets(Byte[] buffer)
     {
         var address = buffer.Length == 65536 ? 16384 : 0;
         var candidates = SpectrumDisplay.GetCandidates(buffer, address);
@@ -36,13 +37,13 @@ public static class SpectrumDumpScanner
         var scr = CandidatesInWindowFinder.FindOffsets(buffer, candidates);
         var heu = GeneralHeuristicFinder.FindOffsets(buffer);
 
-        var offsets = new List<int>();
+        var offsets = new List<Int32>();
         offsets.AddRange(rst);
         offsets.AddRange(rom);
         offsets.AddRange(scr);
         offsets.AddRange(heu);
 
-        var dupes = new HashSet<int>(offsets
+        var dupes = new HashSet<Int32>(offsets
             .GroupBy(o => o)
             .Where(o => o.Count() > 1)
             .Select(g => g.Key));
@@ -52,10 +53,10 @@ public static class SpectrumDumpScanner
         OutFinderDetail(scr, "SCREEN$ Tiles", dupes);
         OutFinderDetail(heu, "Heuristics", dupes);
 
-        return new HashSet<int>(offsets);
+        return new HashSet<Int32>(offsets);
     }
 
-    public static void OutFinderDetail(List<int> offsets, string method, HashSet<int> dupes)
+    public static void OutFinderDetail(List<Int32> offsets, String method, HashSet<Int32> dupes)
     {
         if (offsets.Count <= 0) return;
 
@@ -63,12 +64,12 @@ public static class SpectrumDumpScanner
         Out.Write($"  {method} found offsets ({uniques} uniques) {string.Join(", ", offsets)}");
     }
 
-    public static bool IsMissingTooManyGlyphs(byte[] buffer, int offset)
+    public static Boolean IsMissingTooManyGlyphs(Byte[] buffer, Int32 offset)
     {
         return buffer.CountBlankGlyphs(offset, Spectrum.FontSize, 8) > 26;
     }
 
-    public static bool IsRomFont(byte[] buffer, int offset)
+    public static Boolean IsRomFont(Byte[] buffer, Int32 offset)
     {
         var sha1 = SHA384.Create().ComputeHash(buffer, offset, Spectrum.FontSize);
         return sha1.ToHex() ==

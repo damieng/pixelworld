@@ -5,5 +5,5 @@ namespace PixelWorld.BinarySource;
 
 public interface IBinarySource
 {
-    ArraySegment<byte> GetMemory(Stream source);
+    ArraySegment<Byte> GetMemory(Stream source);
 }

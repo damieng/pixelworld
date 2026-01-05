@@ -8,7 +8,7 @@ namespace PixelWorld.Formatters;
 
 public static class RustHeaderFontFormatter
 {
-    public static void CreateFontHeaderConst(List<string> fileNames, string outputFolder, string credit)
+    public static void CreateFontHeaderConst(List<String> fileNames, String outputFolder, String credit)
     {
         foreach (var fileName in fileNames)
         {
@@ -33,7 +33,7 @@ public static class RustHeaderFontFormatter
                     for (var x = 0; x < charWidth; x++)
                     {
                         if (glyph.Value.Data[x, y])
-                            b |= (byte)(1 << charWidth - 1 - x);
+                            b |= (Byte)(1 << charWidth - 1 - x);
                     }
                     if (y > 0) output.Append(", ");
                     output.Append($"0x{b:x2}");

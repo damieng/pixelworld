@@ -15,7 +15,7 @@ public static class ConvertToGameBoy
 {
     private static readonly PngEncoder gbPngEncoder = new() {ColorType = PngColorType.Palette};
 
-    public static void GbStudio(List<string> fileNames, IReadOnlyDictionary<int, char> sourceCharset, string outputFolder, bool dark, bool proportional)
+    public static void GbStudio(List<String> fileNames, IReadOnlyDictionary<Int32, Char> sourceCharset, String outputFolder, Boolean dark, Boolean proportional)
     {
         foreach (var fileName in fileNames)
         {
@@ -54,7 +54,7 @@ public static class ConvertToGameBoy
         }
     }
 
-    private record GBJson(string name)
+    private record GBJson(String name)
     {
         public Object mapping = new { };
     };

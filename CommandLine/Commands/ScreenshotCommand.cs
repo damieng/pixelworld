@@ -6,7 +6,6 @@ using SixLabors.ImageSharp;
 using Spectre.Console.Cli;
 using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -15,7 +14,7 @@ namespace CommandLine.Commands;
 [Description("Create screenshots from memory dump or emulator snapshot")]
 public class ScreenshotCommand : Command<ScreenshotSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] ScreenshotSettings settings)
+    public override Int32 Execute(CommandContext context, ScreenshotSettings settings)
     {
         var fileNames = Utils.MatchGlobWithFiles(settings.Glob);
         foreach (var fileName in fileNames)
@@ -28,9 +27,9 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
         return 0;
     }
 
-    private const int FlashDelay = 64;
+    private const Int32 FlashDelay = 64;
 
-    private static bool WriteScreenToDisk(string fileName, ArraySegment<byte> memory, ScreenshotSettings settings)
+    private static Boolean WriteScreenToDisk(String fileName, ArraySegment<Byte> memory, ScreenshotSettings settings)
     {
         var address = settings.Address ?? (memory.Count == 49152 ? 0 : 16384);
         if (settings.Png || settings.Webp)
@@ -50,7 +49,7 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
         return true;
     }
 
-    private static void WriteScr(string sourceName, ArraySegment<byte> memory, ScreenshotSettings settings, int address)
+    private static void WriteScr(String sourceName, ArraySegment<Byte> memory, ScreenshotSettings settings, Int32 address)
     {
         var targetName = Utils.MakeFileName(sourceName, "scr", settings.OutputFolder);
         Out.Write($"  Screenshotting {sourceName} @ {address} to {targetName}");
@@ -58,7 +57,7 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
         File.WriteAllBytes(targetName, screenBuffer);
     }
 
-    private static void WriteGif(string sourceName, ArraySegment<byte> memory, ScreenshotSettings settings, int address)
+    private static void WriteGif(String sourceName, ArraySegment<Byte> memory, ScreenshotSettings settings, Int32 address)
     {
         var targetName = Utils.MakeFileName(sourceName, "gif", settings.OutputFolder);
         Out.Write($"  Screenshotting {sourceName} @ {address} to {targetName}");
@@ -71,14 +70,14 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
         animated.SaveAsGif(targetName);
     }
 
-    private static void WritePng(string sourceName, Image<Rgb24> image, ScreenshotSettings settings, int address)
+    private static void WritePng(String sourceName, Image<Rgb24> image, ScreenshotSettings settings, Int32 address)
     {
         var targetName = Utils.MakeFileName(sourceName, "png", settings.OutputFolder);
         Out.Write($"  Screenshotting {sourceName} @ {address} to {targetName}");
         image.SaveAsPng(targetName);
     }
 
-    private static void WriteWebp(string sourceName, Image<Rgb24> image, ScreenshotSettings settings, int address)
+    private static void WriteWebp(String sourceName, Image<Rgb24> image, ScreenshotSettings settings, Int32 address)
     {
         var targetName = Utils.MakeFileName(sourceName, "webp", settings.OutputFolder);
         Out.Write($"  Screenshotting {sourceName} @ {address} to {targetName}");

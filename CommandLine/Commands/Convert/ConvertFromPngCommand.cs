@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using CommandLine.Commands.Settings;
 using PixelWorld;
@@ -13,7 +13,7 @@ namespace CommandLine.Commands.Convert;
 [Description("Create ZX font from PNG preview")]
 public class ConvertFromPngCommand : Command<RequiredSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
+    public override Int32 Execute(CommandContext context, RequiredSettings settings)
     {
         foreach (var fileName in Utils.MatchGlobWithFiles(settings.Glob))
             ConvertFromImage(settings, fileName);
@@ -21,7 +21,7 @@ public class ConvertFromPngCommand : Command<RequiredSettings>
         return 0;
     }
 
-    private static void ConvertFromImage(RequiredSettings settings, string fileName)
+    private static void ConvertFromImage(RequiredSettings settings, String fileName)
     {
         var name = Path.GetFileNameWithoutExtension(fileName);
         Out.Write($"Generating ch8 file from {fileName}");

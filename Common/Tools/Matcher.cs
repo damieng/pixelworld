@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using PixelWorld.Formatters;
 using PixelWorld.Machines;
@@ -7,7 +8,7 @@ namespace PixelWorld.Tools;
 
 public static class Matcher
 {
-    public static void Match(List<string> fileNames, string matchFile, string matchGlyphs)
+    public static void Match(List<String> fileNames, String matchFile, String matchGlyphs)
     {
         Out.Write($"Reading match file {matchFile}");
         using var matchReader = new BinaryReader(File.OpenRead(matchFile));

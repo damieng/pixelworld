@@ -14,7 +14,7 @@ public enum NumberBase
 
 public sealed class NumberBaseConverter : TypeConverter
 {
-    private static readonly Dictionary<string, NumberBase> lookup =
+    private static readonly Dictionary<String, NumberBase> lookup =
         new(StringComparer.OrdinalIgnoreCase)
         {
             {"hex", NumberBase.Hex},
@@ -25,11 +25,11 @@ public sealed class NumberBaseConverter : TypeConverter
             {"2", NumberBase.Binary}
         };
 
-    public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+    public override Object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, Object value)
     {
-        if (value is not string stringValue) throw new NotSupportedException("Can't convert value to number base.");
-        if (!lookup.TryGetValue(stringValue, out var numberBase))
-            throw new InvalidOperationException($"The value '{value}' is not a number base.");
-        return numberBase;
+        if (value is not String stringValue) throw new NotSupportedException("Can't convert value to number base.");
+        return lookup.TryGetValue(stringValue, out var numberBase)
+            ? numberBase
+            : throw new InvalidOperationException($"The value '{value}' is not a number base.");
     }
 }

@@ -4,9 +4,9 @@ namespace PixelWorld.BinarySource;
 
 public abstract class SpectrumBinarySource
 {
-    private static readonly int[] mappablePages = [0, 2, 6, 8, 12, 14];
+    private static readonly Int32[] mappablePages = [0, 2, 6, 8, 12, 14];
 
-    protected static ArraySegment<byte> Setup128KMemory(byte[][] ramBanks, byte port7ffd)
+    protected static ArraySegment<Byte> Setup128KMemory(Byte[][] ramBanks, Byte port7ffd)
     {
         Out.Write("  Loading as ZX Spectrum 128K");
 
@@ -18,7 +18,7 @@ public abstract class SpectrumBinarySource
             extraSpace = 32;
         }
 
-        var memory = new byte[(extraSpace + 128) * 1024]; // Leave first 16KB ROM blank
+        var memory = new Byte[(extraSpace + 128) * 1024]; // Leave first 16KB ROM blank
 
         CopyBank(ramBanks, 10, memory, 0x4000);
         CopyBank(ramBanks, 04, memory, 0x8000);
@@ -34,16 +34,16 @@ public abstract class SpectrumBinarySource
             }
         }
 
-        return new ArraySegment<byte>(memory);
+        return new ArraySegment<Byte>(memory);
     }
 
-    protected static void CopyBank(byte[][] ramBanks, int bank, byte[] ram, int address)
+    protected static void CopyBank(Byte[][] ramBanks, Int32 bank, Byte[] ram, Int32 address)
     {
         Array.Copy(ramBanks[bank], 0, ram, address, 8192);
         Array.Copy(ramBanks[bank + 1], 0, ram, address + 8192, 8192);
     }
 
-    protected static int GetC800RamBank(int out7ffd)
+    protected static Int32 GetC800RamBank(Int32 out7ffd)
     {
         return (out7ffd & 0x07) * 2;
     }

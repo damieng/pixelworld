@@ -26,13 +26,13 @@ public class ZXSnaBinarySource : SpectrumBinarySource, IBinarySource
         catch (Exception e)
         {
             Out.Write($"  Unable to process {e.Message}");
-            return new ArraySegment<byte>();
+            return new ArraySegment<Byte>();
         }
     }
 
-    private static ArraySegment<byte> Setup48KMemory(SNA_48K snapshot)
+    private static ArraySegment<Byte> Setup48KMemory(SNA_48K snapshot)
     {
         Out.Write("  Loading as ZX Spectrum 48K");
-        return new ArraySegment<byte>(snapshot.RAM);
+        return new ArraySegment<Byte>(snapshot.RAM);
     }
 }

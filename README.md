@@ -8,14 +8,14 @@ It also contains bulk-ripping `dump` and `hunt` commands for obtaining ZX Spectr
 
 ## Commands
 
-### Ripping
+### Extraction
 
 - `dump` to RAM-dump snapshot files (currently supports `.z80` and `.sna` and recurses through `.zip` archives)
 - `hunt` to look through RAM dumps for possible bitmap fonts (currently supports only ZX Spectrum fonts)
 - `screenshot` to create a screenshots from RAM-dumps or snapshot files (in PNG, SCR or animated GIF format)
 - `extracttiles` to create a files with unique 8x8 character tiles found on the screen in RAM-dumps or snapshot files
 
-### Conversions
+### Conversion
 
 The following commands work with ZX Spectrum RAW 768 byte/.ch8 files:
 
@@ -23,27 +23,35 @@ The following commands work with ZX Spectrum RAW 768 byte/.ch8 files:
 - `pngtozx` to convert a `.png` back to a ZX Spectrum `.ch8`
 - `c64tozx` to create a ZX Spectrum `.ch8` file from a C64 binary file
 
-Any of the following assembly generating commands can use the `--base hex|decimal` flags. The z80 one can also use `--base binary`.
+You can also generate directly-usable files (all binary except the CPC)
 
-- `z80asm` to create Zilog Z80 assembler source with `defb` hex
-- `x86asm` to create Intel 8086 assembler source with `db` hex
+- `zxtoa8` to create a `.fnt` binary version for the Atari 8-bit series
+- `zxtoc64` to create `.c64` and `.bin` binary ROM versions for the Commodore 64
+- `zxtoccv` to create a `.chr` binary version for the CoCoVGA adapter
+- `zxtocpc` to create a `.bas` BASIC file for use with the Amstrad CPC range
+- `zxtofzx` to create a fixed-width `.fzx` font for the FZX renderer
+- `zxtofzx --proportional` to create a proportional `.fzx` by auto left aligning and measuring widths
+- `zxtogbs` to create a `.gbs` binary version for GameBoy Studio
+- `zxtomsx` to create a `.msx` binary version for the MSX range
+- `zxtoufo` to create a `.ufo` UFO font file for various tools and editors
+
+### Source generation
+
+You can convert ZX Spectrum RAW 768 byte/.ch8 files to a variety of assembly and header file formats.
+
+The following assembly generating commands can use the `--base hex|decimal` flags. The z80 one can also use `--base binary`.
+
 - `6502asm` to create MOS 6502 assembler source with `.byte` hex
 - `68000asm` to create Motorola 68000 assembler source with `DB.B` hex
+- `x86asm` to create Intel 8086 assembler source with `db` hex
+- `z80asm` to create Zilog Z80 assembler source with `defb` hex
 
 And the header-generating commands:
 
 - `chead` to generate C-compatible header files
 - `rusthead` to generate Rust-compatible header files
 
-You can also generate directly-usable files (all binary except the CPC)
-
-- `zxtofzx` to create a fixed-width `.fzx` 
-- `zxtofzx --proportional` to create a proportional `.fzx` by auto left aligning and measuring widths
-- `zxtocbm` to create `.c64` and `.bin` binary ROM versions for the Commodore 64
-- `zxtoa8` to create a `.fnt` binary version for the Atari 8-bit series
-- `zxtocpc` to create a `.bas` BASIC file for use with the Amstrad CPC range
-
-### Comparisons
+### Comparison
 
 - `findmatches` to find glyphs from a source font in as many possible target .ch8 files
 
@@ -80,6 +88,7 @@ Some [template files are necessary for the conversions](https://github.com/damie
 - `atari8.fnt` - A dump of the Atari system font that includes all the symbols characters etc.
 - `c64-both.c64` - A dump of the Commodore 64 upper+lower case
 - `c64-upper.c64` - A dump of the Commodore 64 upper case + symbols
+- `cocovga.chr` - A dump of the CoCoVGa font (3082 bytes)
 
 ## Example usage
 

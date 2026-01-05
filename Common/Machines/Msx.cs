@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PixelWorld.Machines;
 
 public static class Msx
 {
-    public static IReadOnlyDictionary<int, char> International { get; } = (
+    public static IReadOnlyDictionary<Int32, Char> International { get; } = (
         " !\"#$%&'()*+,-./0123456789:;<=>?" +
         "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_" +
         "`abcdefghijklmnopqrstuvwxyz{|}~▵" +
@@ -14,7 +15,7 @@ public static class Msx
         "αßΓπΣσµτΦΘΩδ∞⌀∈∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
     ).ToIndexedDictionary();
 
-    public static int FontSize => 2048;
+    public static Int32 FontSize => 2048;
 
-    public static string Extension => "fnt";
+    public static String Extension => "fnt";
 }

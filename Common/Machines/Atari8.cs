@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PixelWorld.Machines;
 
 public static class Atari8
 {
-    public static IReadOnlyDictionary<int, char> US {get; } = (
+    public static IReadOnlyDictionary<Int32, Char> US {get; } = (
         " !\"#$%&'()*+,-./0123456789:;<=>?" +
         "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_" +
         "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" +
         "\0abcdefghijklmnopqrstuvwxyz"
     ).ToIndexedDictionary();
 
-    public static int FontSize => 1024;
+    public static Int32 FontSize => 1024;
 
-    public static string Extension => "fnt";
+    public static String Extension => "fnt";
 }

@@ -8,7 +8,7 @@ namespace PixelWorld.Formatters;
 
 public static class FzxFontFormatter
 {
-    public static void Write(Font font, Stream output, bool makeProportional = false)
+    public static void Write(Font font, Stream output, Boolean makeProportional = false)
     {
         if (makeProportional)
             font = FontSpacer.MakeProportional(font, 0, 0, maxWidth: 16);
@@ -16,12 +16,12 @@ public static class FzxFontFormatter
         using var writer = new BinaryWriter(output);
 
         // Header
-        writer.Write((byte) font.Height);
-        writer.Write((byte) (makeProportional ? 1 : 0));
-        writer.Write((byte) 127); // Hard-coded to 7F/end of 7-bit ASCII
+        writer.Write((Byte) font.Height);
+        writer.Write((Byte) (makeProportional ? 1 : 0));
+        writer.Write((Byte) 127); // Hard-coded to 7F/end of 7-bit ASCII
 
         // Figure out how many leading blank rows per char
-        var blankRows = new Dictionary<char, Tuple<int, int>>();
+        var blankRows = new Dictionary<Char, Tuple<Int32, Int32>>();
         foreach (var glyph in font.Glyphs)
             blankRows[glyph.Key] = CountTopAndBottomBlankRows(glyph.Value);
 
@@ -41,7 +41,7 @@ public static class FzxFontFormatter
             writer.Write((UInt16) relativeOffset);
 
             dataOffset += glyph.Value.Height - blanks.Item1 - blanks.Item2;
-            writer.Write((byte) ((shift << 4) | (glyph.Value.Width - 1)));
+            writer.Write((Byte) ((shift << 4) | (glyph.Value.Width - 1)));
         }
 
         // The "final word" is the relative offset to the end of data
@@ -58,7 +58,7 @@ public static class FzxFontFormatter
                 for (var x = 0; x < glyph.Value.Width; x++)
                 {
                     if (glyph.Value.Data[x, y])
-                        b |= (byte) (1 << 8 - x - 1);
+                        b |= (Byte) (1 << 8 - x - 1);
                 }
 
                 writer.Write(b);
@@ -66,7 +66,7 @@ public static class FzxFontFormatter
         }
     }
 
-    private static Tuple<int, int> CountTopAndBottomBlankRows(Glyph glyph)
+    private static Tuple<Int32, Int32> CountTopAndBottomBlankRows(Glyph glyph)
     {
         var top = 0;
         var topY = 0;

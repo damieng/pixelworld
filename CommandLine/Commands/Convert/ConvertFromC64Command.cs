@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using CommandLine.Commands.Settings;
 using PixelWorld;
@@ -12,7 +12,7 @@ namespace CommandLine.Commands.Convert;
 [Description("Create ZX font from Commodore 64 font")]
 public class ConvertFromC64Command : Command<RequiredSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] RequiredSettings settings)
+    public override Int32 Execute(CommandContext context, RequiredSettings settings)
     {
         foreach (var fileName in Utils.MatchGlobWithFiles(settings.Glob))
             ConvertFromC64(settings, fileName);
@@ -20,7 +20,7 @@ public class ConvertFromC64Command : Command<RequiredSettings>
         return 0;
     }
 
-    private static void ConvertFromC64(RequiredSettings settings, string fileName)
+    private static void ConvertFromC64(RequiredSettings settings, String fileName)
     {
         Out.Write($"Generating ch8 file from {fileName}");
 

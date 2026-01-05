@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SixLabors.ImageSharp;
 
 namespace PixelWorld.Machines;
 
 public static class GameBoy
 {
-    public static IReadOnlyDictionary<int, char> Studio { get; } = (
+    public static IReadOnlyDictionary<Int32, Char> Studio { get; } = (
         " !\"#$%&'()*+,-./" +
         "0123456789:;<=>?" +
         "@ABCDEFGHIJKLMNO" +
