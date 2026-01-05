@@ -38,6 +38,64 @@ public static class ConvertTo
         }
     }
 
+    public static void CoCoVGA(List<String> fileNames, IReadOnlyDictionary<Int32, Char> sourceCharset, String outputFolder,
+        String templatePath)
+    {
+        var templateFilename = Path.Combine(templatePath, "cocovga.chr");
+        Out.Write($"Using template {templateFilename}");
+        var buffer = File.ReadAllBytes(templateFilename);
+        if (buffer.Length != 3082) throw new Exception($"Template file {templateFilename} is not 3082 bytes");
+
+        // Create an array of a-z
+        var lower = @"£abcdefghijklmnopqrstuvwxyz{|}~©".ToCharArray();
+        var upper = @"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_".ToCharArray();
+        var symbols = " !\"#$%&'()*+,-./0123456789:;<=>?".ToCharArray();
+
+        foreach (var sourceFileName in fileNames)
+        {
+            var targetFileName = Utils.MakeFileName(sourceFileName, "chr", outputFolder);
+            Out.Write($"Converting file {sourceFileName} to {targetFileName}");
+            var sourceFont = ByteFontFormatter.Load(sourceFileName, sourceCharset);
+
+            using var target = File.Create(targetFileName);
+            var index = 0;
+
+            WriteGlyphs(lower, false);
+            WriteGlyphs(symbols, true);
+            WriteGlyphs(upper, false);
+            WriteGlyphs(symbols, false);
+
+            target.Write(buffer);
+
+            void WriteGlyphs(Char[] chars, bool inverted)
+            {
+                foreach (var c in chars)
+                {
+                    var glyph = sourceFont.Glyphs[c];
+                    var charOffset = 5 + index * 12;
+
+                    for (var y = 0; y < 8; y++)
+                    {
+                        Byte rowData = 0;
+                        for (var x = 0; x < 8; x++)
+                        {
+                            if (glyph.Data[x, y])
+                            {
+                                rowData |= (Byte)(1 << (7 - x));
+                            }
+                        }
+
+                        if (inverted) rowData = (Byte)~rowData;
+                        // +2 for vertical centering
+                        buffer[charOffset + 2 + y] = rowData;
+                    }
+
+                    index++;
+                }
+            }
+        }
+    }
+
     public static void Fzx(List<String> fileNames, IReadOnlyDictionary<Int32, Char> charset, Boolean makeProportional,
         String outputFolder)
     {
@@ -75,17 +133,17 @@ public static class ConvertTo
                 switch (key)
                 {
                     case '©':
-                        WriteSymbolLine(output, 164, value);
+                        WriteSymbolLine(164, value);
                         break;
                     default:
-                        WriteSymbolLine(output, key, value);
+                        WriteSymbolLine(key, value);
                         break;
                 }
             }
 
             File.WriteAllText(targetFileName, output.ToString());
 
-            void WriteSymbolLine(StringBuilder output, Int32 charIdx, Glyph glyph)
+            void WriteSymbolLine(Int32 charIdx, Glyph glyph)
             {
                 output.Append($"{line += 10} SYMBOL {charIdx},{string.Join(',', MakeList(glyph.Data))}\r\n");
             }
@@ -166,7 +224,7 @@ public static class ConvertTo
                 ByteFontFormatter.Write(sourceFont, memoryStream, charset, 128, i => new ArraySegment<Byte>(template, i, 8));
 
                 using var targetFile = File.Create(targetFileName);
-                targetFile.Write(new Byte[] { 0x00, 0x38 }); // 64C header
+                targetFile.Write("\08"u8); // 64C header
                 memoryStream.WriteTo(targetFile);
                 memoryStream.WriteTo(characterRom);
 
