@@ -39,7 +39,7 @@ public static class CHeaderFontFormatter
                     for (var x = 0; x < charWidth; x++)
                     {
                         if (glyph.Value.Data[x, y])
-                            b |= (Byte)(1 << charWidth - 1 - x);
+                            b |= (Byte)(1 << 7 - x);
                     }
                     if (y > 0) output.Append(", ");
                     output.Append($"0x{b:x2}");

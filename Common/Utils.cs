@@ -25,9 +25,9 @@ public static class Utils
 
     public static Byte[] ReadAllBytes(this Stream stream)
     {
-        var memory = new MemoryStream();
+        using var memory = new MemoryStream();
         stream.CopyTo(memory);
-        return memory.GetBuffer();
+        return memory.ToArray();
     }
 
     public static String MakeFileName(String fileName, String extension, String folder)

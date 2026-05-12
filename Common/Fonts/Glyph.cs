@@ -52,7 +52,7 @@ public class Glyph(Int32 width, Int32 height, Boolean[,] data) : IEquatable<Glyp
     {
         for (var y = 0; y < Height; y++)
         for (var x = 0; x < Width; x++)
-            if (Data[y,x])
+            if (Data[x, y])
                 return false;
         return true;
     }
