@@ -9,7 +9,7 @@ namespace CommandLine;
 
 internal static class Program
 {
-    private static void Main(String[] args)
+    private static Int32 Main(String[] args)
     {
         Out.Attach(Console.WriteLine);
 
@@ -21,7 +21,7 @@ internal static class Program
             AddCommands(config);
         });
 
-        app.Run(args);
+        return app.Run(args);
     }
 
     private static void AddCommands(IConfigurator config)
