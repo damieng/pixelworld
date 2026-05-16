@@ -13,7 +13,7 @@ public static class FzxFontFormatter
         if (makeProportional)
             font = FontSpacer.MakeProportional(font, 0, 0, maxWidth: 16);
 
-        using var writer = new BinaryWriter(output);
+        using var writer = new BinaryWriter(output, System.Text.Encoding.UTF8, true);
 
         // Header
         writer.Write((Byte) font.Height);
