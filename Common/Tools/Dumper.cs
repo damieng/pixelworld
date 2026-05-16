@@ -73,7 +73,7 @@ public static class Dumper
 
         Out.Write($"  Dumping {fileName} to {newFileName}");
 
-        File.WriteAllBytes(newFileName, dump.Array);
+        File.WriteAllBytes(newFileName, dump.Array.AsSpan(dump.Offset, dump.Count).ToArray());
         return true;
     }
 }

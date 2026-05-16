@@ -53,4 +53,16 @@ public class FontTests
 
         Assert.NotEqual(font1, font2);
     }
+
+    [Fact]
+    public void Font_Equals_SameGlyphsDifferentKeys_ReturnsFalse()
+    {
+        var font1 = new Font("Test", 8);
+        font1.Glyphs['A'] = new Glyph(8, 8, new bool[8, 8]);
+
+        var font2 = new Font("Test", 8);
+        font2.Glyphs['B'] = new Glyph(8, 8, new bool[8, 8]);
+
+        Assert.NotEqual(font1, font2);
+    }
 }

@@ -72,11 +72,11 @@ public class ByteArrayExtensionsTests
     }
 
     [Fact]
-    public void PixelCount_CountsCorrectPixels()
+    public void PixelCount_CountsPixelsAtCorrectGlyphOffset()
     {
-        var buffer = new byte[16];
-        buffer[0] = 0b00001111;
-        var count = buffer.PixelCount(0, ' ');
+        var buffer = new byte[300];
+        buffer[8] = 0b00001111; // '!' is char 33, glyph starts at (33-32)*8 = 8
+        var count = buffer.PixelCount(0, '!');
         Assert.Equal(4, count);
     }
 }

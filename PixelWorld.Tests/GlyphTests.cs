@@ -89,4 +89,31 @@ public class GlyphTests
         Assert.Equal(5, glyph.Width);
         Assert.Equal(8, glyph.Height);
     }
+
+    [Fact]
+    public void GetRowByte_EncodesLeftmostPixelAsBit7()
+    {
+        var data = new bool[8, 8];
+        data[0, 0] = true;
+        data[7, 0] = true;
+        var glyph = new Glyph(8, 8, data);
+        Assert.Equal(0b10000001, glyph.GetRowByte(0));
+    }
+
+    [Fact]
+    public void GetRowByte_EmptyRow_ReturnsZero()
+    {
+        var glyph = new Glyph(8, 8, new bool[8, 8]);
+        Assert.Equal(0, glyph.GetRowByte(0));
+    }
+
+    [Fact]
+    public void GetRowByte_NarrowGlyph_OnlySetsLeftBits()
+    {
+        var data = new bool[5, 8];
+        data[0, 0] = true;
+        data[4, 0] = true;
+        var glyph = new Glyph(5, 8, data);
+        Assert.Equal(0b10001000, glyph.GetRowByte(0));
+    }
 }

@@ -72,4 +72,13 @@ public class Glyph(Int32 width, Int32 height, Boolean[,] data) : IEquatable<Glyp
                 return false;
         return true;
     }
+
+    public Byte GetRowByte(Int32 y)
+    {
+        var b = new Byte();
+        for (var x = 0; x < Width; x++)
+            if (Data[x, y])
+                b |= (Byte)(1 << (7 - x));
+        return b;
+    }
 }

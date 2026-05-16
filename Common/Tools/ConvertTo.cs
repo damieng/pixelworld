@@ -60,14 +60,14 @@ public static class ConvertTo
             using var target = File.Create(targetFileName);
             var index = 0;
 
-            WriteGlyphs(lower, false);
+            WriteGlyphs(lower);
             WriteGlyphs(symbols, true);
-            WriteGlyphs(upper, false);
-            WriteGlyphs(symbols, false);
+            WriteGlyphs(upper);
+            WriteGlyphs(symbols);
 
             target.Write(buffer);
 
-            void WriteGlyphs(Char[] chars, bool inverted)
+            void WriteGlyphs(Char[] chars, bool inverted = false)
             {
                 foreach (var c in chars)
                 {
@@ -76,17 +76,8 @@ public static class ConvertTo
 
                     for (var y = 0; y < 8; y++)
                     {
-                        Byte rowData = 0;
-                        for (var x = 0; x < 8; x++)
-                        {
-                            if (glyph.Data[x, y])
-                            {
-                                rowData |= (Byte)(1 << (7 - x));
-                            }
-                        }
-
+                        var rowData = glyph.GetRowByte(y);
                         if (inverted) rowData = (Byte)~rowData;
-                        // +2 for vertical centering
                         buffer[charOffset + 2 + y] = rowData;
                     }
 
@@ -145,25 +136,15 @@ public static class ConvertTo
 
             void WriteSymbolLine(Int32 charIdx, Glyph glyph)
             {
-                output.Append($"{line += 10} SYMBOL {charIdx},{string.Join(',', MakeList(glyph.Data))}\r\n");
+                output.Append($"{line += 10} SYMBOL {charIdx},{string.Join(',', MakeList(glyph))}\r\n");
             }
         }
 
-        Int32[] MakeList(Boolean[,] data)
+        Int32[] MakeList(Glyph glyph)
         {
             var results = new Int32[8];
             for (var y = 0; y < 8; y++)
-            {
-                var b = new Byte();
-                for (var x = 0; x < 8; x++)
-                {
-                    if (data[x, y])
-                        b |= (Byte)(1 << 8 - 1 - x);
-                }
-
-                results[y] = b;
-            }
-
+                results[y] = glyph.GetRowByte(y);
             return results;
         }
     }

@@ -1,6 +1,5 @@
 ﻿using SixLabors.ImageSharp.PixelFormats;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -52,8 +51,8 @@ public class Font(String name, Int32 height = 8) : IEquatable<Font>
                && (ReferenceEquals(this, other) || string.Equals(Name, other.Name)
                    && Height == other.Height
                    && Glyphs.Count == other.Glyphs.Count
-                   && ((IStructuralEquatable)Glyphs.Values.ToArray()).Equals(other.Glyphs.Values.ToArray(),
-                       StructuralComparisons.StructuralEqualityComparer));
+                   && Glyphs.All(kvp => other.Glyphs.TryGetValue(kvp.Key, out var otherGlyph)
+                       && kvp.Value.Equals(otherGlyph)));
     }
 
     public override Boolean Equals(Object? obj)

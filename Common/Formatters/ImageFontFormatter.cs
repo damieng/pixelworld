@@ -47,7 +47,7 @@ public static class ImageFontFormatter
             {
                 var data = new Boolean[CharWidth, CharHeight];
                 for (var y = 0; y < CharHeight; y++)
-                for (var x = 0; x < CharHeight; x++)
+                for (var x = 0; x < CharWidth; x++)
                     data[x, y] = image[charX + x, charY + y] != offColor;
                 var glyph = new Glyph(CharWidth, CharHeight, data);
                 if (charset.TryGetValue(c++, out var mappedChar))

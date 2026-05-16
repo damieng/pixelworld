@@ -27,7 +27,8 @@ public class ConvertFromPngCommand : Command<RequiredSettings>
         Out.Write($"Generating ch8 file from {fileName}");
 
         var sourceFont = new Font(name);
-        ImageFontFormatter.Read(sourceFont, File.OpenRead(fileName), Spectrum.UK);
+        using var imageStream = File.OpenRead(fileName);
+        ImageFontFormatter.Read(sourceFont, imageStream, Spectrum.UK);
 
         using var output = File.Create(Utils.MakeFileName(fileName, "ch8", settings.OutputFolder));
         ByteFontFormatter.Write(sourceFont, output, Spectrum.UK, 96);

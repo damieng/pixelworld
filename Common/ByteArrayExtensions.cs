@@ -75,7 +75,7 @@ public static class ByteArrayExtensions
         var count = 0;
         for (var y = 0; y < 8; y++)
         {
-            Int32 g = buffer[offset + c - 32 + y];
+            Int32 g = buffer[offset + (c - 32) * 8 + y];
             for (var x = 0; x < 8; x++)
             {
                 var f = 1 << x;

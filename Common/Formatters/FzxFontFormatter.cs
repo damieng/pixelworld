@@ -53,16 +53,7 @@ public static class FzxFontFormatter
             var blanks = blankRows[glyph.Key];
             var bottom = font.Height - blanks.Item2;
             for (var y = blanks.Item1; y < bottom; y++)
-            {
-                var b = new Byte();
-                for (var x = 0; x < glyph.Value.Width; x++)
-                {
-                    if (glyph.Value.Data[x, y])
-                        b |= (Byte) (1 << 8 - x - 1);
-                }
-
-                writer.Write(b);
-            }
+                writer.Write(glyph.Value.GetRowByte(y));
         }
     }
 

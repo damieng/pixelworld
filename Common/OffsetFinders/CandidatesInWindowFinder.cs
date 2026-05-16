@@ -62,7 +62,7 @@ public static class CandidatesInWindowFinder
                     // Look back to the previous space
                     var backOffset = window.Peek().Offset;
                     var foundSpace = false;
-                    for (var b = backOffset - Spectrum.FontSize; b >= 0 && b < backOffset; b -= 8)
+                    for (var b = backOffset - Spectrum.FontSize; b >= 0; b -= 8)
                     {
                         if (buffer.IsEmpty(b))
                         {

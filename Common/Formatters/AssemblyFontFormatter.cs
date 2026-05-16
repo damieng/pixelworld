@@ -23,16 +23,9 @@ public static class AssemblyFontFormatter
                 output.Append("\t" + defineByteInstruction);
                 for (var y = 0; y < font.Height; y++)
                 {
-                    var b = new Byte();
-                    var charWidth = glyph.Value.Width;
-                    for (var x = 0; x < charWidth; x++)
-                    {
-                        if (glyph.Value.Data[x, y])
-                            b |= (Byte)(1 << charWidth - 1 - x);
-                    }
                     if (y > 0)
                         output.Append(',');
-                    output.AppendFormat(format, b);
+                    output.AppendFormat(format, glyph.Value.GetRowByte(y));
                 }
 
                 output.Append($" ; {glyph.Key}\n");

@@ -30,10 +30,16 @@ public class ByteArrayEqualityComparerTests
     }
 
     [Fact]
-    public void Equals_NullArrays_ReturnsFalse()
+    public void Equals_NullBoth_ReturnsTrue()
     {
         var comparer = new ByteArrayEqualityComparer();
-        Assert.False(comparer.Equals(null, null));
+        Assert.True(comparer.Equals(null, null));
+    }
+
+    [Fact]
+    public void Equals_OneNull_ReturnsFalse()
+    {
+        var comparer = new ByteArrayEqualityComparer();
         Assert.False(comparer.Equals(new byte[8], null));
         Assert.False(comparer.Equals(null, new byte[8]));
     }
@@ -53,6 +59,22 @@ public class ByteArrayEqualityComparerTests
         var comparer = new ByteArrayEqualityComparer();
         var a = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
         var b = new byte[] { 9, 9, 9, 9, 9, 9, 9, 9 };
+        Assert.NotEqual(comparer.GetHashCode(a), comparer.GetHashCode(b));
+    }
+
+    [Fact]
+    public void GetHashCode_Null_ReturnsZero()
+    {
+        var comparer = new ByteArrayEqualityComparer();
+        Assert.Equal(0, comparer.GetHashCode(null));
+    }
+
+    [Fact]
+    public void GetHashCode_DiffersInSecondHalf_ProducesDifferentHash()
+    {
+        var comparer = new ByteArrayEqualityComparer();
+        var a = new byte[] { 0, 0, 0, 0, 1, 0, 0, 0 };
+        var b = new byte[] { 0, 0, 0, 0, 0, 0, 0, 1 };
         Assert.NotEqual(comparer.GetHashCode(a), comparer.GetHashCode(b));
     }
 }

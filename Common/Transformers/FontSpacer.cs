@@ -14,7 +14,9 @@ public static class FontSpacer
         foreach (var key in allKeys.Where(key => key != ' '))
             target.Glyphs[key] = GlyphSpacer.Proportional(target.Glyphs[key], leftPad, rightPad, maxWidth);
 
-        var spaceWidth = target.Glyphs['{'].Width - leftPad - rightPad;
+        var spaceWidth = maxWidth - leftPad - rightPad;
+        if (target.Glyphs.TryGetValue('{', out var braceGlyph))
+            spaceWidth = braceGlyph.Width - leftPad - rightPad;
         target.Glyphs[' '] = new Glyph(spaceWidth, source.Height, new Boolean[spaceWidth, source.Height]);
 
         return target;

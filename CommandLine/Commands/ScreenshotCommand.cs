@@ -43,7 +43,7 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
             WriteGif(fileName, memory, settings, address);
 
         // Write SCR if specified OR if nothing specified (so it is the default)
-        if (settings.Scr | settings is {Png: false, Gif: false, Webp: false})
+        if (settings.Scr || settings is {Png: false, Gif: false, Webp: false})
             WriteScr(fileName, memory, settings, address);
 
         return true;

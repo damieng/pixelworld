@@ -59,15 +59,7 @@ public static class ByteFontFormatter
             if (charset.TryGetValue(i, out var charToWrite) && font.Glyphs.TryGetValue(charToWrite, out var glyph))
             {
                 for (var y = 0; y < CharHeight; y++)
-                {
-                    var b = new Byte();
-                    for (var x = 0; x < CharWidth; x++)
-                    {
-                        if (glyph.Data[x, y])
-                            b |= (Byte)(1 << CharWidth - 1 - x);
-                    }
-                    writer.Write(b);
-                }
+                    writer.Write(glyph.GetRowByte(y));
             }
             else
             {
