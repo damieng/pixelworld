@@ -10,39 +10,29 @@ public static class SnapshotProcessor
     public static void ProcessStream(String fileName, Stream stream, Func<String, ArraySegment<Byte>, Boolean> processor, Boolean processUnknown = false)
     {
         var extension = Path.GetExtension(fileName).ToLower();
-        switch (extension)
+
+        if (extension == ".zip")
         {
-            case ".zip":
-            {
-                using var zip = ZipFile.Open(fileName, ZipArchiveMode.Read);
-                foreach (var entry in zip.Entries)
-                    ProcessStream(entry.Name, entry.Open(), processor);
-                break;
-            }
+            using var zip = ZipFile.Open(fileName, ZipArchiveMode.Read);
+            foreach (var entry in zip.Entries)
+                ProcessStream(entry.Name, entry.Open(), processor);
+            return;
+        }
 
-            case ".sna":
-            {
-                processor(fileName, SnaBinarySource.Instance.GetMemory(stream));
-                break;
-            }
-            case ".z80":
-            {
-                processor(fileName, Z80BinarySource.Instance.GetMemory(stream));
-                break;
-            }
+        var source = BinarySourceFactory.Create(extension);
+        if (source is not null)
+        {
+            processor(fileName, source.GetMemory(stream));
+            return;
+        }
 
-            default:
-            {
-                if (processUnknown)
-                {
-                    processor(fileName, stream.ReadAllBytes());
-                }
-                else
-                {
-                    Out.Write($"  Skipping file {fileName} as unknown extension {extension}");
-                }
-                break;
-            }
+        if (processUnknown)
+        {
+            processor(fileName, stream.ReadAllBytes());
+        }
+        else
+        {
+            Out.Write($"  Skipping file {fileName} as unknown extension {extension}");
         }
     }
 }
