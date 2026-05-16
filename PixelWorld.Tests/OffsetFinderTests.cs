@@ -1,3 +1,4 @@
+using PixelWorld.Machines;
 using PixelWorld.OffsetFinders;
 
 namespace PixelWorld.Tests;
@@ -86,8 +87,8 @@ public class EnvironmentGuidedFinderTests
     public void FindOffsets_PointerBelow16384_ReturnsEmpty()
     {
         var buffer = new byte[50000];
-        buffer[23606] = 0;
-        buffer[23607] = 0;
+        buffer[Spectrum.CharsSysVar] = 0;
+        buffer[Spectrum.CharsSysVar + 1] = 0;
 
         var offsets = EnvironmentGuidedFinder.FindOffsets(buffer);
 
@@ -98,8 +99,8 @@ public class EnvironmentGuidedFinderTests
     public void FindOffsets_PointerExceedsBuffer_ReturnsEmpty()
     {
         var buffer = new byte[30000];
-        buffer[23606] = 0xFF;
-        buffer[23607] = 0xFF;
+        buffer[Spectrum.CharsSysVar] = 0xFF;
+        buffer[Spectrum.CharsSysVar + 1] = 0xFF;
 
         var offsets = EnvironmentGuidedFinder.FindOffsets(buffer);
 
@@ -110,8 +111,8 @@ public class EnvironmentGuidedFinderTests
     public void FindOffsets_ValidPointerWithEmptyRegion_ReturnsOffset()
     {
         var buffer = new byte[50000];
-        buffer[23606] = 0x00;
-        buffer[23607] = 0x40;
+        buffer[Spectrum.CharsSysVar] = 0x00;
+        buffer[Spectrum.CharsSysVar + 1] = 0x40;
         for (int i = 16640; i < 17408; i++)
             buffer[i] = 0;
 
@@ -124,8 +125,8 @@ public class EnvironmentGuidedFinderTests
     public void FindOffsets_PointerToNonEmptyRegion_ReturnsEmpty()
     {
         var buffer = new byte[50000];
-        buffer[23606] = 0x00;
-        buffer[23607] = 0x40;
+        buffer[Spectrum.CharsSysVar] = 0x00;
+        buffer[Spectrum.CharsSysVar + 1] = 0x40;
         buffer[16640] = 255;
 
         var offsets = EnvironmentGuidedFinder.FindOffsets(buffer);

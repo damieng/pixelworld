@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using PixelWorld.Display;
+using PixelWorld.Machines;
 
 namespace PixelWorld.Tools;
 
@@ -22,7 +23,7 @@ public class TileExtractor
             using var source = File.OpenRead(fileName);
             using var reader = new BinaryReader(source);
             var buffer = reader.ReadBytes(1024 * 2048);
-            var address = buffer.Length == 65536 ? 16384 : 0;
+            var address = buffer.Length == Spectrum.AddressSpace ? Spectrum.ScreenStart : 0;
             var tiles = SpectrumDisplay.GetCandidates(buffer, address);
 
             if (tiles.Length > maxTiles)

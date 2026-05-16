@@ -29,7 +29,7 @@ public static class SpectrumDumpScanner
 
     private static IEnumerable<Int32> GetOffsets(Byte[] buffer)
     {
-        var address = buffer.Length == 65536 ? 16384 : 0;
+        var address = buffer.Length == Spectrum.AddressSpace ? Spectrum.ScreenStart : 0;
         var candidates = SpectrumDisplay.GetCandidates(buffer, address);
 
         var rst = EnvironmentGuidedFinder.FindOffsets(buffer);

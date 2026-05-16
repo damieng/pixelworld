@@ -1,7 +1,8 @@
 ﻿using CommandLine.Commands.Settings;
 using PixelWorld;
+using PixelWorld.BinarySource;
 using PixelWorld.Display;
-using PixelWorld.Tools;
+using PixelWorld.Machines;
 using SixLabors.ImageSharp;
 using Spectre.Console.Cli;
 using System;
@@ -21,7 +22,7 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
         {
             Out.Write($"Opening file {fileName}");
             using var file = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            Dumper.ProcessStream(fileName, file, (a, b) => WriteScreenToDisk(a, b, settings), true);
+            SnapshotProcessor.ProcessStream(fileName, file, (a, b) => WriteScreenToDisk(a, b, settings), true);
         }
 
         return 0;
@@ -31,7 +32,7 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
 
     private static Boolean WriteScreenToDisk(String fileName, ArraySegment<Byte> memory, ScreenshotSettings settings)
     {
-        var address = settings.Address ?? (memory.Count == 49152 ? 0 : 16384);
+        var address = settings.Address ?? (memory.Count == Spectrum.Ram48K ? 0 : Spectrum.ScreenStart);
         if (settings.Png || settings.Webp)
         {
             using var image = SpectrumDisplay.GetBitmap(memory.ToArray(), address, settings.Flashed);
@@ -53,7 +54,7 @@ public class ScreenshotCommand : Command<ScreenshotSettings>
     {
         var targetName = Utils.MakeFileName(sourceName, "scr", settings.OutputFolder);
         Out.Write($"  Screenshotting {sourceName} @ {address} to {targetName}");
-        var screenBuffer = memory.Array.AsSpan(address, 6912).ToArray();
+        var screenBuffer = memory.Array.AsSpan(address, Spectrum.ScreenSize).ToArray();
         File.WriteAllBytes(targetName, screenBuffer);
     }
 
