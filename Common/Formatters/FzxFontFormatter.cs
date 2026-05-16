@@ -27,7 +27,7 @@ public static class FzxFontFormatter
 
         // Offset/shift table
         var tableSize = font.Glyphs.Count * 3;
-        Console.WriteLine($"Table size is {tableSize:x}");
+        Out.Write($"Table size is {tableSize:x}");
 
         var dataOffset = writer.BaseStream.Position + tableSize + 2; // Final word bullshit
 

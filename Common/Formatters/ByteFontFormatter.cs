@@ -53,7 +53,7 @@ public static class ByteFontFormatter
     {
         fallback ??= BlankWriter;
 
-        var writer = new BinaryWriter(output); // Do not dispose as it will close underlying stream
+        using var writer = new BinaryWriter(output, System.Text.Encoding.UTF8, true);
         for (var i = 0; i < length; i++)
         {
             if (charset.TryGetValue(i, out var charToWrite) && font.Glyphs.TryGetValue(charToWrite, out var glyph))
